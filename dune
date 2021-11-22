@@ -1,4 +1,4 @@
 (executable
  (public_name spinup)
  (name spinup)
- (libraries feather prelude lib))
+ (libraries feather prelude mattlude lib versioj))
