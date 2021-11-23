@@ -80,10 +80,10 @@ module Commands = struct
     process "cd" [ name ]
 
   let delete_bin =
-    process "rm" [ "bin" ]
+    process "rm" [ "-R" ; "bin" ]
 
   let init_executable name =
-    process "dune init exe" [ name ]
+    process "dune" [ "init" ; "exe" ; name ]
 
   let create_lib =
     echo lib > "lib/lib.ml"
@@ -108,7 +108,7 @@ module Commands = struct
 
   module IO = struct
     
-    let prep_project name =
+    let mk_project_root name =
       mk_project name |> Feather.run
 
     let inside_the_dir name
