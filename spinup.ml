@@ -36,7 +36,7 @@ module Main = struct
       "Spinning up project anyway with default name \
        \"new_project\"..."
 
-    let print_error () =
+    let print_warning () =
       print usage
       ; print warning
   end
@@ -49,7 +49,7 @@ module Main = struct
     in
     match gimme_the_arg argv with
     | None -> begin
-        Errors.print_error ()
+        Errors.print_warning ()
       ; the_whole_thing "new_project"
       end
     | Some n -> the_whole_thing n
