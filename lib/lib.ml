@@ -62,7 +62,7 @@ open Prelude ;;
     
   let exe_dune project_name = sprintf {|(executable
  (public_name %s)
- (name spinup %s)
+ (name %s)
  (libraries feather prelude lib))
 |} project_name project_name
       

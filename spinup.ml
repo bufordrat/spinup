@@ -20,14 +20,40 @@ module Main = struct
         ; create_use_output
         ; create_ocamlinit
         ; create_dune_project name
-        ] |> Feather.run ~cwd:name
+        ] |> Feather.run
+
+    let the_whole_thing name =
+      mk_project_root name
+      ; Unix.chdir name
+      ; inside_the_dir name
+      ; Unix.chdir ".."
   end
   open Feather2IO
-            
-  let main name =
-    mk_project_root name
-    ; inside_the_dir name
 
+  module Errors = struct
+    let usage = "USAGE: spinup <project-name>"
+    let warning =
+      "Spinning up project anyway with default name \
+       \"new_project\"..."
+
+    let print_error () =
+      print usage
+      ; print warning
+  end
+     
+  let main () =
+    let gimme_the_arg = function
+      | [] -> None
+      | x :: [] -> Some x
+      | _ -> None
+    in
+    match gimme_the_arg argv with
+    | None -> begin
+        Errors.print_error ()
+      ; the_whole_thing "new_project"
+      end
+    | Some n -> the_whole_thing n
+            
 end
               
-let () = Main.main "matt"
+let () = Main.main ()
