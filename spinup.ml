@@ -30,6 +30,7 @@ module Main = struct
 
   module Errors = struct
     let usage = "USAGE: spinup <project-name>"
+
     let already_exists name file =
       String.concat " " [
           "Error: a" ;
@@ -39,6 +40,11 @@ module Main = struct
           "already exists." ;
         ]
 
+    let dir_or_file name = 
+      if Sys.is_directory name
+      then "directory"
+      else "file"
+      
     module E = struct
       type t =
         | BadArgv
@@ -47,33 +53,18 @@ module Main = struct
     include E
                          
     module Kleislis = struct
-      open Feather
          
       let gimme_the_arg = function
         | [] -> Error BadArgv
         | x :: [] -> Ok x
         | _ -> Error BadArgv
-
-      let filetype = function
-          | "-f" -> "file"
-          | "-d" -> "directory"
-          | _ -> ""
              
-      let check_exists option name =
-        let test =
-          process "test" [ option ; name ] |> collect status
-        in
-        match test with
-        | 0 -> Error (AlreadyExists
+      let check_exists f name =
+        if Sys.file_exists name
+        then Error (AlreadyExists
                         (name,
-                         (filetype option)))
-        | _ -> Ok name
-
-      let check_dir_exists name =
-        check_exists "-d" name
-
-      let check_file_exists name =
-        check_exists "-f" name
+                         (f name)))
+        else Ok name
     end
     include Kleislis
   end
@@ -82,20 +73,22 @@ module Main = struct
     let open Errors in
     let open Mattlude.Endofunctors in
     let module R = Result.Make (E) in
-    let open R in 
-    let name =
+    let open R in
+    let print = Prelude.print in
+    let project_name =
       gimme_the_arg argv
-      >>= check_dir_exists
-      >>= check_file_exists
+      >>= check_exists dir_or_file
     in
-    match name with
-    | Error BadArgv -> begin
-        Prelude.print usage
-      end
-    | Error (AlreadyExists (n, d)) -> begin
-        Prelude.print @@ already_exists n d
-      end
-    | Ok n -> the_whole_thing n
+    match project_name with
+    | Error BadArgv ->
+       print usage ;
+       exit 1
+    | Error (AlreadyExists (n, d)) ->
+       print @@ already_exists n d ;
+       exit 1
+    | Ok n ->
+       the_whole_thing n ;
+       exit 0
 
 end
               
