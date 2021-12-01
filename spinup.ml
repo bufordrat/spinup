@@ -2,39 +2,36 @@ open Prelude
 
 module Main = struct
 
-  module Feather2IO = struct
-    open Feather
+  module IO = struct
     open Lib.Commands
 
     let mk_project_root name =
-      mk_project name |> Feather.run
+      mk_project name
       
     let inside_the_dir name =
-      foldl1 and_ [
-          delete_bin
-        ; init_executable name
-        ; create_lib
-        ; create_lib_dune
-        ; create_exe name
-        ; create_exe_dune name
-        ; create_use_output
-        ; create_ocamlinit
-        ; create_dune_project name
-        ] |> Feather.run
+      delete_bin () ;
+      init_executable name ;
+      create_lib () ;
+      create_lib_dune () ;
+      create_exe name ;
+      create_exe_dune name ;
+      create_use_output () ;
+      create_ocamlinit () ;
+      create_dune_project name ;
+      done_msg ()
 
     let the_whole_thing name =
       mk_project_root name
       ; withcd (fun _ -> inside_the_dir name) name
   end
-  open Feather2IO
 
   module Errors = struct
     let usage = "USAGE: spinup <project-name>"
 
-    let already_exists name file =
+    let already_exists name dir_or_file =
       String.concat " " [
           "Error: a" ;
-          file ;
+          dir_or_file ;
           "called" ;
           name ;
           "already exists." ;
@@ -70,6 +67,7 @@ module Main = struct
   end
 
   let main () =
+    let open IO in
     let open Errors in
     let open Mattlude.Endofunctors in
     let module R = Result.Make (E) in

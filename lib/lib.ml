@@ -57,6 +57,8 @@ open Prelude ;;
  (libraries prelude))
 |}
 
+  let lib_dune_path = "lib/dune"
+               
   let exe =
     "let () = print_endline Lib.message"
     
@@ -68,42 +70,119 @@ open Prelude ;;
       
 end
 
-module Commands = struct
-  open Feather
-  open Infix
-  open Constants
-     
+module Messages = struct
   let mk_project name =
-    process "dune" [ "init" ; "project" ; name ]
-
-  let cd name =
-    process "cd" [ name ]
-
+    "creating " ^ name ^ "/ project..."
+    
   let delete_bin =
-    process "rm" [ "-R" ; "bin" ]
-
-  let init_executable name =
-    process "dune" [ "init" ; "exe" ; name ]
-
+    "removing bin/ directory..."
+    
+  let init_executable =
+    "initializing executable project..."
+    
   let create_lib =
-    echo lib > "lib/lib.ml"
-
+    "creating library..."
+    
   let create_lib_dune =
-    echo lib_dune > "lib/dune"
-
+    "creating library dune config..."
+    
   let create_exe name =
-    echo exe > (name ^ ".ml")
-
-  let create_exe_dune name =
-    echo (exe_dune name) > "dune"
-
+    "creating executable module " ^ name ^ ".ml..."
+    
+  let create_exe_dune =
+    "creating executable dune config..."
+    
   let create_use_output =
-    echo use_output > "use-output.top"
+    "creating use-output for loading this project into the toplevel..."
 
   let create_ocamlinit =
-    echo ocamlinit > ".ocamlinit"
+    "creating minimal .ocamlinit file..."
+
+  let create_dune_project =
+    "creating dune-project file"
+
+  let done_msg = "DONE!"
+                      
+end
+                 
+module Commands = struct
+  open Constants
+  open Unix.Proc
+
+  module Paths = struct
+    let lib_path = "lib/lib.ml"
+
+    let lib_dune_path = "lib/dune"
+
+    let dune_path = "dune"
+
+    let use_output_path = "use-output.top"
+
+    let ocamlinit_path = ".ocamlinit"
+
+    let dune_project_path = "dune-project"
+  end
+  open Paths
+
+  module Verbosity = struct
+    let verbose = true
+                
+    let verbose_print msg =
+      if verbose
+      then print msg
+      else ()
+  end
+  open Verbosity
+                        
+  let mk_project name =
+    runfull [ "dune" ; "init" ; "project" ; name ]
+    |> ignore ;
+    verbose_print @@ Messages.mk_project name
+    
+  let delete_bin () =
+    runfull [ "rm" ; "-R" ; "bin" ]
+    |> ignore ;
+    verbose_print @@ Messages.delete_bin
+
+  let init_executable name =
+    runfull [ "dune" ; "init" ; "exe" ; name ]
+    |> ignore ;
+    verbose_print @@ Messages.init_executable
+
+  let create_lib () =
+    writefile ~fn:lib_path lib
+    |> ignore ;
+    verbose_print @@ Messages.create_lib
+
+  let create_lib_dune () =
+    writefile ~fn:lib_dune_path lib_dune
+    |> ignore ;
+    verbose_print @@ Messages.create_lib_dune
+
+  let create_exe name =
+    writefile ~fn:(name ^ ".ml") exe
+    |> ignore ;
+    verbose_print @@ Messages.create_exe name
+
+  let create_exe_dune name =
+    writefile ~fn:dune_path (exe_dune name)
+    |> ignore ;
+    verbose_print @@ Messages.create_exe_dune
+
+  let create_use_output () =
+    writefile ~fn:use_output_path use_output
+    |> ignore ;
+    verbose_print @@ Messages.create_use_output
+
+  let create_ocamlinit () =
+    writefile ~fn:ocamlinit_path ocamlinit
+    |> ignore ;
+    verbose_print @@ Messages.create_ocamlinit
 
   let create_dune_project name =
-    echo (dune_project name) > "dune-project"
-    
+    writefile ~fn:dune_project_path (dune_project name)
+    |> ignore ;
+    verbose_print @@ Messages.create_dune_project
+
+  let done_msg () = print Messages.done_msg
 end
