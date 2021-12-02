@@ -117,3 +117,5 @@ module Paths = struct
   let dune_project_path = "dune-project"
 end
 include Paths
+
+let keith = "hello"

@@ -1,4 +1,5 @@
 (executable
  (public_name spinup)
  (name spinup)
+ (modules errors io spinup)
  (libraries prelude mattlude lib versioj))

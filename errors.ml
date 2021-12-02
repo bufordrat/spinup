@@ -4,7 +4,7 @@ module E = struct
   type dependency =
     | Dune
     | Opam
-    | OpamLock
+    (* | OpamLock *)
     
   type t =
     | BadArgv
@@ -14,7 +14,7 @@ module E = struct
   let dependency_to_string = function
     | Dune -> "dune"
     | Opam -> "opam"
-    | OpamLock -> "opam-lock"
+    (* | OpamLock -> "opam-lock" *)
 end
 include E
 
@@ -31,7 +31,7 @@ module Messages = struct
       ]
 
   let dependencies =
-    let deps = [Dune ; Opam ; OpamLock] in
+    let deps = [Dune ; Opam ; ] in
     let dep_strings = map dependency_to_string deps in
     String.concat "\n" @@ [
         "spinup has the following dependencies:" ;
@@ -44,7 +44,7 @@ module Responses = struct
   let missing_dep_message = function
     | Dune -> assert false
     | Opam -> assert false
-    | OpamLock -> assert false
+    (* | OpamLock -> assert false *)
                 
   let respond = function
     | BadArgv ->

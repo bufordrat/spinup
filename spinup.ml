@@ -14,8 +14,7 @@ module Main = struct
     in
     match project_name with
     | Error e -> respond e
-    | Ok n -> the_whole_thing n ;
-              exit 0
+    | Ok n -> the_whole_thing n 
 
 end
               
