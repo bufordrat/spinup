@@ -57,8 +57,6 @@ open Prelude ;;
  (libraries prelude))
 |}
 
-  let lib_dune_path = "lib/dune"
-               
   let exe =
     "let () = print_endline Lib.message"
     
@@ -69,6 +67,7 @@ open Prelude ;;
 |} project_name project_name
       
 end
+include Constants
 
 module Messages = struct
   let mk_project name =
@@ -101,88 +100,20 @@ module Messages = struct
   let create_dune_project =
     "creating dune-project file"
 
-  let done_msg = "DONE!"
-                      
+  let done_msg = "DONE!"                     
 end
-                 
-module Commands = struct
-  open Constants
-  open Unix.Proc
-
-  module Paths = struct
-    let lib_path = "lib/lib.ml"
-
-    let lib_dune_path = "lib/dune"
-
-    let dune_path = "dune"
-
-    let use_output_path = "use-output.top"
-
-    let ocamlinit_path = ".ocamlinit"
-
-    let dune_project_path = "dune-project"
-  end
-  open Paths
-
-  module Verbosity = struct
-    let verbose = true
                 
-    let verbose_print msg =
-      if verbose
-      then print msg
-      else ()
-  end
-  open Verbosity
-                        
-  let mk_project name =
-    runfull [ "dune" ; "init" ; "project" ; name ]
-    |> ignore ;
-    verbose_print @@ Messages.mk_project name
-    
-  let delete_bin () =
-    runfull [ "rm" ; "-R" ; "bin" ]
-    |> ignore ;
-    verbose_print @@ Messages.delete_bin
+module Paths = struct
+  let lib_path = "lib/lib.ml"
 
-  let init_executable name =
-    runfull [ "dune" ; "init" ; "exe" ; name ]
-    |> ignore ;
-    verbose_print @@ Messages.init_executable
+  let lib_dune_path = "lib/dune"
 
-  let create_lib () =
-    writefile ~fn:lib_path lib
-    |> ignore ;
-    verbose_print @@ Messages.create_lib
+  let dune_path = "dune"
 
-  let create_lib_dune () =
-    writefile ~fn:lib_dune_path lib_dune
-    |> ignore ;
-    verbose_print @@ Messages.create_lib_dune
+  let use_output_path = "use-output.top"
 
-  let create_exe name =
-    writefile ~fn:(name ^ ".ml") exe
-    |> ignore ;
-    verbose_print @@ Messages.create_exe name
+  let ocamlinit_path = ".ocamlinit"
 
-  let create_exe_dune name =
-    writefile ~fn:dune_path (exe_dune name)
-    |> ignore ;
-    verbose_print @@ Messages.create_exe_dune
-
-  let create_use_output () =
-    writefile ~fn:use_output_path use_output
-    |> ignore ;
-    verbose_print @@ Messages.create_use_output
-
-  let create_ocamlinit () =
-    writefile ~fn:ocamlinit_path ocamlinit
-    |> ignore ;
-    verbose_print @@ Messages.create_ocamlinit
-
-  let create_dune_project name =
-    writefile ~fn:dune_project_path (dune_project name)
-    |> ignore ;
-    verbose_print @@ Messages.create_dune_project
-
-  let done_msg () = print Messages.done_msg
+  let dune_project_path = "dune-project"
 end
+include Paths
