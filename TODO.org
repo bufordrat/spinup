@@ -1,0 +1,5 @@
+* Unhandled Errors
+
+  + needs to validate project name, make sure it doesn't contain
+    hyphens
+    + otherwise, =dune= complains
