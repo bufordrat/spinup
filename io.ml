@@ -45,14 +45,6 @@ module SmallCommands = struct
     writefile ~fn:dune_path (exe_dune name);
     verbose_print Messages.create_exe_dune
 
-  let create_use_output () =
-    writefile ~fn:use_output_path use_output;
-    verbose_print Messages.create_use_output
-
-  let create_ocamlinit () =
-    writefile ~fn:ocamlinit_path ocamlinit;
-    verbose_print Messages.create_ocamlinit
-
   let create_dune_project name =
     writefile ~fn:dune_project_path (dune_project name);
     verbose_print Messages.create_dune_project
@@ -76,8 +68,6 @@ module BigPicture = struct
     create_lib_dune () ;
     create_exe name ;
     create_exe_dune name ;
-    create_use_output () ;
-    create_ocamlinit () ;
     create_dune_project name ;
     create_gnumakefile ();
     done_msg ()
