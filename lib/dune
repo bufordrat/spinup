@@ -1,4 +1,4 @@
 (library
  (name lib)
- (modules lib)
+ (modules lib io errors data)
  (libraries prelude mattlude))

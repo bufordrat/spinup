@@ -1,14 +1,16 @@
 open Prelude
 
-module SmallCommands = struct
-  open Lib
+module type SETTINGS = sig
+  val verbose : bool
+end
+
+module SmallCommands (S : SETTINGS) = struct
+  open Data
   open Unix.Proc
 
   module Verbosity = struct
-    let verbose = true
-
     let verbose_print msg =
-      if verbose
+      if S.verbose
       then print msg
       else ()
   end
@@ -53,11 +55,23 @@ module SmallCommands = struct
     writefile ~fn:gnumakefile_path gnumakefile;
     verbose_print Messages.create_gnumakefile
 
+  let do_a_build () =
+    runfull [ "dune" ; "build" ]
+    |> ignore ;
+    verbose_print Messages.do_a_build
+
+  let create_locked_file name =
+    runfull [ "opam" ; "lock" ; "./" ^ locked_path name ]
+    |> ignore ;
+    verbose_print @@ Messages.create_locked_file name
+
+
   let done_msg () = print Messages.done_msg
 end
-open SmallCommands
 
-module BigPicture = struct
+module BigPicture (S : SETTINGS) = struct
+  open SmallCommands (S)
+
   let mk_project_root name =
     mk_project name
 
@@ -69,11 +83,13 @@ module BigPicture = struct
     create_exe name ;
     create_exe_dune name ;
     create_dune_project name ;
-    create_gnumakefile ();
+    create_gnumakefile () ;
+    do_a_build () ;
+    create_locked_file name ;
     done_msg ()
 
   let the_whole_thing name =
     mk_project_root name
     ; withcd (fun _ -> inside_the_dir name) name
 end
-include BigPicture
+

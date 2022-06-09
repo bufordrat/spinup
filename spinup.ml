@@ -1,9 +1,18 @@
 open Prelude
 
+module type SETTINGS = Lib.Io.SETTINGS
+
+module Io = Lib.Io
+module Errors = Lib.Errors
+
 module Main = struct
 
+  module Verbosity : SETTINGS = struct
+    let verbose = true
+  end
+
   let main () =
-    let open Io in
+    let open Io.BigPicture (Verbosity) in
     let open Errors in
     let open Mattlude.Endofunctors in
     let module R = Result.Make (E) in

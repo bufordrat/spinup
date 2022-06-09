@@ -1,5 +1,5 @@
 (executable
  (public_name spinup)
  (name spinup)
- (modules errors io spinup)
+ (modules spinup)
  (libraries prelude mattlude lib))
