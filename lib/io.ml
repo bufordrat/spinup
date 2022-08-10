@@ -75,7 +75,7 @@ module SmallCommands (S : SETTINGS) = struct
       [ "--repos" ;
         "dldc=https://dldc.lib.uchicago.edu/opam,default" ] in
     let full_command =
-      (command :: subcommand) @ (path :: (switches @ options))
+      command :: subcommand @ path :: switches @ options
     in
     runfull ~err:(print_endline << input_line) full_command
     |> ignore ;
