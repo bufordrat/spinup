@@ -16,55 +16,80 @@ module SmallCommands (S : SETTINGS) = struct
   end
   open Verbosity
 
+  module RunHelpers = struct
+    let run_it args msg =
+      runfull
+        ~err:Prelude.(prerr_endline << read)
+        ~reader:Prelude.(ignore << read)
+        args
+      |> ignore ;
+      verbose_print msg
+
+    let write_it path data msg =
+      writefile ~fn:path data ;
+      verbose_print msg
+  end
+  open RunHelpers
+
   let mk_project name =
-    runfull [ "dune" ; "init" ; "project" ; name ]
-    |> ignore ;
-    verbose_print @@ Messages.mk_project name
+    run_it
+      [ "dune" ; "init" ; "project" ; name ]
+      (Messages.mk_project name)
 
   let delete_bin () =
-    runfull [ "rm" ; "-R" ; "bin" ]
-    |> ignore ;
-    verbose_print Messages.delete_bin
+    run_it
+      [ "rm" ; "-R" ; "bin" ]
+      Messages.delete_bin
 
   let init_executable name =
-    runfull [ "dune" ; "init" ; "exe" ; name ]
-    |> ignore ;
-    verbose_print Messages.init_executable
+    run_it
+      [ "dune" ; "init" ; "exe" ; name ]
+      Messages.init_executable
 
   let create_lib () =
-    writefile ~fn:lib_path lib;
-    verbose_print Messages.create_lib
+    write_it
+      lib_path
+      lib
+      Messages.create_lib
 
   let create_lib_dune () =
-    writefile ~fn:lib_dune_path lib_dune;
-    verbose_print Messages.create_lib_dune
+    write_it
+      lib_dune_path
+      lib_dune
+      Messages.create_lib_dune
 
   let create_exe name =
-    writefile ~fn:(name ^ ".ml") exe;
-    verbose_print @@ Messages.create_exe name
+    write_it
+      (name ^ ".ml")
+      exe
+      (Messages.create_exe name)
 
   let create_exe_dune name =
-    writefile ~fn:dune_path (exe_dune name);
-    verbose_print Messages.create_exe_dune
+    write_it
+      dune_path
+      (exe_dune name)
+      Messages.create_exe_dune
 
   let create_dune_project name =
-    writefile ~fn:dune_project_path (dune_project name);
-    verbose_print Messages.create_dune_project
+    write_it
+      dune_project_path
+      (dune_project name)
+      Messages.create_dune_project
 
   let create_gnumakefile () =
-    writefile ~fn:gnumakefile_path gnumakefile;
-    verbose_print Messages.create_gnumakefile
+    write_it
+      gnumakefile_path
+      gnumakefile
+      Messages.create_gnumakefile
 
   let do_a_build () =
-    runfull [ "dune" ; "build" ]
-    |> ignore ;
-    verbose_print Messages.do_a_build
+    run_it
+      [ "dune" ; "build" ]
+      Messages.do_a_build
 
   let create_locked_file name =
     let full_command = [ "opam" ; "lock" ; locked_path name ] in
-    runfull ~err:(print_endline << input_line) full_command
-    |> ignore ;
-    verbose_print @@ Messages.create_locked_file name
+    run_it full_command (Messages.create_locked_file name)
 
   let create_sandboxed_switch () =
     let command = "opam" in
@@ -77,9 +102,7 @@ module SmallCommands (S : SETTINGS) = struct
     let full_command =
       command :: subcommand @ path :: switches @ options
     in
-    runfull ~err:(print_endline << input_line) full_command
-    |> ignore ;
-    verbose_print @@ Messages.create_sandboxed_switch
+    run_it full_command Messages.create_sandboxed_switch
 
   let done_msg () = print Messages.done_msg
 end
