@@ -104,6 +104,10 @@ module Messages = struct
     "creating " ^ name ^ ".opam.locked file for sandboxed opam switches..."
     
   let done_msg = "DONE!"
+
+  let create_sandboxed_switch =
+    "creating a sandboxed opam switch for the project..."
+
 end
 
 module Paths = struct
@@ -121,6 +125,6 @@ module Paths = struct
 
   let gnumakefile_path = "GNUmakefile"
 
-  let locked_path name = name ^ ".opam.locked"
+  let locked_path name = "./" ^ name ^ ".opam"
 end
 include Paths

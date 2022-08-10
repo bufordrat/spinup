@@ -4,7 +4,7 @@ module E = struct
   type dependency =
     | Dune
     | Opam
-    (* | OpamLock *)
+    | OpamLock
     
   type t =
     | BadArgv
@@ -14,7 +14,7 @@ module E = struct
   let dependency_to_string = function
     | Dune -> "dune"
     | Opam -> "opam"
-    (* | OpamLock -> "opam-lock" *)
+    | OpamLock -> "opam-lock"
 end
 include E
 
@@ -37,15 +37,14 @@ module Messages = struct
         "spinup has the following dependencies:" ;
         "" ] @ dep_strings
     
-end
-include Messages      
-
-module Responses = struct
   let missing_dep_message = function
     | Dune -> assert false
     | Opam -> assert false
-    (* | OpamLock -> assert false *)
-                
+    | OpamLock -> assert false
+end
+include Messages      
+
+module Responses = struct                
   let respond = function
     | BadArgv ->
        print usage ;
@@ -63,6 +62,7 @@ include Responses
 module Kleislis = struct
 
   (* TODO: don't let the user have a project name with a hyphen *)
+  (* TODO: check for dependencies *)
  
   let gimme_the_arg = function
     | [] -> Error BadArgv

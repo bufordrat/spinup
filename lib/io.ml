@@ -61,10 +61,25 @@ module SmallCommands (S : SETTINGS) = struct
     verbose_print Messages.do_a_build
 
   let create_locked_file name =
-    runfull [ "opam" ; "lock" ; "./" ^ locked_path name ]
+    let full_command = [ "opam" ; "lock" ; locked_path name ] in
+    runfull ~err:(print_endline << input_line) full_command
     |> ignore ;
     verbose_print @@ Messages.create_locked_file name
 
+  let create_sandboxed_switch () =
+    let command = "opam" in
+    let subcommand = [ "switch" ; "create" ] in
+    let path = "." in
+    let switches = [ "--deps-only" ; "--locked" ; "--yes" ] in
+    let options =
+      [ "--repos" ;
+        "dldc=https://dldc.lib.uchicago.edu/opam,default" ] in
+    let full_command =
+      (command :: subcommand) @ (path :: (switches @ options))
+    in
+    runfull ~err:(print_endline << input_line) full_command
+    |> ignore ;
+    verbose_print @@ Messages.create_sandboxed_switch
 
   let done_msg () = print Messages.done_msg
 end
@@ -86,6 +101,7 @@ module BigPicture (S : SETTINGS) = struct
     create_gnumakefile () ;
     do_a_build () ;
     create_locked_file name ;
+    create_sandboxed_switch () ;
     done_msg ()
 
   let the_whole_thing name =
