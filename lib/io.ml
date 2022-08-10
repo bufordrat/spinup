@@ -18,12 +18,13 @@ module SmallCommands (S : SETTINGS) = struct
 
   module RunHelpers = struct
     let run_it args msg =
+      verbose_print msg ;
       runfull
-        ~err:Prelude.(prerr_endline << read)
+        ~err:Prelude.(ignore << read)
         ~reader:Prelude.(ignore << read)
         args
-      |> ignore ;
-      verbose_print msg
+      |> ignore
+
 
     let write_it path data msg =
       writefile ~fn:path data ;
@@ -87,9 +88,23 @@ module SmallCommands (S : SETTINGS) = struct
       [ "dune" ; "build" ]
       Messages.do_a_build
 
+  let do_a_clean () =
+    run_it
+      [ "dune" ; "clean" ]
+      Messages.do_a_clean
+
+  (* let install_prelude () =
+   *   run_it
+   *     [ "opam" ; "install" ; "prelude" ]
+   *     "installing prelude" *)
+
   let create_locked_file name =
-    let full_command = [ "opam" ; "lock" ; locked_path name ] in
-    run_it full_command (Messages.create_locked_file name)
+    let full_command =
+      [ "opam" ; "lock" ; locked_path name ]
+    in
+    run_it
+      full_command
+      (Messages.create_locked_file name)
 
   let create_sandboxed_switch () =
     let command = "opam" in
@@ -98,11 +113,14 @@ module SmallCommands (S : SETTINGS) = struct
     let switches = [ "--deps-only" ; "--locked" ; "--yes" ] in
     let options =
       [ "--repos" ;
-        "dldc=https://dldc.lib.uchicago.edu/opam,default" ] in
+        "dldc=https://dldc.lib.uchicago.edu/opam,default" ]
+    in
     let full_command =
       command :: subcommand @ path :: switches @ options
     in
-    run_it full_command Messages.create_sandboxed_switch
+    run_it
+      full_command
+      Messages.create_sandboxed_switch
 
   let done_msg () = print Messages.done_msg
 end
@@ -125,10 +143,11 @@ module BigPicture (S : SETTINGS) = struct
     do_a_build () ;
     create_locked_file name ;
     create_sandboxed_switch () ;
+    do_a_clean () ;
     done_msg ()
 
   let the_whole_thing name =
-    mk_project_root name
-    ; withcd (fun _ -> inside_the_dir name) name
+    mk_project_root name ;
+    withcd (fun _ -> inside_the_dir name) name
 end
 

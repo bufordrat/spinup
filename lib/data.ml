@@ -65,7 +65,7 @@ include Constants
 
 module Messages = struct
   let mk_project name =
-    "creating " ^ name ^ "/ project..."
+    "creating " ^ name ^ " project..."
 
   let delete_bin =
     "removing bin/ directory..."
@@ -100,13 +100,17 @@ module Messages = struct
   let do_a_build =
     "doing initial `dune build` to generate .opam file..."
 
+  let do_a_clean =
+    "now that we have an .opam file, we do a `dune clean`..."
+
   let create_locked_file name =
     "creating " ^ name ^ ".opam.locked file for sandboxed opam switches..."
     
   let done_msg = "DONE!"
 
   let create_sandboxed_switch =
-    "creating a sandboxed opam switch for the project..."
+    "creating a sandboxed opam switch for the project...\n\
+     (this takes a while; gotta build the OCaml compiler)"
 
 end
 
