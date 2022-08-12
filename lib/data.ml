@@ -1,7 +1,7 @@
 open Prelude
 
 module Constants = struct
-  let dune_project project_name = sprintf {|(lang dune 2.7)
+  let dune_project project_name = sprintf {|(lang dune 3.0)
 (generate_opam_files true)
 (package
  (name %s)
@@ -9,10 +9,10 @@ module Constants = struct
   (ocaml (>= 4.13.0))
   dune
   prelude
-  (utop :dev)
-  (ocamlformat :dev)
-  (ocp-index :dev)
-  (merlin :dev)))
+  mattlude
+  utop
+  ocp-index
+  merlin))
 |} project_name
 
   let lib =
@@ -20,7 +20,7 @@ module Constants = struct
 
   let lib_dune = {|(library
  (name lib)
- (libraries prelude))
+ (libraries prelude mattlude))
 |}
 
   let exe =
@@ -29,7 +29,7 @@ module Constants = struct
   let exe_dune project_name = sprintf {|(executable
  (public_name %s)
  (name %s)
- (libraries prelude lib))
+ (libraries prelude mattlude lib))
 |} project_name project_name
 
   let gnumakefile =
@@ -100,18 +100,28 @@ module Messages = struct
   let do_a_build =
     "doing initial `dune build` to generate .opam file..."
 
-  let do_a_clean =
-    "now that we have an .opam file, we do a `dune clean`..."
-
   let create_locked_file name =
     "creating " ^ name ^ ".opam.locked file for sandboxed opam switches..."
-    
+
+  let do_a_clean =
+    "doing a `dune clean` to remove compiler detritus..."
+
   let done_msg = "DONE!"
 
-  let create_sandboxed_switch =
-    "creating a sandboxed opam switch for the project...\n\
-     (this takes a while; gotta build the OCaml compiler)"
-
+  let sandbox_msg name =
+    "\nto create a sandboxed opam switch, you can either run this \
+     big opam command inside the "
+    ^ name
+    ^ "/ directory:\n\
+       \n\
+       \   $ opam switch create . --deps-only --locked --repos \
+       dldc=https://dldc.lib.uchicago.edu/opam,default --yes\n\
+       \n\
+       or run this make command inside the "
+    ^ name
+    ^ "/ directory:\n\
+       \n\
+       \   $ make sandbox\n"
 end
 
 module Paths = struct

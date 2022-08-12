@@ -25,10 +25,9 @@ module SmallCommands (S : SETTINGS) = struct
         args
       |> ignore
 
-
     let write_it path data msg =
-      writefile ~fn:path data ;
-      verbose_print msg
+      verbose_print msg ;
+      writefile ~fn:path data
   end
   open RunHelpers
 
@@ -93,11 +92,6 @@ module SmallCommands (S : SETTINGS) = struct
       [ "dune" ; "clean" ]
       Messages.do_a_clean
 
-  (* let install_prelude () =
-   *   run_it
-   *     [ "opam" ; "install" ; "prelude" ]
-   *     "installing prelude" *)
-
   let create_locked_file name =
     let full_command =
       [ "opam" ; "lock" ; locked_path name ]
@@ -106,23 +100,9 @@ module SmallCommands (S : SETTINGS) = struct
       full_command
       (Messages.create_locked_file name)
 
-  let create_sandboxed_switch () =
-    let command = "opam" in
-    let subcommand = [ "switch" ; "create" ] in
-    let path = "." in
-    let switches = [ "--deps-only" ; "--locked" ; "--yes" ] in
-    let options =
-      [ "--repos" ;
-        "dldc=https://dldc.lib.uchicago.edu/opam,default" ]
-    in
-    let full_command =
-      command :: subcommand @ path :: switches @ options
-    in
-    run_it
-      full_command
-      Messages.create_sandboxed_switch
-
   let done_msg () = print Messages.done_msg
+
+  let sandbox_msg name = print (Messages.sandbox_msg name)
 end
 
 module BigPicture (S : SETTINGS) = struct
@@ -142,9 +122,9 @@ module BigPicture (S : SETTINGS) = struct
     create_gnumakefile () ;
     do_a_build () ;
     create_locked_file name ;
-    create_sandboxed_switch () ;
     do_a_clean () ;
-    done_msg ()
+    done_msg () ;
+    sandbox_msg name
 
   let the_whole_thing name =
     mk_project_root name ;
