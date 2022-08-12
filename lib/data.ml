@@ -32,13 +32,78 @@ module Constants = struct
  (libraries prelude mattlude lib))
 |} project_name project_name
 
+  let locked_file project_name = sprintf {|
+opam-version: "2.0"
+name: "%s"
+version: "~dev"
+depends: [
+  "base-bigarray" {= "base"}
+  "base-bytes" {= "base"}
+  "base-threads" {= "base"}
+  "base-unix" {= "base"}
+  "bigarray-compat" {= "1.1.0"}
+  "biniou" {= "1.2.1"}
+  "camomile" {= "1.0.2"}
+  "charInfo_width" {= "1.1.0"}
+  "cmdliner" {= "1.1.1"}
+  "cppo" {= "1.6.8"}
+  "csexp" {= "1.5.1"}
+  "dot-merlin-reader" {= "4.2"}
+  "dune" {= "3.0.3"}
+  "dune-configurator" {= "3.0.3"}
+  "easy-format" {= "1.3.2"}
+  "lambda-term" {= "3.2.0"}
+  "lwt" {= "5.5.0"}
+  "lwt_log" {= "1.1.1"}
+  "lwt_react" {= "1.1.5"}
+  "merlin" {= "4.5-413"}
+  "mew" {= "0.1.0"}
+  "mew_vi" {= "0.5.0"}
+  "mmap" {= "1.2.0"}
+  "ocaml" {= "4.13.0"}
+  "ocaml-base-compiler" {= "4.13.0"}
+  "ocaml-config" {= "2"}
+  "ocaml-options-vanilla" {= "1"}
+  "ocamlbuild" {= "0.14.1"}
+  "ocamlfind" {= "1.9.3"}
+  "ocp-indent" {= "1.8.1"}
+  "ocp-index" {= "1.3.3"}
+  "ocplib-endian" {= "1.2"}
+  "prelude" {= "~dev"}
+  "re" {= "1.10.3"}
+  "react" {= "1.2.2"}
+  "result" {= "1.5"}
+  "seq" {= "base"}
+  "topkg" {= "1.0.5"}
+  "trie" {= "1.0.0"}
+  "utop" {= "2.9.1"}
+  "yojson" {= "1.7.0"}
+  "zed" {= "3.1.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+|} project_name
+
   module MakeFile = struct
     let top name = ["# " ^ name ^ "                   -*- makefile-gmake -*-"
                    ; "# GNUmakefile"
                    ; ""
                    ; "DISPLAY = short"
                    ; "DUNE = opam exec -- dune $1 --display $(DISPLAY)"
-                   ; "OPAM = opam switch create . --deps-only --locked --repos dldc=https://dldc.lib.uchicago.edu/opam,default --yes"
+                   ; "SANDBOX = opam switch create . --deps-only --locked --repos dldc=https://dldc.lib.uchicago.edu/opam,default --yes"
+                   ; "LOCKED = opam lock ./" ^ name ^ ".opam"
                    ]
 
     let dune_rules = 
@@ -76,7 +141,9 @@ module Constants = struct
         [
           "";
           targets ^ deps;
-          "\t$(call OPAM)";
+          "\t$(call SANDBOX)";
+          "\topam install . --deps-only --locked";
+          "\t$(call LOCKED)";
           "PHONY: " ^ targets;
         ] |> join ~sep:"\n"
       in
