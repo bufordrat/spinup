@@ -76,10 +76,10 @@ module SmallCommands (S : SETTINGS) = struct
       (dune_project name)
       Messages.create_dune_project
 
-  let create_gnumakefile () =
+  let create_gnumakefile name =
     write_it
       gnumakefile_path
-      gnumakefile
+      (gnumakefile name)
       Messages.create_gnumakefile
 
   let do_a_build () =
@@ -119,7 +119,7 @@ module BigPicture (S : SETTINGS) = struct
     create_exe name ;
     create_exe_dune name ;
     create_dune_project name ;
-    create_gnumakefile () ;
+    create_gnumakefile name ;
     do_a_build () ;
     create_locked_file name ;
     do_a_clean () ;

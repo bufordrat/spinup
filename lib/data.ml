@@ -32,33 +32,60 @@ module Constants = struct
  (libraries prelude mattlude lib))
 |} project_name project_name
 
-  let gnumakefile =
-    let top = ["# spinup                                 -*- makefile-gmake -*-"
-              ; "# GNUmakefile"
-              ; ""
-              ; "DISPLAY = short"
-              ; "DUNE = opam exec -- dune $1 --display $(DISPLAY)"
-              ] in
-    let rules = [
-        "build all"                , None,         "build @@default";
-        "test tests runtest check" , None,         "runtest";
-        "install"                  , Some "build", "install";
-        "doc"                      , None,         "build @doc";
-        "clean"                    , None,         "clean";
-      ] in
-    let each (targets, deps, dune) =
-      let deps' = match deps with
-        | None      -> "::"
-        | Some deps -> ": " ^ deps
+  module MakeFile = struct
+    let top name = ["# " ^ name ^ "                   -*- makefile-gmake -*-"
+                   ; "# GNUmakefile"
+                   ; ""
+                   ; "DISPLAY = short"
+                   ; "DUNE = opam exec -- dune $1 --display $(DISPLAY)"
+                   ; "OPAM = opam switch create . --deps-only --locked --repos dldc=https://dldc.lib.uchicago.edu/opam,default --yes"
+                   ]
+
+    let dune_rules = 
+      let rules = [
+          "build all"                , None,         "build @@default";
+          "install"                  , Some "build", "install";
+          "doc"                      , None,         "build @doc";
+          "clean"                    , None,         "clean";
+        ]
       in
-      [
-        "";
-        targets ^ deps';
-        sprintf "\t$(call DUNE, %s)" dune;
-        ".PHONY: " ^ targets
-      ] |> join ~sep:"\n"
-    in
-    top @ map each rules @ [""] |> join ~sep:"\n"
+      let each (targets, deps, dune) =
+        let deps' = match deps with
+          | None      -> "::"
+          | Some deps -> ": " ^ deps
+        in
+        [
+          "";
+          targets ^ deps';
+          sprintf "\t$(call DUNE, %s)" dune;
+          ".PHONY: " ^ targets
+        ] |> join ~sep:"\n"
+      in
+      map each rules
+
+    let opam_rules =
+      let rules = [
+          "sandbox", None
+        ]
+      in
+      let each (targets, deps) =
+        let deps = match deps with
+          | None -> "::"
+          | Some deps -> ": " ^ deps
+        in
+        [
+          "";
+          targets ^ deps;
+          "\t$(call OPAM)";
+          "PHONY: " ^ targets;
+        ] |> join ~sep:"\n"
+      in
+      map each rules @ [""]
+
+    let gnumakefile name =
+      top name @ dune_rules @ opam_rules |> join ~sep:"\n"
+  end
+  let gnumakefile = MakeFile.gnumakefile
 
 end
 include Constants
