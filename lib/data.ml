@@ -212,15 +212,8 @@ module Messages = struct
   let done_msg = "DONE!"
 
   let sandbox_msg name =
-    "\nto create a sandboxed opam switch, you can either run this \
-     big opam command inside the "
-    ^ name
-    ^ "/ directory:\n\
-       \n\
-       \   $ opam switch create . --deps-only --locked --repos \
-       dldc=https://dldc.lib.uchicago.edu/opam,default --yes\n\
-       \n\
-       or run this make command inside the "
+    "\nto create a sandboxed opam switch, you can run this \
+     command inside the "
     ^ name
     ^ "/ directory:\n\
        \n\
