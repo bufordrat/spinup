@@ -94,15 +94,9 @@ module SmallCommands (S : SETTINGS) = struct
 
   let create_locked_file name =
     write_it
-      ("./" ^name ^ ".locked")
+      ("./" ^name ^ ".opam.locked")
       (locked_file name)
       (Messages.create_locked_file name)
-    (* let full_command =
-     *   [ "opam" ; "lock" ; locked_path name ]
-     * in
-     * run_it
-     *   full_command
-     *   (Messages.create_locked_file name) *)
 
   let done_msg () = print Messages.done_msg
 
@@ -125,7 +119,7 @@ module BigPicture (S : SETTINGS) = struct
     create_dune_project name ;
     create_gnumakefile name ;
     do_a_build () ;
-    (* create_locked_file name ; *)
+    create_locked_file name ;
     do_a_clean () ;
     done_msg () ;
     sandbox_msg name
