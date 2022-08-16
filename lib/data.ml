@@ -1,7 +1,7 @@
 open Prelude
 
 module Constants = struct
-  let dune_project project_name = sprintf {|(lang dune 3.0)
+  let dune_project name = sprintf {|(lang dune 3.0)
 (generate_opam_files true)
 (package
  (name %s)
@@ -19,7 +19,7 @@ module Constants = struct
   utop
   ocp-index
   merlin))
-|} project_name
+|} name
 
   let lib =
     "let message = \"GOODBYE CRUEL WORLD (is underrated)\""
@@ -29,14 +29,13 @@ module Constants = struct
  (libraries prelude mattlude))
 |}
 
-  let exe =
-    "let () = print_endline Lib.message"
+  let exe = "let () = print_endline Lib.message"
 
-  let exe_dune project_name = sprintf {|(executable
+  let exe_dune name = sprintf {|(executable
  (public_name %s)
  (name %s)
  (libraries prelude mattlude lib))
-|} project_name project_name
+|} name name
 
   module MakeFile = struct
     let top name = ["# " ^ name ^ "                   -*- makefile-gmake -*-"
@@ -124,9 +123,6 @@ module Messages = struct
   let create_exe_dune =
     "creating executable dune config..."
 
-  let create_use_output =
-    "creating use-output for loading this project into the toplevel..."
-
   let create_ocamlinit =
     "creating minimal .ocamlinit file..."
 
@@ -165,8 +161,6 @@ module Paths = struct
   let lib_dune_path = "lib/dune"
 
   let dune_path = "dune"
-
-  let use_output_path = "use-output.top"
 
   let ocamlinit_path = ".ocamlinit"
 
