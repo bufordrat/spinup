@@ -38,72 +38,72 @@ module Constants = struct
  (libraries prelude mattlude lib))
 |} project_name project_name
 
-  let locked_file project_name = sprintf {|opam-version: "2.0"
-name: "%s"
-version: "~dev"
-depends: [
-  "base-bigarray" {= "base"}
-  "base-bytes" {= "base"}
-  "base-threads" {= "base"}
-  "base-unix" {= "base"}
-  "cmdliner" {= "1.1.1"}
-  "cppo" {= "1.6.9"}
-  "csexp" {= "1.5.1"}
-  "dot-merlin-reader" {= "4.5"}
-  "dune" {= "3.4.1"}
-  "dune-configurator" {= "3.4.1"}
-  "lambda-term" {= "3.3.1"}
-  "logs" {= "0.7.0"}
-  "lwt" {= "5.6.1"}
-  "lwt_react" {= "1.2.0"}
-  "mattlude" {= "~dev"}
-  "merlin" {= "4.6-413"}
-  "mew" {= "0.1.0"}
-  "mew_vi" {= "0.5.0"}
-  "ocaml" {= "4.13.1"}
-  "ocaml-config" {= "2"}
-  "ocaml-system" {= "4.13.1"}
-  "ocamlbuild" {= "0.14.1"}
-  "ocamlfind" {= "1.9.5"}
-  "ocp-indent" {= "1.8.1"}
-  "ocp-index" {= "1.3.3"}
-  "ocplib-endian" {= "1.2"}
-  "prelude" {= "~dev"}
-  "re" {= "1.10.4"}
-  "react" {= "1.2.2"}
-  "result" {= "1.5"}
-  "seq" {= "base"}
-  "topkg" {= "1.0.5"}
-  "trie" {= "1.0.0"}
-  "uchar" {= "0.0.2"}
-  "utop" {= "2.10.0"}
-  "uucp" {= "14.0.0"}
-  "uuseg" {= "14.0.0"}
-  "uutf" {= "1.0.3"}
-  "yojson" {= "2.0.2"}
-  "zed" {= "3.2.0"}
-]
-build: [
-  ["dune" "subst"] {dev}
-  [
-    "dune"
-    "build"
-    "-p"
-    name
-    "-j"
-    jobs
-    "@install"
-    "@runtest" {with-test}
-    "@doc" {with-doc}
-  ]
-]
-synopsis: "Insert project synopsis, which is supposedly different, here"
-description: "Insert project description here."
-maintainer: "Your Name <youremail@gmail.com>"
-authors: "Your Name <youremail@gmail.com>"
-homepage: "https://your.website.here"
-bug-reports: "https://your.website.here"
-|} project_name
+(*   let locked_file project_name = sprintf {|opam-version: "2.0"
+ * name: "%s"
+ * version: "~dev"
+ * depends: [
+ *   "base-bigarray" {= "base"}
+ *   "base-bytes" {= "base"}
+ *   "base-threads" {= "base"}
+ *   "base-unix" {= "base"}
+ *   "cmdliner" {= "1.1.1"}
+ *   "cppo" {= "1.6.9"}
+ *   "csexp" {= "1.5.1"}
+ *   "dot-merlin-reader" {= "4.5"}
+ *   "dune" {= "3.4.1"}
+ *   "dune-configurator" {= "3.4.1"}
+ *   "lambda-term" {= "3.3.1"}
+ *   "logs" {= "0.7.0"}
+ *   "lwt" {= "5.6.1"}
+ *   "lwt_react" {= "1.2.0"}
+ *   "mattlude" {= "~dev"}
+ *   "merlin" {= "4.6-413"}
+ *   "mew" {= "0.1.0"}
+ *   "mew_vi" {= "0.5.0"}
+ *   "ocaml" {= "4.13.1"}
+ *   "ocaml-config" {= "2"}
+ *   "ocaml-system" {= "4.13.1"}
+ *   "ocamlbuild" {= "0.14.1"}
+ *   "ocamlfind" {= "1.9.5"}
+ *   "ocp-indent" {= "1.8.1"}
+ *   "ocp-index" {= "1.3.3"}
+ *   "ocplib-endian" {= "1.2"}
+ *   "prelude" {= "~dev"}
+ *   "re" {= "1.10.4"}
+ *   "react" {= "1.2.2"}
+ *   "result" {= "1.5"}
+ *   "seq" {= "base"}
+ *   "topkg" {= "1.0.5"}
+ *   "trie" {= "1.0.0"}
+ *   "uchar" {= "0.0.2"}
+ *   "utop" {= "2.10.0"}
+ *   "uucp" {= "14.0.0"}
+ *   "uuseg" {= "14.0.0"}
+ *   "uutf" {= "1.0.3"}
+ *   "yojson" {= "2.0.2"}
+ *   "zed" {= "3.2.0"}
+ * ]
+ * build: [
+ *   ["dune" "subst"] {dev}
+ *   [
+ *     "dune"
+ *     "build"
+ *     "-p"
+ *     name
+ *     "-j"
+ *     jobs
+ *     "@install"
+ *     "@runtest" {with-test}
+ *     "@doc" {with-doc}
+ *   ]
+ * ]
+ * synopsis: "Insert project synopsis, which is supposedly different, here"
+ * description: "Insert project description here."
+ * maintainer: "Your Name <youremail@gmail.com>"
+ * authors: "Your Name <youremail@gmail.com>"
+ * homepage: "https://your.website.here"
+ * bug-reports: "https://your.website.here"
+ * |} project_name *)
 
   module MakeFile = struct
     let top name = ["# " ^ name ^ "                   -*- makefile-gmake -*-"
@@ -111,8 +111,9 @@ bug-reports: "https://your.website.here"
                    ; ""
                    ; "DISPLAY = short"
                    ; "DUNE = opam exec -- dune $1 --display $(DISPLAY)"
-                   ; "SANDBOX = opam switch create . --deps-only --locked --repos dldc=https://dldc.lib.uchicago.edu/opam,default --yes"
-                   ; "LOCKED = opam lock ./" ^ name ^ ".opam"
+                   ; "SANDBOX = opam switch create . --repos dldc=https://dldc.lib.uchicago.edu/opam,default --yes"
+                   ; "REPO = opam repository add dldc https://dldc.lib.uchicago.edu/opam"
+                   ; "DEPENDENCIES = opam install . --deps-only -- yes"
                    ]
 
     let dune_rules = 
@@ -139,24 +140,26 @@ bug-reports: "https://your.website.here"
 
     let opam_rules =
       let rules = [
-          "sandbox", None
+          "sandbox", ["\t$(call SANDBOX)"], None ;
+          "dependencies", ["\t$(call REPO)"; "\t$(call DEPENDENCIES)"], None ;
         ]
       in
-      let each (targets, deps) =
+      let each_script cmds =
+        String.join ~sep:"\n" cmds
+      in
+      let each_rule (targets, cmds, deps) =
         let deps = match deps with
           | None -> "::"
           | Some deps -> ": " ^ deps
         in
         [
           "";
-          targets ^ deps;
-          "\t$(call SANDBOX)";
-          "\topam install . --deps-only --locked";
-          "\t$(call LOCKED)";
-          "PHONY: " ^ targets;
+          targets ^ deps ;
+          each_script cmds ;
+          "PHONY: " ^ targets ;
         ] |> join ~sep:"\n"
       in
-      map each rules @ [""]
+      map each_rule rules @ [""]
 
     let gnumakefile name =
       top name @ dune_rules @ opam_rules |> join ~sep:"\n"
