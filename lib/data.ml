@@ -27,6 +27,10 @@ module Constants = struct
   let lib_dune = {|(library
  (name lib)
  (libraries prelude mattlude))
+
+(env
+  (dev
+    (flags (:standard -warn-error -A))))
 |}
 
   let exe = "let () = print_endline Lib.message"
@@ -35,6 +39,10 @@ module Constants = struct
  (public_name %s)
  (name %s)
  (libraries prelude mattlude lib))
+
+(env
+  (dev
+    (flags (:standard -warn-error -A))))
 |} name name
 
   module MakeFile = struct
@@ -44,9 +52,9 @@ module Constants = struct
                    ; "DISPLAY = short"
                    ; "DUNE = opam exec -- dune $1 --display $(DISPLAY)"
                    ]
-    let sandbox = "\topam switch create . --deps-only --repos dldc=https://dldc.lib.uchicago.edu/opam,default --yes"
-    let repo = "\topam repository add dldc https://dldc.lib.uchicago.edu/opam"
-    let deps = "\topam install . --deps-only --yes"
+    let sandbox = "opam switch create . --deps-only --repos dldc=https://dldc.lib.uchicago.edu/opam,default --yes"
+    let repo = "opam repository add dldc https://dldc.lib.uchicago.edu/opam"
+    let deps = "opam install . --deps-only --yes"
 
     let dune_rules = 
       let rules = [
@@ -76,8 +84,9 @@ module Constants = struct
           "deps", [repo; deps], None ;
         ]
       in
+      let tab s = "\t" ^ s in
       let each_script cmds =
-        String.join ~sep:"\n" cmds
+        String.join ~sep:"\n" (map tab cmds)
       in
       let each_rule (targets, cmds, deps) =
         let deps = match deps with
