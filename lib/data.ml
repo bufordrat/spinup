@@ -13,12 +13,13 @@ module Constants = struct
  (bug_reports "https://your.website.here")
  (depends
   (ocaml (>= 4.13.0))
-  dune
-  prelude
-  mattlude
-  utop
-  ocp-index
-  merlin))
+   dune
+   camlp-streams
+   prelude
+   mattlude
+   utop
+   ocp-index
+   merlin))
 |} name
 
   let lib =
@@ -38,7 +39,8 @@ module Constants = struct
   let exe_dune name = sprintf {|(executable
  (public_name %s)
  (name %s)
- (libraries prelude mattlude lib))
+ (promote (until-clean))
+ (libraries camlp-streams prelude mattlude lib))
 
 (env
   (dev
