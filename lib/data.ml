@@ -12,7 +12,7 @@ module Constants = struct
  (homepage "https://your.website.here")
  (bug_reports "https://your.website.here")
  (depends
-  (ocaml (>= 4.13.0))
+  (ocaml (>= 4.14.0))
    dune
    camlp-streams
    prelude
@@ -29,9 +29,9 @@ module Constants = struct
  (name lib)
  (libraries prelude mattlude))
 
-(env
-  (dev
-    (flags (:standard -warn-error -A))))
+ (env
+   (dev
+     (flags (:standard -warn-error -A))))
 |}
 
   let exe = "let () = print_endline Lib.message"
@@ -42,9 +42,9 @@ module Constants = struct
  (promote (until-clean))
  (libraries camlp-streams prelude mattlude lib))
 
-(env
-  (dev
-    (flags (:standard -warn-error -A))))
+ (env
+   (dev
+     (flags (:standard -warn-error -A))))
 |} name name
 
   module MakeFile = struct
