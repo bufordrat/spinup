@@ -14,8 +14,7 @@ module Main = struct
   let main () =
     let open Io.BigPicture (Verbosity) in
     let open Errors in
-    let open Mattlude.Endofunctors in
-    let module R = Result.Make (E) in
+    let module R = Etude.Result.Make (E) in
     let open R in
     let project_name =
       gimme_the_arg argv
