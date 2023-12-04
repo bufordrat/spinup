@@ -16,7 +16,7 @@ module Constants = struct
     dune
     camlp-streams
     prelude
-    mattlude
+    etude
     utop
     ocp-index
     merlin))
@@ -27,7 +27,7 @@ module Constants = struct
 
   let lib_dune = {|(library
  (name lib)
- (libraries prelude mattlude))
+ (libraries prelude etude))
 
  (env
    (dev
@@ -40,7 +40,7 @@ module Constants = struct
  (public_name %s)
  (name %s)
  (promote (until-clean))
- (libraries camlp-streams prelude mattlude lib))
+ (libraries camlp-streams prelude etude lib))
 
  (env
    (dev
