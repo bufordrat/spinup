@@ -1,7 +1,5 @@
-open Prelude
-
 module Constants = struct
-  let dune_project name = sprintf {|(lang dune 3.0)
+  let dune_project name = Prelude.sprintf {|(lang dune 3.0)
  (generate_opam_files true)
  (package
   (name %s)
@@ -36,7 +34,7 @@ module Constants = struct
 
   let exe = "let () = print_endline Lib.message"
 
-  let exe_dune name = sprintf {|(executable
+  let exe_dune name = Prelude.sprintf {|(executable
  (public_name %s)
  (name %s)
  (promote (until-clean))
@@ -46,6 +44,9 @@ module Constants = struct
    (dev
      (flags (:standard -warn-error -A))))
 |} name name
+
+  (* let exe_dune_trac () =
+   *   Prelude.readfile  *)
 
   module MakeFile = struct
     let top name = ["# " ^ name ^ "                   -*- makefile-gmake -*-"
@@ -66,6 +67,7 @@ module Constants = struct
           "clean"                    , None,         "clean";
         ]
       in
+      let open Prelude in
       let each (targets, deps, dune) =
         let deps' = match deps with
           | None      -> "::"
@@ -81,6 +83,7 @@ module Constants = struct
       map each rules
 
     let opam_rules =
+      let open Prelude in
       let rules = [
           "sandbox", [sandbox], None ;
           "deps", [repo; deps], None ;
@@ -105,7 +108,7 @@ module Constants = struct
       map each_rule rules @ [""]
 
     let gnumakefile name =
-      top name @ dune_rules @ opam_rules |> join ~sep:"\n"
+      top name @ dune_rules @ opam_rules |> Prelude.join ~sep:"\n"
   end
   let gnumakefile = MakeFile.gnumakefile
 
@@ -155,7 +158,7 @@ module Messages = struct
   let done_msg = "DONE!"
 
   let sandbox_msg name =
-    sprintf "\nto install project dependencies into the current opam \
+    Prelude.sprintf "\nto install project dependencies into the current opam \
              switch, run this command inside the %s/ directory:\n\
              \n\
              \  $ make deps\n\
