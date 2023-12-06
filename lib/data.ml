@@ -45,9 +45,6 @@ module Constants = struct
      (flags (:standard -warn-error -A))))
 |} name name
 
-  (* let exe_dune_trac () =
-   *   Prelude.readfile  *)
-
   module MakeFile = struct
     let top name = ["# " ^ name ^ "                   -*- makefile-gmake -*-"
                    ; "# GNUmakefile"

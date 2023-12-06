@@ -1,4 +1,3 @@
 (library
  (name lib)
- (modules lib io errors data)
- (libraries prelude etude))
+ (libraries prelude etude tint))
