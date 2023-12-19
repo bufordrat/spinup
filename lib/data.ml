@@ -32,7 +32,7 @@ module Validated = struct
                  data : string ;
                  vmessage : string }
 
-  type 'a t = (valid, string) result
+  type t = (valid, string) result
 
   let debug_string valid =
     let open Prelude in
