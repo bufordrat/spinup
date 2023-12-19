@@ -4,10 +4,3 @@
  (modules spinup)
  (promote (until-clean))
  (libraries prelude etude lib))
-
-(executable
- (public_name template)
- (name template)
- (modules template)
- (promote (until-clean))
- (libraries prelude etude lib tint))

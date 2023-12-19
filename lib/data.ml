@@ -45,6 +45,11 @@ module Constants = struct
      (flags (:standard -warn-error -A))))
 |} name name
 
+  let exe_dune' name =
+    let context = [ "pname", name ] in
+    let path = "../templates/exe_dune" in
+    Template.macro_expand ~syntax:"#[,]" ~context (Prelude.readfile path)
+
   module MakeFile = struct
     let top name = ["# " ^ name ^ "                   -*- makefile-gmake -*-"
                    ; "# GNUmakefile"
