@@ -14,4 +14,24 @@ let macro_expand ?syntax ~context tint =
       (Tint.Eval.eval state tint)
   in processed_string
 
+let process_template_path path template pname =
+  let context = [ "pname", pname] in
+  let fullpath = path ^ "/" ^ template in
+  macro_expand ~syntax:"#[,]" ~context (Prelude.readfile fullpath)
 
+(* let path = "../templates" *)
+
+let path =
+  (* let open Prelude in *)
+  "/home/teichman/.config/spinup/templates"
+
+let process_template_path' path template context =
+  (* let context = [ "pname", project_name ] in *)
+  let fullpath = path ^ "/" ^ template in
+  macro_expand ~syntax:"#[,]" ~context (Prelude.readfile fullpath)
+
+let process_template' ~template ~context =
+  process_template_path path template context
+
+let process_template ~template ~pname =
+  process_template_path path template pname

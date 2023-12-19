@@ -1,119 +1,101 @@
+let get_ok = Stdlib.Result.get_ok
+
+module Unvalidated = struct
+  type t = { filename : string ;
+             input_path : string ;
+             output_path : string ;
+             context : (string * string) list ;
+             umessage : string ;
+           }
+
+  let debug_string t =
+    let open Prelude in
+    let context_string context =
+      let each_keypair (k,v) = "    " ^ k ^ ": " ^ v in
+      String.join ~sep:"\n" (List.map each_keypair context)
+    in
+    let fields = [ "Filename: ", t.filename ;
+                   "Input path: ", t.input_path ;
+                   "Output path: ", t.output_path ;
+                   "Context: ", context_string t.context ;
+                   "Message: ", t.umessage ; ] in
+    let each_field (name, content) = name ^ content in
+    let field_string =
+      String.join ~sep:"\n" (List.map each_field fields)
+    in "Unvalidated!\n" ^ field_string
+
+  let debug_print t = Prelude.print (debug_string t)
+end
+  
+module Validated = struct
+  type valid = { write_path : string ;
+                 data : string ;
+                 vmessage : string }
+
+  type 'a t = (valid, string) result
+
+  let debug_string valid =
+    let open Prelude in
+    let fields = [ "Write path: ", valid.write_path ;
+                   "Data : ", String.take 30 valid.data ^ "..." ;
+                   "Message: ", valid.vmessage ; ] in
+    let each_field (name, content) = name ^ content in
+    let field_string =
+      String.join ~sep:"\n" (List.map each_field fields)
+    in "Validated!\n" ^ field_string
+
+  let debug_print = function
+    | Ok valid -> Prelude.print (debug_string valid)
+    | Error msg -> Prelude.print ("Error!\n" ^ msg)
+end
+
+module Templates = struct
+  let ipath = Template.path
+
+  let dune_project name =
+    let open Unvalidated in 
+    { filename = "dune-project" ;
+      input_path = ipath ;
+      output_path = "./" ;
+      context = [ "pname", name ] ;
+      umessage = "creating dune-project file..." ; }
+end
+
+
 module Constants = struct
-  let dune_project name = Prelude.sprintf {|(lang dune 3.0)
- (generate_opam_files true)
- (package
-  (name %s)
-  (description "Insert project description here.")
-  (synopsis "Insert project synopsis, which is supposedly different, here")
-  (maintainers "Your Name <youremail@gmail.com>")
-  (authors "Your Name <youremail@gmail.com>")
-  (homepage "https://your.website.here")
-  (bug_reports "https://your.website.here")
-  (depends
-   (ocaml (>= 4.14.0))
-    dune
-    camlp-streams
-    prelude
-    etude
-    utop
-    ocp-index
-    merlin))
-|} name
+  let process_template = Template.process_template
+  
+  let dune_project name =
+    process_template
+      ~template:"dune_project"
+      ~pname:name
+    |> get_ok
 
-  let lib =
-    "let message = \"GOODBYE CRUEL WORLD (is underrated)\""
+  let lib = process_template
+              ~template:"lib"
+              ~pname:""
+            |> get_ok
 
-  let lib_dune = {|(library
- (name lib)
- (libraries prelude etude))
+  let lib_dune = process_template
+                   ~template:"lib_dune"
+                   ~pname:""
+                 |> get_ok
 
- (env
-   (dev
-     (flags (:standard -warn-error -A))))
-|}
+  let exe = process_template
+              ~template:"exe"
+              ~pname:""
+            |> get_ok
 
-  let exe = "let () = print_endline Lib.message"
+  let exe_dune name = process_template
+                        ~template:"exe_dune"
+                        ~pname:name
+                      |> get_ok
 
-  let exe_dune name = Prelude.sprintf {|(executable
- (public_name %s)
- (name %s)
- (promote (until-clean))
- (libraries camlp-streams prelude etude lib))
-
- (env
-   (dev
-     (flags (:standard -warn-error -A))))
-|} name name
-
-  let exe_dune' name =
-    let context = [ "pname", name ] in
-    let path = "../templates/exe_dune" in
-    Template.macro_expand ~syntax:"#[,]" ~context (Prelude.readfile path)
-
-  module MakeFile = struct
-    let top name = ["# " ^ name ^ "                   -*- makefile-gmake -*-"
-                   ; "# GNUmakefile"
-                   ; ""
-                   ; "DISPLAY = short"
-                   ; "DUNE = opam exec -- dune $1 --display $(DISPLAY)"
-                   ]
-    let sandbox = "opam switch create . --deps-only --repos dldc=https://dldc.lib.uchicago.edu/opam,default --yes"
-    let repo = "opam repository add dldc https://dldc.lib.uchicago.edu/opam"
-    let deps = "opam install . --deps-only --yes"
-
-    let dune_rules = 
-      let rules = [
-          "build all"                , None,         "build @@default";
-          "install"                  , Some "build", "install";
-          "doc"                      , None,         "build @doc";
-          "clean"                    , None,         "clean";
-        ]
-      in
-      let open Prelude in
-      let each (targets, deps, dune) =
-        let deps' = match deps with
-          | None      -> "::"
-          | Some deps -> ": " ^ deps
-        in
-        [
-          "";
-          targets ^ deps';
-          sprintf "\t$(call DUNE, %s)" dune;
-          ".PHONY: " ^ targets
-        ] |> join ~sep:"\n"
-      in
-      map each rules
-
-    let opam_rules =
-      let open Prelude in
-      let rules = [
-          "sandbox", [sandbox], None ;
-          "deps", [repo; deps], None ;
-        ]
-      in
-      let tab s = "\t" ^ s in
-      let each_script cmds =
-        String.join ~sep:"\n" (map tab cmds)
-      in
-      let each_rule (targets, cmds, deps) =
-        let deps = match deps with
-          | None -> "::"
-          | Some deps -> ": " ^ deps
-        in
-        [
-          "";
-          targets ^ deps ;
-          each_script cmds ;
-          "PHONY: " ^ targets ;
-        ] |> join ~sep:"\n"
-      in
-      map each_rule rules @ [""]
-
-    let gnumakefile name =
-      top name @ dune_rules @ opam_rules |> Prelude.join ~sep:"\n"
-  end
-  let gnumakefile = MakeFile.gnumakefile
-
+  let gnumakefile project_name =
+    process_template
+      ~template:"GNUMakefile"
+      ~pname:project_name
+    |> get_ok
 end
 include Constants
 
@@ -151,8 +133,8 @@ module Messages = struct
   let do_a_build =
     "doing initial `dune build` to generate .opam file..."
 
-  let create_locked_file name =
-    "creating " ^ name ^ ".opam.locked file for sandboxed opam switches..."
+  (* let create_locked_file name =
+   *   "creating " ^ name ^ ".opam.locked file for sandboxed opam switches..." *)
 
   let do_a_clean =
     "doing a `dune clean` to remove compiler detritus..."
@@ -178,7 +160,7 @@ module Paths = struct
 
   let dune_path = "dune"
 
-  let ocamlinit_path = ".ocamlinit"
+  (* let ocamlinit_path = ".ocamlinit" *)
 
   let dune_project_path = "dune-project"
 
