@@ -17,7 +17,7 @@ module Unvalidated = struct
     let fields = [ "Filename: ", t.filename ;
                    "Input path: ", t.input_path ;
                    "Output path: ", t.output_path ;
-                   "Context: ", context_string t.context ;
+                   "Context: ", "\n" ^ context_string t.context ;
                    "Message: ", t.umessage ; ] in
     let each_field (name, content) = name ^ content in
     let field_string =
