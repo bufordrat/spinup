@@ -47,6 +47,14 @@ module Validated = struct
   let debug_print = function
     | Ok valid -> Prelude.print (debug_string valid)
     | Error msg -> Prelude.print ("Error!\n" ^ msg)
+
+  let validate unv =
+    let open Unvalidated in
+    let context = unv.context in
+    let fullpath = unv.input_path ^ "/" ^ unv.filename in
+    (* finish this later *)
+    assert false
+                
 end
 
 module Templates = struct
@@ -60,7 +68,6 @@ module Templates = struct
       context = [ "pname", name ] ;
       umessage = "creating dune-project file..." ; }
 end
-
 
 module Constants = struct
   let process_template = Template.process_template
