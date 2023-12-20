@@ -1,6 +1,6 @@
 let get_ok = Stdlib.Result.get_ok
 
-module Unvalidated = struct
+module Input = struct
   type t = { filename : string ;
              input_path : string ;
              output_path : string ;
@@ -27,7 +27,7 @@ module Unvalidated = struct
   let debug_print t = Prelude.print (debug_string t)
 end
   
-module Validated = struct
+module Output = struct
   type valid = { write_path : string ;
                  data : string ;
                  vmessage : string }
@@ -37,7 +37,7 @@ module Validated = struct
   let debug_string valid =
     let open Prelude in
     let fields = [ "Write path: ", valid.write_path ;
-                   "Data : ", String.take 30 valid.data ^ "..." ;
+                   "Data: ", String.take 50 valid.data ^ "..." ;
                    "Message: ", valid.vmessage ; ] in
     let each_field (name, content) = name ^ content in
     let field_string =
@@ -49,19 +49,22 @@ module Validated = struct
     | Error msg -> Prelude.print ("Error!\n" ^ msg)
 
   let validate unv =
-    let open Unvalidated in
+    let open Input in
+    let open Etude.Result.Make (String) in
     let context = unv.context in
-    let fullpath = unv.input_path ^ "/" ^ unv.filename in
-    (* finish this later *)
-    assert false
-                
+    let write_path = unv.input_path ^ "/" ^ unv.filename in
+    let vmessage = unv.umessage in
+    let+ data = Template.process_template'
+                  ~template:unv.filename
+                  ~context:context
+    in { write_path ; data ; vmessage }
 end
 
 module Templates = struct
-  let ipath = Template.path
+  let ipath = Template.Path.path
 
   let dune_project name =
-    let open Unvalidated in 
+    let open Input in 
     { filename = "dune-project" ;
       input_path = ipath ;
       output_path = "./" ;

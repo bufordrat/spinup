@@ -1,3 +1,5 @@
+(data_only_dirs templates)
+
 (executable
  (public_name spinup)
  (name spinup)
