@@ -1,7 +1,8 @@
 let get_ok = Stdlib.Result.get_ok
 
 module Input = struct
-  type t = { filename : string ;
+  type t = { input_filename : string ;
+             output_filename : string ;
              input_path : string ;
              output_path : string ;
              context : (string * string) list ;
@@ -14,7 +15,8 @@ module Input = struct
       let each_keypair (k,v) = "    " ^ k ^ ": " ^ v in
       String.join ~sep:"\n" (List.map each_keypair context)
     in
-    let fields = [ "Filename: ", t.filename ;
+    let fields = [ "Input filename: ", t.input_filename ;
+                   "Output filename: ", t.output_filename ;
                    "Input path: ", t.input_path ;
                    "Output path: ", t.output_path ;
                    "Context: ", "\n" ^ context_string t.context ;
@@ -52,10 +54,11 @@ module Output = struct
     let open Input in
     let open Etude.Result.Make (String) in
     let context = unv.context in
-    let write_path = unv.input_path ^ "/" ^ unv.filename in
+    let write_path =
+      unv.output_path ^ "/" ^ unv.output_filename in
     let vmessage = unv.umessage in
     let+ data = Template.process_template'
-                  ~template:unv.filename
+                  ~template:unv.input_filename
                   ~context:context
     in { write_path ; data ; vmessage }
 end
@@ -65,11 +68,30 @@ module Templates = struct
 
   let dune_project name =
     let open Input in 
-    { filename = "dune-project" ;
+    { input_filename = "dune-project" ;
+      output_filename = "dune-project" ;
       input_path = ipath ;
       output_path = "./" ;
       context = [ "pname", name ] ;
       umessage = "creating dune-project file..." ; }
+
+  let lib () =
+    let open Input in
+    { input_filename = "lib.ml" ;
+      output_filename = "lib.ml" ;
+      input_path = ipath ;
+      output_path = "./lib" ;
+      context = [] ;
+      umessage = "creating library..." ; }
+
+  let lib_dune () =
+    let open Input in
+    { input_filename = "lib_dune" ;
+      output_filename = "dune" ;
+      input_path = ipath ;
+      output_path = "./lib" ;
+      context = [] ;
+      umessage = "creating library dune config..." ; }
 end
 
 module Constants = struct
@@ -82,7 +104,7 @@ module Constants = struct
     |> get_ok
 
   let lib = process_template
-              ~template:"lib"
+              ~template:"lib.ml"
               ~pname:""
             |> get_ok
 
@@ -92,7 +114,7 @@ module Constants = struct
                  |> get_ok
 
   let exe = process_template
-              ~template:"exe"
+              ~template:"exe.ml"
               ~pname:""
             |> get_ok
 

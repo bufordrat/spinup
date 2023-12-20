@@ -1,4 +1,4 @@
-module TintStuff = struct
+module Engine = struct
   let default_syntax = Tint.Types.Syntax.tracstring
 
   let context_to_state ?(syntax=default_syntax) context =
@@ -31,10 +31,10 @@ end
 let process_template_path' path template context =
   (* let context = [ "pname", project_name ] in *)
   let fullpath = path ^ "/" ^ template in
-  TintStuff.macro_expand ~syntax:"#[,]" ~context (Prelude.readfile fullpath)
+  Engine.macro_expand ~syntax:"#[,]" ~context (Prelude.readfile fullpath)
 
 let process_template' ~template ~context =
   process_template_path' Path.path template context
 
 let process_template ~template ~pname =
-  TintStuff.process_template_path Path.path template pname
+  Engine.process_template_path Path.path template pname
