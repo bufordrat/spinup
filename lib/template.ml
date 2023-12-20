@@ -162,3 +162,12 @@ module FromFiles = struct
       umessage = "creating GNUmakefile..." ; }
 end
 
+let files name =
+  FromFiles.[
+    dune_project name ;
+    lib () ;
+    lib_dune () ;
+    exe name;
+    exe_dune name;
+    gnumakefile name ;
+  ]
