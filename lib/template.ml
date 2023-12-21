@@ -98,7 +98,7 @@ module Processed = struct
                   ~context:context
     in { write_path ; data ; vmessage }
 
-  let run { write_path ; data ; vmessage } =
+  let write { write_path ; data ; vmessage } =
     let open Prelude in
     print vmessage ;
     writefile ~fn:write_path data

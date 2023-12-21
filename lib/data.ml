@@ -1,14 +1,5 @@
 let get_ok = Stdlib.Result.get_ok
 
-
-module Command = struct
-
-end
-
-module Action = struct
-
-end
-
 module Constants = struct
   let process_template = Template.Engine.process_template
   

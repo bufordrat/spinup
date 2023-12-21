@@ -1,7 +1,7 @@
 type t = { args : string list ;
            cmessage : string ; }
 
-let write { args ; cmessage } =
+let run { args ; cmessage } =
   let open Prelude in
   let open Unix.Proc in
   print cmessage ;
