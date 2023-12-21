@@ -108,7 +108,7 @@ module FromFiles = struct
   let ipath = Path.path
 
   let dune_project name =
-    let open Unprocessed in 
+    Unprocessed. 
     { template_filename = "dune-project" ;
       output_filename = "dune-project" ;
       template_path = ipath ;
@@ -117,7 +117,7 @@ module FromFiles = struct
       umessage = "creating dune-project file..." ; }
 
   let lib () =
-    let open Unprocessed in
+    Unprocessed.
     { template_filename = "lib.ml" ;
       output_filename = "lib.ml" ;
       template_path = ipath ;
@@ -126,7 +126,7 @@ module FromFiles = struct
       umessage = "creating library..." ; }
 
   let lib_dune () =
-    let open Unprocessed in
+    Unprocessed.
     { template_filename = "lib_dune" ;
       output_filename = "dune" ;
       template_path = ipath ;
@@ -135,7 +135,7 @@ module FromFiles = struct
       umessage = "creating library dune config..." ; }
 
   let exe name =
-    let open Unprocessed in
+    Unprocessed.
     { template_filename = "project.ml" ;
       output_filename = name ^ ".ml" ;
       template_path = ipath ;
@@ -144,7 +144,7 @@ module FromFiles = struct
       umessage = "creating executable module " ^ name ^ ".ml..." ; }
 
   let exe_dune name =
-    let open Unprocessed in
+    Unprocessed.
     { template_filename = "exe_dune" ;
       output_filename = "dune" ;
       template_path = ipath ;
@@ -153,21 +153,21 @@ module FromFiles = struct
       umessage = "creating executable dune config..." ; }
 
   let gnumakefile name =
-    let open Unprocessed in
+    Unprocessed.
     { template_filename = "GNUMakefile" ;
       output_filename = "GNUMakefile" ;
       template_path = ipath ;
       output_path = "." ;
       context = [ "pname", name ] ;
       umessage = "creating GNUmakefile..." ; }
+
+  let files name = [
+      dune_project name ;
+      lib () ;
+      lib_dune () ;
+      exe name;
+      exe_dune name;
+      gnumakefile name ;
+    ]
 end
 
-let files name =
-  FromFiles.[
-    dune_project name ;
-    lib () ;
-    lib_dune () ;
-    exe name;
-    exe_dune name;
-    gnumakefile name ;
-  ]
