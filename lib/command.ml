@@ -4,10 +4,13 @@ type t = { args : string list ;
 let run { args ; cmessage } =
   let open Prelude in
   let open Unix.Proc in
-  print cmessage ;
-  runfull
-    ~err:Prelude.(ignore << read)
-    ~reader:Prelude.(ignore << read)
-    args
-  |> ignore
-
+  match args with
+  | [] -> print cmessage
+  | _ -> begin
+      print cmessage ;
+      runfull
+        ~err:Prelude.(ignore << read)
+        ~reader:Prelude.(ignore << read)
+        args
+      |> ignore
+    end
