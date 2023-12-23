@@ -26,8 +26,14 @@ module Engine = struct
 
   (* eventually change process_template_path to this *)
   let process_template_path' path template context =
+    let open Etude.Result.Make (String) in
     let fullpath = path ^ "/" ^ template in
-    macro_expand ~syntax:"#[,]" ~context (Prelude.readfile fullpath)
+    let* raw_contents = trap
+                          Stdlib.Printexc.to_string
+                          Prelude.readfile
+                          fullpath
+    in
+    macro_expand ~syntax:"#[,]" ~context raw_contents
 
   let process_template ~template ~pname =
     process_template_path Path.path template pname

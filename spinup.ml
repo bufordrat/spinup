@@ -1,5 +1,3 @@
-open Prelude
-
 module type SETTINGS = Lib.Io.SETTINGS
 
 module Io = Lib.Io
@@ -12,18 +10,18 @@ module Main = struct
   end
 
   let main () =
-    let open Io.BigPicture (Verbosity) in
-    let open Errors in
-    let module R = Etude.Result.Make (E) in
-    let open R in
-    let project_name =
-      gimme_the_arg argv
-      >>= check_exists dir_or_file
-    in
-    match project_name with
-    | Error e -> respond e
-    | Ok n -> the_whole_thing n 
-
+    (* let open Io.BigPicture (Verbosity) in
+     * let open Errors in
+     * let module R = Etude.Result.Make (E) in
+     * let open R in
+     * let project_name =
+     *   gimme_the_arg argv
+     *   >>= check_exists dir_or_file
+     * in
+     * match project_name with
+     * | Error e -> respond e
+     * | Ok n -> the_whole_thing n  *)
+    ()
 end
               
 let () = Main.main ()

@@ -1,41 +1,41 @@
 let get_ok = Stdlib.Result.get_ok
 
-module Constants = struct
-  let process_template = Template.Engine.process_template
-  
-  let dune_project name =
-    process_template
-      ~template:"dune_project"
-      ~pname:name
-    |> get_ok
-
-  let lib = process_template
-              ~template:"lib.ml"
-              ~pname:""
-            |> get_ok
-
-  let lib_dune = process_template
-                   ~template:"lib_dune"
-                   ~pname:""
-                 |> get_ok
-
-  let exe = process_template
-              ~template:"exe.ml"
-              ~pname:""
-            |> get_ok
-
-  let exe_dune name = process_template
-                        ~template:"exe_dune"
-                        ~pname:name
-                      |> get_ok
-
-  let gnumakefile project_name =
-    process_template
-      ~template:"GNUMakefile"
-      ~pname:project_name
-    |> get_ok
-end
-include Constants
+(* module Constants = struct
+ *   let process_template = Template.Engine.process_template
+ *   
+ *   let dune_project name =
+ *     process_template
+ *       ~template:"dune_project"
+ *       ~pname:name
+ *     |> get_ok
+ * 
+ *   let lib = process_template
+ *               ~template:"lib.ml"
+ *               ~pname:""
+ *             |> get_ok
+ * 
+ *   let lib_dune = process_template
+ *                    ~template:"lib_dune"
+ *                    ~pname:""
+ *                  |> get_ok
+ * 
+ *   let exe = process_template
+ *               ~template:"exe.ml"
+ *               ~pname:""
+ *             |> get_ok
+ * 
+ *   let exe_dune name = process_template
+ *                         ~template:"exe_dune"
+ *                         ~pname:name
+ *                       |> get_ok
+ * 
+ *   let gnumakefile project_name =
+ *     process_template
+ *       ~template:"GNUMakefile"
+ *       ~pname:project_name
+ *     |> get_ok
+ * end
+ * include Constants *)
 
 module Messages = struct
   let mk_project name =
