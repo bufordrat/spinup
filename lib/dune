@@ -1,3 +1,7 @@
 (library
  (name lib)
  (libraries prelude etude tint))
+
+(env
+ (dev
+  (flags (:standard -warn-error -A))))

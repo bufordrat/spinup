@@ -60,6 +60,9 @@ module Unprocessed = struct
     in "Unprocessed!\n" ^ field_string
 
   let debug_print t = Prelude.print (debug_string t)
+
+  (* let dry_run_string t = *)
+    
 end
   
 module Processed = struct
@@ -98,101 +101,3 @@ module Processed = struct
     print vmessage ;
     writefile ~fn:write_path data
 end
-
-module FromFiles = struct
-  let ipath = Path.path
-
-  (* project root files *)
-
-  let dune_project name =
-    Unprocessed. 
-    { template_filename = "dune-project" ;
-      output_filename = "dune-project" ;
-      template_path = ipath ;
-      output_path = "." ;
-      context = [ "pname", name ] ;
-      umessage = "creating dune-project file..." ; }
-
-  let gnumakefile name =
-    Unprocessed.
-    { template_filename = "GNUmakefile" ;
-      output_filename = "GNUmakefile" ;
-      template_path = ipath ;
-      output_path = "." ;
-      context = [ "pname", name ] ;
-      umessage = "creating GNUmakefile..." ; }
-
-  (* app/ files *)
-
-  let app_dune name =
-    Unprocessed.
-    { template_filename = "app_dune" ;
-      output_filename = "dune" ;
-      template_path = ipath ;
-      output_path = "./app" ;
-      context = [ "pname", name ] ;
-      umessage = "creating app/dune file..." ; }
-
-  let app_exe name =
-    Unprocessed.
-    { template_filename = "project.ml" ;
-      output_filename = name ^ ".ml" ;
-      template_path = ipath ;
-      output_path = "./app" ;
-      context = [] ;
-      umessage = "creating executable module app/" ^ name ^ ".ml..." ; }
-
-  (* lib/ files *)
-
-  let lib_dune () =
-    Unprocessed.
-    { template_filename = "lib_dune" ;
-      output_filename = "dune" ;
-      template_path = ipath ;
-      output_path = "./lib" ;
-      context = [] ;
-      umessage = "creating library dune config..." ; }
-
-  let lib_lib () =
-    Unprocessed.
-    { template_filename = "lib.ml" ;
-      output_filename = "lib.ml" ;
-      template_path = ipath ;
-      output_path = "./lib" ;
-      context = [] ;
-      umessage = "creating library..." ; }
-
-  (* test/ files *)
-
-  let test_dune name =
-    Unprocessed.
-    { template_filename = "test_dune" ;
-      output_filename = "dune" ;
-      template_path = ipath ;
-      output_path = "./test" ;
-      context = [ "pname", name ] ;
-      umessage = "creating test/dune file..." ; }
-
-  let test_test name =
-    Unprocessed.
-    { template_filename = "test_project.ml" ;
-      output_filename = "test_" ^ name ^ ".ml" ;
-      template_path = ipath ;
-      output_path = "./test" ;
-      context = [] ;
-      umessage = "creating test/test_" ^ name ^ ".ml file..." ; }
-
-  (* all the files, Katie *)
-
-  let files name = [
-      dune_project name ;
-      gnumakefile name ;
-      app_dune name ;
-      app_exe name ;
-      lib_dune () ;
-      lib_lib () ;
-      test_dune name ;
-      test_test name ;
-    ]
-end
-
