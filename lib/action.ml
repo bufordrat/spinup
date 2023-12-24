@@ -14,6 +14,23 @@ let write v = Write v
 
 type t = (action, string) result
 
+module Dirs = struct
+  let mk_appdir =
+    Command.
+    { args = [ "mkdir" ; "app" ] ;
+      cmessage = "making app/ directory..." ; }
+
+  let mk_libdir =
+    Command.
+    { args = [ "mkdir" ; "lib" ] ;
+      cmessage = "making lib/ directory..." ; }
+
+  let mk_testdir =
+    Command.
+    { args = [ "mkdir" ; "test" ] ;
+      cmessage = "making test/ directory..." ; }
+end
+
 let mk_project name =
   Command.
   { args = [ "dune" ; "init" ; "project" ; name ] ;
@@ -38,9 +55,9 @@ let do_a_build =
 
 let do_a_clean =
   Command.
-  { args = [ "dune" ; "build" ] ;
+  { args = [ "dune" ; "clean" ] ;
     cmessage =
-      "doing initial `dune build` to generate .opam file..." ; }
+      "doing a `dune clean` to remove compiler detritus..." ; }
 
 let done_msg =
   Command.
@@ -65,12 +82,34 @@ let sandbox_msg name =
 
 (* TODO: fix this so that the file writes are processed *)
 
+let main_actions name =
+  let open Template in
+  let open Etude.Result.Make (String) in
+  let dune_commands1 = [
+      Run delete_bin ;
+      Run (init_executable name) ;
+    ]
+  in
+  let dune_commands2 = [
+      Run do_a_build ;
+      Run do_a_clean ;
+      Run done_msg ;
+      Run (sandbox_msg name) ; ]
+  in
+  let+ processed =
+    traverse Processed.process (FromFiles.files name)
+  in
+  let writes =
+    List.map write processed
+  in
+  dune_commands1 @ writes @ dune_commands2
+
 (* let inside_the_dir name =
  *   let open Template.FromFiles in
  *   let dune_commands1 = [
  *       Run delete_bin ;
  *       Run (init_executable name) ;
- *     ] in
+ *     ] inp
  *   let file_writes =
  *     List.map write (files name)
  *   in

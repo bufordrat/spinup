@@ -1,4 +1,4 @@
-# ##[cl,pname]                   -*- makefile-gmake -*-
+# ##[cl,pname]            -*- makefile-gmake -*-
 # GNUmakefile
 
 DISPLAY = short

@@ -1,4 +1,4 @@
-(executable
+(executable              ; -*- mode: dune -*-
  (public_name ##[cl,pname])
  (name ##[cl,pname])
  (promote (until-clean))

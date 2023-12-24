@@ -1,4 +1,4 @@
-(lang dune 3.0)
+(lang dune 3.0)                                        ; -*- mode: dune -*- 
  (generate_opam_files true)
  (package
   (name ##[cl,pname])
