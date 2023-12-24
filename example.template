@@ -1,8 +1,0 @@
-(library
- (name lib)
- (jones ##(cl,jones-name))
- (libraries prelude etude))
-
- (env
-   (dev
-     (flags (:standard -warn-error -A))))

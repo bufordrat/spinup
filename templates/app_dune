@@ -1,9 +1,13 @@
-(executable              ; -*- mode: dune -*-
- (public_name ##[cl,pname])
+(executable 
+ (public_name ##[cl,pname]) 
  (name ##[cl,pname])
  (promote (until-clean))
- (libraries camlp-streams prelude etude lib))
+ (libraries camlp-streams prelude etude lib)) 
 
 (env
  (dev
   (flags (:standard -warn-error -A))))
+
+; Local Variables:
+; mode: dune
+; End:

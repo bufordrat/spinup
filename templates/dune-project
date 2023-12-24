@@ -1,4 +1,4 @@
-(lang dune 3.0)                                        ; -*- mode: dune -*- 
+(lang dune 3.0)
  (generate_opam_files true)
  (package
   (name ##[cl,pname])
@@ -17,3 +17,7 @@
     utop
     ocp-index
     merlin))
+
+; Local Variables:
+; mode: dune
+; End:

@@ -6,6 +6,10 @@ let run = function
   | Write tmpl -> Template.Processed.write tmpl
   | Run cmd -> Command.run cmd
 
+let debug_print = function
+  | Write tmpl -> Template.Processed.debug_print tmpl
+  | Run cmd -> Command.debug_print cmd
+
 let is_write = function
   | Write _ -> true
   | _ -> false

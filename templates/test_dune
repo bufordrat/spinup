@@ -1,2 +1,6 @@
-(test ; -*- mode: dune -*-
+(test
  (name test_##[cl,pname]))
+
+; Local Variables:
+; mode: dune
+; End:

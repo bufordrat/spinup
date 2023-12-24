@@ -79,9 +79,7 @@ module Processed = struct
       String.join ~sep:"\n" (List.map each_field fields)
     in "Processed!\n" ^ field_string
 
-  let debug_print = function
-    | Ok valid -> Prelude.print (debug_string valid)
-    | Error msg -> Prelude.print ("Error!\n" ^ msg)
+  let debug_print valid = Prelude.print (debug_string valid)
 
   let process unv =
     let open Unprocessed in
@@ -117,8 +115,8 @@ module FromFiles = struct
 
   let gnumakefile name =
     Unprocessed.
-    { template_filename = "GNUMakefile" ;
-      output_filename = "GNUMakefile" ;
+    { template_filename = "GNUmakefile" ;
+      output_filename = "GNUmakefile" ;
       template_path = ipath ;
       output_path = "." ;
       context = [ "pname", name ] ;
