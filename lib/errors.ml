@@ -4,7 +4,6 @@ module E = struct
   type dependency =
     | Dune
     | Opam
-    | OpamLock
     
   type t =
     | BadArgv
@@ -14,7 +13,6 @@ module E = struct
   let dependency_to_string = function
     | Dune -> "dune"
     | Opam -> "opam"
-    | OpamLock -> "opam-lock"
 end
 include E
 
@@ -40,7 +38,6 @@ module Messages = struct
   let missing_dep_message = function
     | Dune -> assert false
     | Opam -> assert false
-    | OpamLock -> assert false
 end
 include Messages      
 

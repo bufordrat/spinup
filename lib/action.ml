@@ -1,4 +1,4 @@
-type action =
+type t =
   | Write of Template.Processed.valid
   | Run of Command.t
 
@@ -9,38 +9,40 @@ let run = function
 let dry_run =
   function
   | Write tmpl ->
-     let output = "WRITE    " ^ tmpl.write_path
+     let output = "    WRITE    " ^ tmpl.write_path
      in print_endline output
+  | Run { args = [] ; _ } -> ()
   | Run cmd ->
      let open Prelude.String in
-     let output = "  RUN    " ^ join ~sep:" " cmd.args
+     let output = "      RUN    " ^ join ~sep:" " cmd.args
      in print_endline output
 
 let debug_print = function
   | Write tmpl -> Template.Processed.debug_print tmpl
   | Run cmd -> Command.debug_print cmd
 
-let is_write = function
-  | Write _ -> true
-  | _ -> false
-
 let write v = Write v
 
-type t = (action, string) result
+module Opening = struct
+  let mk_projectdir name =
+    Run Command.
+    { args = [] ;
+      cmessage = "making " ^ name ^ "/ directory..." ; }
+end
 
 module Dirs = struct
   let mk_appdir =
-    Command.
+    Run Command.
     { args = [ "mkdir" ; "app" ] ;
       cmessage = "making app/ directory..." ; }
 
   let mk_libdir =
-    Command.
+    Run Command.
     { args = [ "mkdir" ; "lib" ] ;
       cmessage = "making lib/ directory..." ; }
 
   let mk_testdir =
-    Command.
+    Run Command.
     { args = [ "mkdir" ; "test" ] ;
       cmessage = "making test/ directory..." ; }
 end
@@ -134,19 +136,19 @@ end
 
 module Conclude = struct
   let do_a_build =
-    Command.
+    Run Command.
     { args = [ "dune" ; "build" ] ;
       cmessage =
         "doing initial `dune build` to generate .opam file..." ; }
 
   let do_a_clean =
-    Command.
+    Run Command.
     { args = [ "dune" ; "clean" ] ;
       cmessage =
         "doing a `dune clean` to remove compiler detritus..." ; }
 
   let done_msg =
-    Command.
+    Run Command.
     { args = [] ;
       cmessage = "DONE!" ; }
 
@@ -162,7 +164,7 @@ module Conclude = struct
                        \n\
                        \  $ make sandbox\n" name name
     in
-    Command.
+    Run Command.
     { args = [] ;
       cmessage = msg ; }
 end
@@ -171,9 +173,9 @@ let main_actions name =
   let open Template in
   let open Etude.Result.Make (String) in
   let make_dirs = Dirs.[
-        Run mk_appdir ;
-        Run mk_libdir ;
-        Run mk_testdir ; ]
+        mk_appdir ;
+        mk_libdir ;
+        mk_testdir ; ]
   in
   let+ processed =
     traverse
@@ -184,10 +186,10 @@ let main_actions name =
     List.map write processed
   in  
   let finish_up = Conclude.[
-        Run do_a_build ;
-        Run do_a_clean ;
-        Run done_msg ;
-        Run (sandbox_msg name) ; ]
+        do_a_build ;
+        do_a_clean ;
+        done_msg ;
+        sandbox_msg name ; ]
   in
   make_dirs @ writes @ finish_up
-      
+
