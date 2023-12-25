@@ -61,8 +61,16 @@ module Unprocessed = struct
 
   let debug_print t = Prelude.print (debug_string t)
 
-  (* let dry_run_string t = *)
-    
+  let check_exists t =
+    let fullpath =
+      t.template_path ^ "/" ^ t.template_filename
+    in
+    let msg =
+      "Template at " ^ fullpath ^ " missing."
+    in
+    if Sys.file_exists fullpath
+    then Ok ()
+    else Error msg
 end
   
 module Processed = struct
@@ -87,6 +95,7 @@ module Processed = struct
   let process unv =
     let open Unprocessed in
     let open Etude.Result.Make (String) in
+    let* () = check_exists unv in
     let context = unv.context in
     let write_path =
       unv.output_path ^ "/" ^ unv.output_filename in

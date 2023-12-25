@@ -177,10 +177,16 @@ let main_actions name =
         mk_libdir ;
         mk_testdir ; ]
   in
+  let files = Files.files name in
+  (* let* _ =
+   *   traverse
+   *     Unprocessed.check_exists
+   *     files
+   * in *)
   let+ processed =
     traverse
       Processed.process
-      (Files.files name)
+      files
   in
   let writes =
     List.map write processed
