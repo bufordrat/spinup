@@ -11,15 +11,14 @@ module Main = struct
     let open Prelude in
     let open Lib.Action in
     let mkdir name =
-      Opening.(run @@ mk_projectdir name)
+      Opening.mk_projectdir name
     in
     let main name =
       handle_result
         handler
         (main_actions name)
     in
-    mkdir name 
-    ;
+    handler (mkdir name) ;
     withcd (fun n -> main n) name
 
   let main args =

@@ -1,10 +1,12 @@
 type t =
-  | Write of Template.Processed.valid
+  | Write of Template.Processed.t
   | Run of Command.t
+  (* | MkDir of { dir : string ; actions : unit } *)
 
 let run = function
   | Write tmpl -> Template.Processed.write tmpl
   | Run cmd -> Command.run cmd
+  (* | MkDir { dir ; actions } -> *)
 
 let dry_run =
   function

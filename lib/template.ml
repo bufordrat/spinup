@@ -74,11 +74,9 @@ module Unprocessed = struct
 end
   
 module Processed = struct
-  type valid = { write_path : string ;
+  type t = { write_path : string ;
                  data : string ;
                  vmessage : string }
-
-  type t = (valid, string) result
 
   let debug_string valid =
     let open Prelude in
