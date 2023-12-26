@@ -18,7 +18,8 @@ module Main = struct
         handler
         (main_actions name)
     in
-    mkdir name ;
+    mkdir name 
+    ;
     withcd (fun n -> main n) name
 
   let main args =

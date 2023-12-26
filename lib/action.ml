@@ -26,7 +26,7 @@ let write v = Write v
 module Opening = struct
   let mk_projectdir name =
     Run Command.
-    { args = [] ;
+    { args = [ "mkdir" ; name ] ;
       cmessage = "making " ^ name ^ "/ directory..." ; }
 end
 
