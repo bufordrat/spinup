@@ -1,7 +1,6 @@
 module Main = struct
   let handle_result handler = function
-    | Ok actions ->
-       List.iter handler actions
+    | Ok actions -> handler actions
     | Error e -> begin
         print_endline e ;
         exit 1
@@ -16,7 +15,7 @@ module Main = struct
     let main name =
       handle_result
         handler
-        (main_actions name)
+        (main_action name)
     in
     handler (mkdir name) ;
     withcd (fun n -> main n) name

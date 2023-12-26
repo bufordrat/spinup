@@ -1,12 +1,21 @@
-type t =
+module R = Etude.Result.Make (String)
+
+type dir = { dir : string ;
+             actions : t list ; }
+
+and t =
   | Write of Template.Processed.t
   | Run of Command.t
-  (* | MkDir of { dir : string ; actions : unit } *)
+  | WithCD of dir
 
-let run = function
+let rec run = function
   | Write tmpl -> Template.Processed.write tmpl
   | Run cmd -> Command.run cmd
-  (* | MkDir { dir ; actions } -> *)
+  | WithCD d ->
+     let handler _ =
+       List.iter run d.actions
+     in
+     Prelude.(withcd handler d.dir)
 
 let dry_run =
   function
@@ -18,10 +27,14 @@ let dry_run =
      let open Prelude.String in
      let output = "      RUN    " ^ join ~sep:" " cmd.args
      in print_endline output
+  | WithCD d ->
+     let msg = "entering directory " ^ d.dir ^ "..."
+     in print_endline msg
 
 let debug_print = function
   | Write tmpl -> Template.Processed.debug_print tmpl
   | Run cmd -> Command.debug_print cmd
+  | WithCD d -> assert false
 
 let write v = Write v
 
@@ -171,20 +184,15 @@ module Conclude = struct
       cmessage = msg ; }
 end
 
-let main_actions name =
+let directory_actions name =
   let open Template in
-  let open Etude.Result.Make (String) in
+  let open R in
   let make_dirs = Dirs.[
         mk_appdir ;
         mk_libdir ;
         mk_testdir ; ]
   in
   let files = Files.files name in
-  (* let* _ =
-   *   traverse
-   *     Unprocessed.check_exists
-   *     files
-   * in *)
   let+ processed =
     traverse
       Processed.process
@@ -201,3 +209,8 @@ let main_actions name =
   in
   make_dirs @ writes @ finish_up
 
+let main_action name =
+  let open R in
+  let+ actions = directory_actions name in
+  WithCD { dir = name ;
+           actions = actions ; }
