@@ -19,7 +19,6 @@ module Engine = struct
         (Tint.Eval.eval state tint)
     in processed_string
 
-  (* eventually change process_template_path to this *)
   let process_template_path path template context =
     let open Etude.Result.Make (String) in
     let fullpath = path ^ "/" ^ template in
