@@ -41,6 +41,9 @@ module Unprocessed = struct
              umessage : string ;
            }
 
+  let fullpath t =
+    t.template_path ^ "/" ^ t.template_filename
+
   let debug_string t =
     let open Prelude in
     let context_string context =
