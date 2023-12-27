@@ -3,7 +3,7 @@ module Main = struct
     | Ok actions ->
        handler actions
     | Error e -> begin
-        print_endline e ;
+        print_endline (Prelude.argv0 ^ ": " ^ e) ;
         exit 1
       end
 

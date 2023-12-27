@@ -62,48 +62,12 @@ module Unprocessed = struct
     in "Unprocessed!\n" ^ field_string
 
   let debug_print t = Prelude.print (debug_string t)
-
-  let check_exists t =
-    let fullpath =
-      t.template_path ^ "/" ^ t.template_filename
-    in
-    let msg =
-      "Template at " ^ fullpath ^ " missing."
-    in
-    if Sys.file_exists fullpath
-    then Ok ()
-    else Error msg
 end
   
 module Processed = struct
   type t = { write_path : string ;
                  data : string ;
                  vmessage : string }
-
-  let debug_string valid =
-    let open Prelude in
-    let fields = [ "Write path: ", valid.write_path ;
-                   "Data: ", String.take 50 valid.data ^ "..." ;
-                   "Message: ", valid.vmessage ; ] in
-    let each_field (name, content) = name ^ content in
-    let field_string =
-      String.join ~sep:"\n" (List.map each_field fields)
-    in "Processed!\n" ^ field_string
-
-  let debug_print valid = Prelude.print (debug_string valid)
-
-  let process unv =
-    let open Unprocessed in
-    let open Etude.Result.Make (String) in
-    let* () = check_exists unv in
-    let context = unv.context in
-    let write_path =
-      unv.output_path ^ "/" ^ unv.output_filename in
-    let vmessage = unv.umessage in
-    let+ data = Engine.process_template
-                  ~template:unv.template_filename
-                  ~context:context
-    in { write_path ; data ; vmessage }
 
   let write { write_path ; data ; vmessage } =
     let open Prelude in

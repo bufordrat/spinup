@@ -188,7 +188,6 @@ module Conclude = struct
 end
 
 let directory_actions name =
-  let open Template in
   let open R in
   let make_dirs = Dirs.[
         mk_appdir ;
@@ -198,7 +197,7 @@ let directory_actions name =
   let files = Files.files name in
   let+ processed =
     traverse
-      Processed.process
+      Errors.process
       files
   in
   let writes =
@@ -214,7 +213,7 @@ let directory_actions name =
 
 let main_action name =
   let open R in
-  let* () = Errors.check_exists name in
+  let* () = Errors.already_exists name in
   let+ actions = directory_actions name in
   WithCD { dir = name ;
            actions = actions ; }
