@@ -214,6 +214,7 @@ let directory_actions name =
 
 let main_action name =
   let open R in
+  let* () = Errors.check_exists name in
   let+ actions = directory_actions name in
   WithCD { dir = name ;
            actions = actions ; }
