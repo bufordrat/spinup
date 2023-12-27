@@ -8,42 +8,45 @@ and t =
   | Run of Command.t
   | WithCD of dir
 
-let rec run = function
-  | Write tmpl -> Template.Processed.write tmpl
-  | Run cmd -> Command.run cmd
-  | WithCD d ->
-     let handler _ =
-       List.iter run d.actions
-     in
-     Prelude.(withcd handler d.dir)
-
-let dry_run =
-  function
-  | Write tmpl ->
-     let output = "    WRITE    " ^ tmpl.write_path
-     in print_endline output
-  | Run { args = [] ; _ } -> ()
-  | Run cmd ->
-     let open Prelude.String in
-     let output = "      RUN    " ^ join ~sep:" " cmd.args
-     in print_endline output
-  | WithCD d ->
-     let msg = "entering directory " ^ d.dir ^ "..."
-     in print_endline msg
-
-let debug_print = function
-  | Write tmpl -> Template.Processed.debug_print tmpl
-  | Run cmd -> Command.debug_print cmd
-  | WithCD d -> assert false
-
-let write v = Write v
-
 module Opening = struct
   let mk_projectdir name =
     Run Command.
     { args = [ "mkdir" ; name ] ;
       cmessage = "making " ^ name ^ "/ directory..." ; }
 end
+
+let rec run = function
+  | Write tmpl ->
+     Template.Processed.write tmpl
+  | Run cmd -> Command.run cmd
+  | WithCD d ->
+     let handler _ =
+       List.iter run d.actions
+     in
+     run (Opening.mk_projectdir d.dir) ;
+     Prelude.(withcd handler d.dir)
+
+let rec dry_run =
+  function
+  | Write tmpl ->
+     let output =
+       "    WRITE    " ^ tmpl.write_path
+     in print_endline output
+  | Run { args = [] ; _ } -> ()
+  | Run cmd ->
+     let open Prelude.String in
+     let output =
+       "      RUN    " ^ join ~sep:" " cmd.args
+     in print_endline output
+  | WithCD d ->
+     let msg = "      RUN    cd " ^ d.dir in
+     begin
+       dry_run (Opening.mk_projectdir d.dir) ;
+       print_endline msg ;
+       List.iter dry_run d.actions
+     end
+
+let write v = Write v
 
 module Dirs = struct
   let mk_appdir =
