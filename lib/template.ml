@@ -26,7 +26,12 @@ module Engine = struct
       let open Prelude in
       trap Exn.to_string readfile fullpath
     in
-    macro_expand ~syntax:"#[,]" ~context raw_contents
+    let append_path s = s ^ "\n" ^ fullpath in
+    let res = 
+      macro_expand ~syntax:"#[,]" ~context raw_contents
+    in
+    map_error append_path res
+    
 
   let process_template ~template ~context =
     process_template_path Path.path template context
