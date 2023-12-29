@@ -2,6 +2,8 @@
 (* TODO: check for dependencies *)
 (* TODO: check for missing templates *)
 
+module R = Etude.Result.Make (String)
+
 let check_template_exists t =
   let open Template.Unprocessed in
   let fullpath =
@@ -37,13 +39,13 @@ let already_exists name =
 let process unv =
   let open Template in
   let open Unprocessed in
-  let open Etude.Result.Make (String) in
-  let* () = check_template_exists unv in
+  let open R in
+  (* let* () = check_template_exists unv in *)
   let context = unv.context in
   let write_path =
     unv.output_path ^ "/" ^ unv.output_filename in
   let vmessage = unv.umessage in
-  let+ data = Engine.process_template
+  let+ data = Engine.process_crunched
                 ~template:unv.template_filename
                 ~context:context
   in Processed.{ write_path ; data ; vmessage }
