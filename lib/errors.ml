@@ -4,17 +4,17 @@
 
 module R = Etude.Result.Make (String)
 
-let check_template_exists t =
-  let open Template.Unprocessed in
-  let fullpath =
-    t.template_path ^ "/" ^ t.template_filename
-  in
-  let msg =
-    "template at " ^ fullpath ^ " is missing."
-  in
-  if Sys.file_exists fullpath
-  then Ok ()
-  else Error msg
+(* let check_template_exists t =
+ *   let open Template.Unprocessed in
+ *   let fullpath =
+ *     t.template_path ^ "/" ^ t.template_filename
+ *   in
+ *   let msg =
+ *     "template at " ^ fullpath ^ " is missing."
+ *   in
+ *   if Sys.file_exists fullpath
+ *   then Ok ()
+ *   else Error msg *)
 
 let dir_or_file path = 
   if Sys.is_directory path
@@ -40,7 +40,6 @@ let process unv =
   let open Template in
   let open Unprocessed in
   let open R in
-  (* let* () = check_template_exists unv in *)
   let context = unv.context in
   let write_path =
     match unv.output_path with
