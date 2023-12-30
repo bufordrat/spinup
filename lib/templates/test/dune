@@ -1,5 +1,10 @@
 (test
- (name test_##[cl,pname]))
+ (name test_##[cl,pname])
+ (libraries lib))
+
+(env
+ (dev
+  (flags (:standard -warn-error -A))))
 
 ; Local Variables:
 ; mode: dune

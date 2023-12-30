@@ -1,3 +1,7 @@
 (test
  (name test_spinup)
  (libraries lib qcheck alcotest))
+
+(env
+ (dev
+  (flags (:standard -warn-error -A))))
