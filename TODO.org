@@ -1,9 +1,9 @@
-* DONE Unhandled Errors
+* TODO Unhandled Errors
+** needs to validate project name, make sure it doesn't contain hyphens
+** Prelude.Prereq-s checking
 
-  + needs to validate project name, make sure it doesn't contain
-    hyphens
-    + otherwise, =dune= complains
-
-* DONE Config Bugs
-
-  + eliminate reference to =feather= in =dune= files
+* TODO Features
+** Alcotest
+** cram tests
+** template override
+** config file
