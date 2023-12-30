@@ -43,9 +43,15 @@ let process unv =
   (* let* () = check_template_exists unv in *)
   let context = unv.context in
   let write_path =
-    unv.output_path ^ "/" ^ unv.output_filename in
+    match unv.output_path with
+    | "" -> "./" ^ unv.output_filename
+    | other -> "./" ^ other ^ "/" ^ unv.output_filename
+  in
   let vmessage = unv.umessage in
+  let template_path =
+    unv.output_path ^ "/" ^ unv.template_filename
+  in
   let+ data = Engine.process_crunched
-                ~template:unv.template_filename
+                ~template:template_path
                 ~context:context
   in Processed.{ write_path ; data ; vmessage }

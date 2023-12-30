@@ -66,14 +66,14 @@ module Dirs = struct
 end
 
 module Files = struct
-  let ipath = Template.Path.path
+  let template_root = Template.Path.path
 
   let dune_project name =
     Template.Unprocessed. 
     { template_filename = "dune-project" ;
       output_filename = "dune-project" ;
-      template_path = ipath ;
-      output_path = "." ;
+      template_path = template_root ;
+      output_path = "" ;
       context = [ "pname", name ] ;
       umessage = "creating dune-project file..." ; }
 
@@ -81,17 +81,17 @@ module Files = struct
     Template.Unprocessed.
     { template_filename = "GNUmakefile" ;
       output_filename = "GNUmakefile" ;
-      template_path = ipath ;
-      output_path = "." ;
+      template_path = template_root ;
+      output_path = "" ;
       context = [ "pname", name ] ;
       umessage = "creating GNUmakefile..." ; }
 
   let app_dune name =
     Template.Unprocessed.
-    { template_filename = "app_dune" ;
+    { template_filename = "dune" ;
       output_filename = "dune" ;
-      template_path = ipath ;
-      output_path = "./app" ;
+      template_path = template_root ^ "/app" ;
+      output_path = "app" ;
       context = [ "pname", name ] ;
       umessage = "creating app/dune file..." ; }
 
@@ -99,17 +99,17 @@ module Files = struct
     Template.Unprocessed.
     { template_filename = "project.ml" ;
       output_filename = name ^ ".ml" ;
-      template_path = ipath ;
-      output_path = "./app" ;
+      template_path = template_root ^ "/app" ;
+      output_path = "app" ;
       context = [] ;
       umessage = "creating executable module app/" ^ name ^ ".ml..." ; }
 
   let lib_dune () =
     Template.Unprocessed.
-    { template_filename = "lib_dune" ;
+    { template_filename = "dune" ;
       output_filename = "dune" ;
-      template_path = ipath ;
-      output_path = "./lib" ;
+      template_path = template_root ^ "/lib" ;
+      output_path = "lib" ;
       context = [] ;
       umessage = "creating library dune config..." ; }
 
@@ -117,17 +117,17 @@ module Files = struct
     Template.Unprocessed.
     { template_filename = "lib.ml" ;
       output_filename = "lib.ml" ;
-      template_path = ipath ;
-      output_path = "./lib" ;
+      template_path = template_root ^ "/lib" ;
+      output_path = "lib" ;
       context = [] ;
       umessage = "creating library..." ; }
 
   let test_dune name =
     Template.Unprocessed.
-    { template_filename = "test_dune" ;
+    { template_filename = "dune" ;
       output_filename = "dune" ;
-      template_path = ipath ;
-      output_path = "./test" ;
+      template_path = template_root ^ "/test" ;
+      output_path = "test" ;
       context = [ "pname", name ] ;
       umessage = "creating test/dune file..." ; }
 
@@ -135,8 +135,8 @@ module Files = struct
     Template.Unprocessed.
     { template_filename = "test_project.ml" ;
       output_filename = "test_" ^ name ^ ".ml" ;
-      template_path = ipath ;
-      output_path = "./test" ;
+      template_path = template_root ^ "/test" ;
+      output_path = "test" ;
       context = [] ;
       umessage = "creating test/test_" ^ name ^ ".ml file..." ; }
 

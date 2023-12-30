@@ -1,7 +1,7 @@
 module R = Etude.Result.Make (String)
 
 module Path = struct
-  let path = "/home/teichman/.config/spinup/templates"
+  let path = ""
 end
 
 module Engine = struct
