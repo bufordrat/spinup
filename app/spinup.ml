@@ -3,7 +3,10 @@ module Main = struct
     | Ok actions ->
        handler actions
     | Error e -> begin
-        print_endline (Prelude.argv0 ^ ": " ^ e) ;
+        let executable =
+          Filename.basename Prelude.argv0
+        in
+        print_endline (executable ^ ": " ^ e) ;
         exit 1
       end
 
