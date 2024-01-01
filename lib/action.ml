@@ -152,6 +152,8 @@ module Files = struct
     ]
 end
 
+let lib_dune = Files.lib_dune
+
 module Conclude = struct
   let do_a_build =
     Run Command.
