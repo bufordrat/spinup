@@ -35,22 +35,3 @@ let already_exists name =
   if Sys.file_exists name
   then Error (msg @@ dir_or_file name)
   else Ok ()
-
-let process unv =
-  let open Template in
-  let open Unprocessed in
-  let open R in
-  let context = unv.context in
-  let write_path =
-    match unv.output_path with
-    | "" -> "./" ^ unv.output_filename
-    | other -> "./" ^ other ^ "/" ^ unv.output_filename
-  in
-  let vmessage = unv.umessage in
-  let template_path =
-    unv.output_path ^ "/" ^ unv.template_filename
-  in
-  let+ data = Engine.process_crunched
-                ~template:template_path
-                ~context:context
-  in Processed.{ write_path ; data ; vmessage }

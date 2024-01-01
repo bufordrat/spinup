@@ -49,16 +49,6 @@ module Engine = struct
     in
     macro_expand ~syntax:"#[,]" ~context raw_contents
 end
-
-module Unprocessed = struct
-  type t = { template_filename : string ;
-             output_filename : string ;
-             template_path : string ;
-             output_path : string ;
-             context : (string * string) list ;
-             umessage : string ;
-           }
-end
   
 module Processed = struct
   type t = { write_path : string ;
@@ -69,4 +59,31 @@ module Processed = struct
     let open Prelude in
     print vmessage ;
     writefile ~fn:write_path data
+end
+
+module Unprocessed = struct
+  type t = { template_filename : string ;
+             output_filename : string ;
+             template_path : string ;
+             output_path : string ;
+             context : (string * string) list ;
+             umessage : string ;
+           }
+
+  let process unv =
+    let open R in
+    let context = unv.context in
+    let write_path =
+      match unv.output_path with
+      | "" -> "./" ^ unv.output_filename
+      | other -> "./" ^ other ^ "/" ^ unv.output_filename
+    in
+    let vmessage = unv.umessage in
+    let template_path =
+      unv.output_path ^ "/" ^ unv.template_filename
+    in
+    let+ data = Engine.process_crunched
+                  ~template:template_path
+                  ~context:context
+    in Processed.{ write_path ; data ; vmessage }
 end

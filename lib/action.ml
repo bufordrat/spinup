@@ -190,6 +190,7 @@ module Conclude = struct
 end
 
 let directory_actions name =
+  let open Template in
   let open R in
   let make_dirs = Dirs.[
         mk_appdir ;
@@ -199,7 +200,7 @@ let directory_actions name =
   let files = Files.files name in
   let+ processed =
     traverse
-      Errors.process
+      Unprocessed.process
       files
   in
   let writes =

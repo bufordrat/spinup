@@ -12,6 +12,14 @@ module Engine : sig
                          (string, string) result
 end
 
+module Processed : sig
+  type t = { write_path : string ;
+             data : string ;
+             vmessage : string }
+
+  val write : t -> unit
+end
+
 module Unprocessed : sig
   type t = { template_filename : string ;
              output_filename : string ;
@@ -20,12 +28,7 @@ module Unprocessed : sig
              context : (string * string) list ;
              umessage : string ;
            }
+
+  val process : t -> (Processed.t, string) result
 end
 
-module Processed : sig
-  type t = { write_path : string ;
-             data : string ;
-             vmessage : string }
-
-  val write : t -> unit
-end
