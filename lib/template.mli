@@ -3,11 +3,11 @@ module Path : sig
 end
 
 module Engine : sig
-  val process_template : template:string ->
+  val expand_template : template:string ->
                          context:(string * string) list ->
                          (string, string) result
 
-  val process_crunched : template:string ->
+  val expand_crunched : template:string ->
                          context:(string * string) list ->
                          (string, string) result
 end
@@ -31,4 +31,3 @@ module Unprocessed : sig
 
   val process : t -> (Processed.t, string) result
 end
-

@@ -21,7 +21,7 @@ module Engine = struct
         (Tint.Eval.eval state tint)
     in processed_string
 
-  let process_template_path path template context =
+  let expand_template_path path template context =
     let open R in
     let fullpath = path ^ "/" ^ template in
     let* raw_contents =
@@ -34,10 +34,10 @@ module Engine = struct
     in
     map_error append_path res
     
-  let process_template ~template ~context =
-    process_template_path Path.path template context
+  let expand_template ~template ~context =
+    expand_template_path Path.path template context
 
-  let process_crunched ~template ~context =
+  let expand_crunched ~template ~context =
     let open R in
     let option_to_result = function
       | Some contents -> Ok contents
@@ -82,7 +82,7 @@ module Unprocessed = struct
     let template_path =
       unv.output_path ^ "/" ^ unv.template_filename
     in
-    let+ data = Engine.process_crunched
+    let+ data = Engine.expand_crunched
                   ~template:template_path
                   ~context:context
     in Processed.{ write_path ; data ; vmessage }
