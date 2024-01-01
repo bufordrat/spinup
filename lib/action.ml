@@ -68,6 +68,11 @@ end
 module Files = struct
   let template_root = Template.Path.path
 
+  let add_subdir subdir filename =
+    match subdir with
+    | "" -> filename
+    | actual_path -> actual_path ^ "/" ^ filename
+
   let dune_project name =
     Template.Unprocessed. 
     { template_filename = "dune-project" ;
@@ -90,7 +95,7 @@ module Files = struct
     Template.Unprocessed.
     { template_filename = "dune" ;
       output_filename = "dune" ;
-      template_path = template_root ^ "/app" ;
+      template_path = add_subdir template_root "app" ;
       output_path = "app" ;
       context = [ "pname", name ] ;
       umessage = "creating app/dune file..." ; }
@@ -99,7 +104,7 @@ module Files = struct
     Template.Unprocessed.
     { template_filename = "project.ml" ;
       output_filename = name ^ ".ml" ;
-      template_path = template_root ^ "/app" ;
+      template_path = add_subdir template_root "app" ;
       output_path = "app" ;
       context = [] ;
       umessage = "creating executable module app/" ^ name ^ ".ml..." ; }
@@ -108,7 +113,7 @@ module Files = struct
     Template.Unprocessed.
     { template_filename = "dune" ;
       output_filename = "dune" ;
-      template_path = template_root ^ "/lib" ;
+      template_path = add_subdir template_root "lib" ;
       output_path = "lib" ;
       context = [] ;
       umessage = "creating library dune config..." ; }
@@ -117,7 +122,7 @@ module Files = struct
     Template.Unprocessed.
     { template_filename = "lib.ml" ;
       output_filename = "lib.ml" ;
-      template_path = template_root ^ "/lib" ;
+      template_path = add_subdir template_root "lib" ;
       output_path = "lib" ;
       context = [] ;
       umessage = "creating library..." ; }
@@ -126,7 +131,7 @@ module Files = struct
     Template.Unprocessed.
     { template_filename = "dune" ;
       output_filename = "dune" ;
-      template_path = template_root ^ "/test" ;
+      template_path = add_subdir template_root "test" ;
       output_path = "test" ;
       context = [ "pname", name ] ;
       umessage = "creating test/dune file..." ; }
@@ -135,7 +140,7 @@ module Files = struct
     Template.Unprocessed.
     { template_filename = "test_project.ml" ;
       output_filename = "test_" ^ name ^ ".ml" ;
-      template_path = template_root ^ "/test" ;
+      template_path = add_subdir template_root "test" ;
       output_path = "test" ;
       context = [] ;
       umessage = "creating test/test_" ^ name ^ ".ml file..." ; }
