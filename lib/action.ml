@@ -145,16 +145,38 @@ module Files = struct
       context = [] ;
       umessage = "creating test/test_" ^ name ^ ".ml file..." ; }
 
-  let files name = [
-      dune_project name ;
-      gnumakefile name ;
-      app_dune name ;
-      app_exe name ;
-      lib_dune () ;
-      lib_lib () ;
-      test_dune name ;
-      test_test name ;
-    ]
+  (* let files name = [
+   *     dune_project name ;
+   *     gnumakefile name ;
+   *     app_dune name ;
+   *     app_exe name ;
+   *     lib_dune () ;
+   *     lib_lib () ;
+   *     test_dune name ;
+   *     test_test name ;
+   *   ] *)
+
+  let from_files name path = 
+    let open Template.Unprocessed in
+    let open Stdlib.Filename in
+    let dirname path =
+      match Stdlib.Filename.dirname path with
+      | "." -> ""
+      | p -> p
+    in
+    { template_filename = basename path ;
+      output_filename = basename path ;
+      template_path = "" ;
+      output_path = dirname path ;
+      context = [ "pname", name ] ;
+      umessage = "creating " ^ path ^ " file..." ; } 
+
+  let files name =
+    let open Prelude in
+    let lst =
+      List.delete ".dir-locals.el" Crunched.file_list
+    in
+    List.map (from_files name) lst
 end
 
 let lib_dune = Files.lib_dune
