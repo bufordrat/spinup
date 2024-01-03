@@ -49,6 +49,26 @@ let rec dry_run =
 let write v = Write v
 
 module Dirs = struct
+  (* not using these directory functions yet; will soon *)
+
+  let ignore_list = [ ".dir_locals.el" ]
+  
+  let dirnames flist =
+    let open Stdlib.Filename in
+    let not_dot dir = dir <> "." in
+    List.map dirname flist
+    |> List.filter not_dot
+    |> Prelude.nub
+
+  let dir_to_action dir = 
+    Run Command.
+    {args = [ "mkdir" ; dir ] ;
+     cmessage = "making " ^ dir ^ "/ directory..." ; }
+
+  let dirs () =
+    let ds = dirnames Crunched.file_list in
+    List.map dir_to_action ds
+
   let mk_appdir =
     Run Command.
     { args = [ "mkdir" ; "app" ] ;
@@ -63,87 +83,89 @@ module Dirs = struct
     Run Command.
     { args = [ "mkdir" ; "test" ] ;
       cmessage = "making test/ directory..." ; }
+
+
 end
 
 module Files = struct
-  let template_root = Template.Path.path
+  (* let template_root = Template.Path.path *)
 
-  let add_subdir subdir filename =
-    match subdir with
-    | "" -> filename
-    | actual_path -> actual_path ^ "/" ^ filename
-
-  let dune_project name =
-    Template.Unprocessed. 
-    { template_filename = "dune-project" ;
-      output_filename = "dune-project" ;
-      template_path = template_root ;
-      output_path = "" ;
-      context = [ "pname", name ] ;
-      umessage = "creating dune-project file..." ; }
-
-  let gnumakefile name =
-    Template.Unprocessed.
-    { template_filename = "GNUmakefile" ;
-      output_filename = "GNUmakefile" ;
-      template_path = template_root ;
-      output_path = "" ;
-      context = [ "pname", name ] ;
-      umessage = "creating GNUmakefile..." ; }
-
-  let app_dune name =
-    Template.Unprocessed.
-    { template_filename = "dune" ;
-      output_filename = "dune" ;
-      template_path = add_subdir template_root "app" ;
-      output_path = "app" ;
-      context = [ "pname", name ] ;
-      umessage = "creating app/dune file..." ; }
-
-  let app_exe name =
-    Template.Unprocessed.
-    { template_filename = "project.ml" ;
-      output_filename = name ^ ".ml" ;
-      template_path = add_subdir template_root "app" ;
-      output_path = "app" ;
-      context = [] ;
-      umessage = "creating executable module app/" ^ name ^ ".ml..." ; }
-
-  let lib_dune () =
-    Template.Unprocessed.
-    { template_filename = "dune" ;
-      output_filename = "dune" ;
-      template_path = add_subdir template_root "lib" ;
-      output_path = "lib" ;
-      context = [] ;
-      umessage = "creating library dune config..." ; }
-
-  let lib_lib () =
-    Template.Unprocessed.
-    { template_filename = "lib.ml" ;
-      output_filename = "lib.ml" ;
-      template_path = add_subdir template_root "lib" ;
-      output_path = "lib" ;
-      context = [] ;
-      umessage = "creating library..." ; }
-
-  let test_dune name =
-    Template.Unprocessed.
-    { template_filename = "dune" ;
-      output_filename = "dune" ;
-      template_path = add_subdir template_root "test" ;
-      output_path = "test" ;
-      context = [ "pname", name ] ;
-      umessage = "creating test/dune file..." ; }
-
-  let test_test name =
-    Template.Unprocessed.
-    { template_filename = "test_project.ml" ;
-      output_filename = "test_" ^ name ^ ".ml" ;
-      template_path = add_subdir template_root "test" ;
-      output_path = "test" ;
-      context = [] ;
-      umessage = "creating test/test_" ^ name ^ ".ml file..." ; }
+  (* let add_subdir subdir filename =
+   *   match subdir with
+   *   | "" -> filename
+   *   | actual_path -> actual_path ^ "/" ^ filename
+   * 
+   * let dune_project name =
+   *   Template.Unprocessed. 
+   *   { template_filename = "dune-project" ;
+   *     output_filename = "dune-project" ;
+   *     template_path = template_root ;
+   *     output_path = "" ;
+   *     context = [ "pname", name ] ;
+   *     umessage = "creating dune-project file..." ; }
+   * 
+   * let gnumakefile name =
+   *   Template.Unprocessed.
+   *   { template_filename = "GNUmakefile" ;
+   *     output_filename = "GNUmakefile" ;
+   *     template_path = template_root ;
+   *     output_path = "" ;
+   *     context = [ "pname", name ] ;
+   *     umessage = "creating GNUmakefile..." ; }
+   * 
+   * let app_dune name =
+   *   Template.Unprocessed.
+   *   { template_filename = "dune" ;
+   *     output_filename = "dune" ;
+   *     template_path = add_subdir template_root "app" ;
+   *     output_path = "app" ;
+   *     context = [ "pname", name ] ;
+   *     umessage = "creating app/dune file..." ; }
+   * 
+   * let app_exe name =
+   *   Template.Unprocessed.
+   *   { template_filename = "project.ml" ;
+   *     output_filename = name ^ ".ml" ;
+   *     template_path = add_subdir template_root "app" ;
+   *     output_path = "app" ;
+   *     context = [] ;
+   *     umessage = "creating executable module app/" ^ name ^ ".ml..." ; }
+   * 
+   * let lib_dune () =
+   *   Template.Unprocessed.
+   *   { template_filename = "dune" ;
+   *     output_filename = "dune" ;
+   *     template_path = add_subdir template_root "lib" ;
+   *     output_path = "lib" ;
+   *     context = [] ;
+   *     umessage = "creating library dune config..." ; }
+   * 
+   * let lib_lib () =
+   *   Template.Unprocessed.
+   *   { template_filename = "lib.ml" ;
+   *     output_filename = "lib.ml" ;
+   *     template_path = add_subdir template_root "lib" ;
+   *     output_path = "lib" ;
+   *     context = [] ;
+   *     umessage = "creating library..." ; }
+   * 
+   * let test_dune name =
+   *   Template.Unprocessed.
+   *   { template_filename = "dune" ;
+   *     output_filename = "dune" ;
+   *     template_path = add_subdir template_root "test" ;
+   *     output_path = "test" ;
+   *     context = [ "pname", name ] ;
+   *     umessage = "creating test/dune file..." ; }
+   * 
+   * let test_test name =
+   *   Template.Unprocessed.
+   *   { template_filename = "test_project.ml" ;
+   *     output_filename = "test_" ^ name ^ ".ml" ;
+   *     template_path = add_subdir template_root "test" ;
+   *     output_path = "test" ;
+   *     context = [] ;
+   *     umessage = "creating test/test_" ^ name ^ ".ml file..." ; } *)
 
   (* let files name = [
    *     dune_project name ;
@@ -178,8 +200,6 @@ module Files = struct
     in
     List.map (from_files name) lst
 end
-
-let lib_dune = Files.lib_dune
 
 module Conclude = struct
   let do_a_build =
@@ -219,11 +239,7 @@ end
 let directory_actions name =
   let open Template in
   let open R in
-  let make_dirs = Dirs.[
-        mk_appdir ;
-        mk_libdir ;
-        mk_testdir ; ]
-  in
+  let dirs = Dirs.dirs () in
   let files = Files.files name in
   let+ processed =
     traverse
@@ -239,7 +255,7 @@ let directory_actions name =
         done_msg ;
         sandbox_msg name ; ]
   in
-  make_dirs @ writes @ finish_up
+  dirs @ writes @ finish_up
 
 let main_action name =
   let open R in
