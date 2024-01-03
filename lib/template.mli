@@ -3,9 +3,13 @@ module Path : sig
 end
 
 module Engine : sig
-  val expand_template : template:string ->
-                         context:(string * string) list ->
-                         (string, string) result
+  (* val expand_template : template:string ->
+   *                        context:(string * string) list ->
+   *                        (string, string) result *)
+
+  val expand_string : context:(string * string) list ->
+                      string ->
+                      (string, string) result
 
   val expand_crunched : template:string ->
                          context:(string * string) list ->
@@ -28,6 +32,8 @@ module Unprocessed : sig
              context : (string * string) list ;
              umessage : string ;
            }
+
+  val expand_filenames : t -> (t, string) result
 
   val process : t -> (Processed.t, string) result
 end

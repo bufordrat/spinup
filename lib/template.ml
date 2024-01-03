@@ -21,33 +21,36 @@ module Engine = struct
         (Tint.Eval.eval state tint)
     in processed_string
 
-  let expand_template_path path template context =
-    let open R in
-    let fullpath = path ^ "/" ^ template in
-    let* raw_contents =
-      let open Prelude in
-      trap Exn.to_string readfile fullpath
-    in
-    let append_path s = s ^ "\n" ^ fullpath in
-    let res = 
-      macro_expand ~syntax:"#[,]" ~context raw_contents
-    in
-    map_error append_path res
-    
-  let expand_template ~template ~context =
-    expand_template_path Path.path template context
+  let expand_string ~context str =
+    macro_expand ~syntax:"#[,]" ~context str
+
+  (* let expand_template_path path template context =
+   *   let open R in
+   *   let fullpath = path ^ "/" ^ template in
+   *   let* raw_contents =
+   *     let open Prelude in
+   *     trap Exn.to_string readfile fullpath
+   *   in
+   *   let append_path s = s ^ "\n" ^ fullpath in
+   *   let res = 
+   *     expand_string ~context raw_contents
+   *   in
+   *   map_error append_path res
+   *   
+   * let expand_template ~template ~context =
+   *   expand_template_path Path.path template context *)
 
   let expand_crunched ~template ~context =
     let open R in
     let option_to_result = function
       | Some contents -> Ok contents
-      | None -> Error "filesystem crunching error"
+      | None -> Error ("filesystem crunching error: " ^ template)
     in
     let* raw_contents =
       Crunched.read template
       |> option_to_result
     in
-    macro_expand ~syntax:"#[,]" ~context raw_contents
+    expand_string ~context raw_contents
 end
   
 module Processed = struct
@@ -70,17 +73,38 @@ module Unprocessed = struct
              umessage : string ;
            }
 
-  let process unv =
+  let expand_filenames unp =
     let open R in
-    let context = unv.context in
-    let write_path =
-      match unv.output_path with
-      | "" -> "./" ^ unv.output_filename
-      | other -> "./" ^ other ^ "/" ^ unv.output_filename
+    let open Engine in
+    let context = unp.context in
+    let template_filename = unp.template_filename in
+    let template_path = unp.template_path in
+    let+ output_filename =
+      expand_string ~context unp.output_filename
+    and+ output_path =
+      expand_string ~context unp.output_path
+    and+ umessage =
+      expand_string ~context unp.umessage
     in
-    let vmessage = unv.umessage in
+    { template_filename ;
+      output_filename ;
+      template_path ;
+      output_path ;
+      context ;
+      umessage ; }
+
+  let process unp =
+    let open R in
+    let context = unp.context in
+    let* partial = expand_filenames unp in
+    let write_path =
+      match partial.output_path with
+      | "" -> "./" ^ partial.output_filename
+      | other -> "./" ^ other ^ "/" ^ partial.output_filename
+    in
+    let vmessage = partial.umessage in
     let template_path =
-      unv.output_path ^ "/" ^ unv.template_filename
+      partial.output_path ^ "/" ^ partial.template_filename
     in
     let+ data = Engine.expand_crunched
                   ~template:template_path
