@@ -51,133 +51,23 @@ let write v = Write v
 module Dirs = struct
   (* not using these directory functions yet; will soon *)
 
-  let ignore_list = [ ".dir_locals.el" ]
-  
   let dirnames flist =
     let open Stdlib.Filename in
     let not_dot dir = dir <> "." in
     List.map dirname flist
     |> List.filter not_dot
-    |> Prelude.nub
 
   let dir_to_action dir = 
     Run Command.
-    {args = [ "mkdir" ; dir ] ;
-     cmessage = "making " ^ dir ^ "/ directory..." ; }
+    { args = [ "mkdir" ; "-p" ; dir ] ;
+      cmessage = "making " ^ dir ^ "/ directory..." ; }
 
   let dirs () =
     let ds = dirnames Crunched.file_list in
     List.map dir_to_action ds
-
-  let mk_appdir =
-    Run Command.
-    { args = [ "mkdir" ; "app" ] ;
-      cmessage = "making app/ directory..." ; }
-
-  let mk_libdir =
-    Run Command.
-    { args = [ "mkdir" ; "lib" ] ;
-      cmessage = "making lib/ directory..." ; }
-
-  let mk_testdir =
-    Run Command.
-    { args = [ "mkdir" ; "test" ] ;
-      cmessage = "making test/ directory..." ; }
-
-
 end
 
 module Files = struct
-  (* let template_root = Template.Path.path *)
-
-  (* let add_subdir subdir filename =
-   *   match subdir with
-   *   | "" -> filename
-   *   | actual_path -> actual_path ^ "/" ^ filename
-   * 
-   * let dune_project name =
-   *   Template.Unprocessed. 
-   *   { template_filename = "dune-project" ;
-   *     output_filename = "dune-project" ;
-   *     template_path = template_root ;
-   *     output_path = "" ;
-   *     context = [ "pname", name ] ;
-   *     umessage = "creating dune-project file..." ; }
-   * 
-   * let gnumakefile name =
-   *   Template.Unprocessed.
-   *   { template_filename = "GNUmakefile" ;
-   *     output_filename = "GNUmakefile" ;
-   *     template_path = template_root ;
-   *     output_path = "" ;
-   *     context = [ "pname", name ] ;
-   *     umessage = "creating GNUmakefile..." ; }
-   * 
-   * let app_dune name =
-   *   Template.Unprocessed.
-   *   { template_filename = "dune" ;
-   *     output_filename = "dune" ;
-   *     template_path = add_subdir template_root "app" ;
-   *     output_path = "app" ;
-   *     context = [ "pname", name ] ;
-   *     umessage = "creating app/dune file..." ; }
-   * 
-   * let app_exe name =
-   *   Template.Unprocessed.
-   *   { template_filename = "project.ml" ;
-   *     output_filename = name ^ ".ml" ;
-   *     template_path = add_subdir template_root "app" ;
-   *     output_path = "app" ;
-   *     context = [] ;
-   *     umessage = "creating executable module app/" ^ name ^ ".ml..." ; }
-   * 
-   * let lib_dune () =
-   *   Template.Unprocessed.
-   *   { template_filename = "dune" ;
-   *     output_filename = "dune" ;
-   *     template_path = add_subdir template_root "lib" ;
-   *     output_path = "lib" ;
-   *     context = [] ;
-   *     umessage = "creating library dune config..." ; }
-   * 
-   * let lib_lib () =
-   *   Template.Unprocessed.
-   *   { template_filename = "lib.ml" ;
-   *     output_filename = "lib.ml" ;
-   *     template_path = add_subdir template_root "lib" ;
-   *     output_path = "lib" ;
-   *     context = [] ;
-   *     umessage = "creating library..." ; }
-   * 
-   * let test_dune name =
-   *   Template.Unprocessed.
-   *   { template_filename = "dune" ;
-   *     output_filename = "dune" ;
-   *     template_path = add_subdir template_root "test" ;
-   *     output_path = "test" ;
-   *     context = [ "pname", name ] ;
-   *     umessage = "creating test/dune file..." ; }
-   * 
-   * let test_test name =
-   *   Template.Unprocessed.
-   *   { template_filename = "test_project.ml" ;
-   *     output_filename = "test_" ^ name ^ ".ml" ;
-   *     template_path = add_subdir template_root "test" ;
-   *     output_path = "test" ;
-   *     context = [] ;
-   *     umessage = "creating test/test_" ^ name ^ ".ml file..." ; } *)
-
-  (* let files name = [
-   *     dune_project name ;
-   *     gnumakefile name ;
-   *     app_dune name ;
-   *     app_exe name ;
-   *     lib_dune () ;
-   *     lib_lib () ;
-   *     test_dune name ;
-   *     test_test name ;
-   *   ] *)
-
   let from_files name path = 
     let open Template.Unprocessed in
     let open Stdlib.Filename in
@@ -239,6 +129,7 @@ end
 let directory_actions name =
   let open Template in
   let open R in
+  (* TODO: make the directory, then write the file, for each file *)
   let dirs = Dirs.dirs () in
   let files = Files.files name in
   let+ processed =

@@ -98,6 +98,7 @@ module Unprocessed = struct
     let context = unp.context in
     let* partial = expand_filenames unp in
     let write_path =
+      (* TODO: do all this crap with Prelude.Filename *)
       match partial.output_path with
       | "" -> "./" ^ partial.output_filename
       | other -> "./" ^ other ^ "/" ^ partial.output_filename
