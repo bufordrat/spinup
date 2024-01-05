@@ -18,7 +18,7 @@
     utop
     ocp-index
     ocaml-crunch
+    cmdliner
     (alcotest :with-test)
-    qcheck-alcotest
     merlin))
 
