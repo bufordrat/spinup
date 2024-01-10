@@ -20,5 +20,6 @@
     crunch
     (alcotest :with-test)
     qcheck
-    merlin))
+    merlin)
+  (source (github bufordrat/spinup)))
 
