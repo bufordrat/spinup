@@ -17,8 +17,9 @@
     etude
     utop
     ocp-index
-    ocaml-crunch
-    cmdliner
+    crunch
     (alcotest :with-test)
-    merlin))
+    qcheck
+    merlin)
+  (source (github bufordrat/spinup)))
 

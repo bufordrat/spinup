@@ -1,6 +1,6 @@
 (test
  (name test_spinup)
- (libraries lib qcheck alcotest))
+ (libraries lib alcotest))
 
 (env
  (dev

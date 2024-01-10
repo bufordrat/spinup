@@ -14,9 +14,9 @@ depends: [
   "etude"
   "utop"
   "ocp-index"
-  "ocaml-crunch"
-  "cmdliner"
+  "crunch"
   "alcotest" {with-test}
+  "qcheck"
   "merlin"
   "odoc" {with-doc}
 ]
@@ -34,3 +34,4 @@ build: [
     "@doc" {with-doc}
   ]
 ]
+dev-repo: "git+https://github.com/bufordrat/spinup.git"
