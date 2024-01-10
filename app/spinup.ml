@@ -31,4 +31,5 @@ module Main = struct
       end
 end
               
-let () = Main.main (Prelude.argv)
+let () = print_endline "owihfiohew"
+  (* Main.main (Prelude.argv) *)
