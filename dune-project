@@ -19,6 +19,6 @@
     ocp-index
     crunch
     (alcotest :with-test)
-    qcheck-alcotest
+    qcheck
     merlin))
 

@@ -14,9 +14,9 @@ depends: [
   "etude"
   "utop"
   "ocp-index"
-  "ocaml-crunch"
+  "crunch"
   "alcotest" {with-test}
-  "qcheck-alcotest"
+  "qcheck"
   "merlin"
   "odoc" {with-doc}
 ]
