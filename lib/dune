@@ -1,6 +1,6 @@
 (library
  (name lib)
- (libraries prelude etude tint cmdliner))
+ (libraries prelude etude tint))
 
 (data_only_dirs templates)
 
