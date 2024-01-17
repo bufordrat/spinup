@@ -4,7 +4,7 @@ module type TERM =
 module Term : TERM
        with type 'a t = 'a Cmdliner.Term.t
   = struct
-  include Cmdliner.Term
+  open Cmdliner.Term
 
   module type BASIC =
     Etude.Endofunctors_intf.Applicative.BASIC
