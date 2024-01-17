@@ -1,0 +1,40 @@
+* dune-project stuff
+** DONE name
+** TODO description
+** TODO synopsis
+** TODO maintainers
+** TODO authors
+** TODO homepage
+** TODO bug_reports
+** for dune-project dependencies:
+- three options:
+  1) prelude/etude
+  2) core
+  3) containers
+
+* dune stuff
+** public_name
+
+* license/copyright
+** GPL
+** BSD
+** Apache
+** a couple standard CCs
+
+* fancy version of the above
+** user can either configure:
+1) maintainers "Your Name <youremail@gmail.com>"
+2) derive it
+   - spinup_person_name "Your Name"
+   - spinup_person_email "youremail@gmail.com"
+   - and then spinup can derive the string for maintainers
+   - then: maintainers "##[cl,spinup_person_name] <##[cl,spinup_person_email]>"
+
+* TINTed project name in the spinup config file
+(homepage "htps://www/keith/software/$[cl,pname]")
+
+* add to the TINT context in the user's config file
+#+begin_example
+  #[ds,domain,www.lib.uchicago.edu]
+  (homepage "htps://#[cl,domain]/keith/software/$[cl,pname]")
+#+end_example
