@@ -13,8 +13,8 @@ module Term : TERM
          with type 'a t = 'a Cmdliner.Term.t
     = struct
     type 'a t = 'a Cmdliner.Term.t
-    let map f x =
-      const f $ x
+
+    let map f x = const f $ x
 
     let product ax ay =
       map (fun x y -> x, y) ax $ ay
@@ -58,7 +58,7 @@ module Command = struct
 
 
   let manpage_info =
-    let description = "Spinup creates a skeleton for a \
+    let description = "$(tname) creates a skeleton for a \
                        library-executable OCaml project that assumes \
                        the UChicago Library's opam repository and \
                        standard libraries."
