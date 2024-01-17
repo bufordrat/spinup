@@ -31,7 +31,7 @@ end
 module Arguments = struct
   let dry_run =
     let open Cmdliner.Arg in
-    let doc = "Print description of what would happen\
+    let doc = "Print description of what would happen \
                if $(tname) were run in normal mode."
     in
     let docv = "D" in
@@ -46,13 +46,6 @@ module Arguments = struct
     let inf = info [] ~doc ~docv in
     let arg_type = pos ~rev:true 0 (some string) None in
     required (arg_type inf)
-
-  let manpage =
-    Cmdliner.
-    [
-      `S Manpage.s_description ;
-      `P "stub description" ;
-    ]
 end
 
 module Command = struct
@@ -61,7 +54,7 @@ module Command = struct
     let+ main = pure exe
     and+ dr = dry_run
     and+ pn = project_name
-    in main dr pn |> ignore
+    in main dr pn
 
   let manpage =
     Cmdliner.

@@ -3,7 +3,7 @@
 ** Prelude.Prereq-s checking
 
 * TODO Features
-** Alcotest
-** cram tests
+** DONE Alcotest
+** DONE cram tests
 ** template override
 ** config file

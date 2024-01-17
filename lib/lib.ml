@@ -3,3 +3,4 @@ module Template = Template
 module Action = Action
 module Command = Command
 module Crunched = Crunched
+module Cli = Cli
