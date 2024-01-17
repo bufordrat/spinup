@@ -56,16 +56,22 @@ module Command = struct
     and+ pn = project_name
     in main dr pn
 
-  let manpage =
-    Cmdliner.
-    [
-      `S Manpage.s_description ;
-      `P "stub description" ;
-    ]
 
   let manpage_info =
+    let description = "Spinup creates a skeleton for a \
+                       library-executable OCaml project that assumes \
+                       the UChicago Library's opam repository and \
+                       standard libraries."
+    in
+    let man =
+      Cmdliner.
+      [
+        `S Manpage.s_description ;
+        `P description ;
+      ]
+    in
     let doc = "Spins up an OCaml project skeleton." in
-    Cmdliner.Cmd.info "spinup" ~doc ~man:manpage
+    Cmdliner.Cmd.info "spinup" ~doc ~man
 
   let command exe dry_run project_name =
     let term = main_term exe dry_run project_name in
