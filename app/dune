@@ -3,7 +3,7 @@
  (name spinup)
  (modules spinup)
  (promote (until-clean))
- (libraries prelude etude lib))
+ (libraries prelude etude lib cmdliner))
 
 (env
  (dev
