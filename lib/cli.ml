@@ -4,7 +4,6 @@ module type TERM =
 module Term : TERM
        with type 'a t = 'a Cmdliner.Term.t
   = struct
-  open Cmdliner.Term
 
   module type BASIC =
     Etude.Endofunctors_intf.Applicative.BASIC
@@ -12,6 +11,8 @@ module Term : TERM
   module BasicApp : BASIC
          with type 'a t = 'a Cmdliner.Term.t
     = struct
+    open Cmdliner.Term
+
     type 'a t = 'a Cmdliner.Term.t
 
     let map f x = const f $ x
@@ -24,8 +25,6 @@ module Term : TERM
 
   open Etude.Endofunctors
   include Applicative.Make (BasicApp)
-
-  let pure = const
 end
 
 module Arguments = struct
