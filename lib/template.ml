@@ -87,6 +87,7 @@ module Unprocessed = struct
       expand_string ~context unp.umessage
     in
     { template_filename ;
+
       output_filename ;
       template_path ;
       output_path ;
@@ -98,14 +99,22 @@ module Unprocessed = struct
     let context = unp.context in
     let* partial = expand_filenames unp in
     let write_path =
-      (* TODO: do all this crap with Prelude.Filename *)
+      let open Prelude.File in
       match partial.output_path with
-      | "" -> "./" ^ partial.output_filename
-      | other -> "./" ^ other ^ "/" ^ partial.output_filename
+      | "" -> join "." partial.output_filename
+      | other -> coalesce
+                   ~sep:"/"
+                   [ "." ;
+                     other ;
+                     partial.output_filename ]
     in
     let vmessage = partial.umessage in
     let template_path =
-      partial.output_path ^ "/" ^ partial.template_filename
+      let open Prelude.File in
+      coalesce
+        ~sep:"/"
+        [ partial.output_path ;
+          partial.template_filename ]
     in
     let+ data = Engine.expand_crunched
                   ~template:template_path
