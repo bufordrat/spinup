@@ -2,8 +2,6 @@
 (* TODO: check for dependencies *)
 (* TODO: check for missing templates *)
 
-module R = Etude.Result.Make (String)
-
 let dir_or_file path = 
   if Sys.is_directory path
   then ("/", "directory")

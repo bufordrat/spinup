@@ -129,7 +129,6 @@ end
 let directory_actions name =
   let open Template in
   let open R in
-  (* TODO: make the directory, then write the file, for each file *)
   let dirs = Dirs.dirs () in
   let files = Files.files name in
   let+ processed =
