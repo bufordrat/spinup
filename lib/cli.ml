@@ -55,7 +55,6 @@ module Command = struct
     and+ pn = project_name
     in main dr pn
 
-
   let manpage_info =
     let description = "$(tname) creates a skeleton for a \
                        library-executable OCaml project that assumes \
