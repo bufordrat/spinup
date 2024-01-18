@@ -1,34 +1,20 @@
-type t = { description : string ;
-           synopsis : string ;
-           maintainers : string list ;
-           authors : string list ;
-           homepage : string ;
-           bug_reports : string ;
-         }
+type t = { context : (string * string) list }
 
-let default =
-  let description = "Insert project description here." in
-  let synopsis = "Insert project synopsis, which is supposedly \
-                  different, here" in
-  let maintainers = [ "Your Name <youremail@gmail.com>" ] in
-  let authors = [ "Your Name <youremail@gmail.com>" ] in
-  let homepage = "https://your.website.here" in
-  let bug_reports = "https://your.website.here" in
-  { description ;
-    synopsis ;
-    maintainers ;
-    authors ;
-    homepage ;
-    bug_reports }
+let default_context pname =
+  [ "pname", pname ]
 
-let default_context ?(config=default) pname =
-  let open Prelude.String in
-  [ "pname", pname ;
-    "description", config.description ;
-    "synopsis", config.synopsis ;
-    "maintainers", join ~sep:" " config.maintainers ;
-    "authors", join ~sep:" " config.authors ;
-    "homepage", config.homepage ;
-    "bug_reports", config.bug_reports ; ]
+let default pname =
+  let context = default_context pname
+  in { context }
 
-
+let moar_parsing str =
+  let module E = struct type t = int * string end in
+  let open Etude.Result.Make (E) in
+  let open Prelude.Refer.Seq in
+  let collapse db =
+    let open Etude.List in
+    let each_pair (_, assocs) = assocs in
+    db >>= each_pair
+  in
+  let lst = Prelude.Seq.to_list (of_string str) in
+  sequence lst >>| collapse
