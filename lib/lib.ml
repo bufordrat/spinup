@@ -4,3 +4,4 @@ module Action = Action
 module Command = Command
 module Crunched = Crunched
 module Cli = Cli
+module Config = Config
