@@ -99,10 +99,11 @@ module Unprocessed = struct
     let context = unp.context in
     let* partial = expand_filenames unp in
     let write_path =
-      let open Prelude.File in
+      let open Prelude in
       match partial.output_path with
-      | "" -> join "." partial.output_filename
-      | other -> coalesce
+      | "" ->
+         Prelude.File.join "." partial.output_filename
+      | other -> String.join
                    ~sep:"/"
                    [ "." ;
                      other ;
@@ -110,8 +111,8 @@ module Unprocessed = struct
     in
     let vmessage = partial.umessage in
     let template_path =
-      let open Prelude.File in
-      coalesce
+      let open Prelude in
+      String.join
         ~sep:"/"
         [ partial.output_path ;
           partial.template_filename ]
