@@ -22,3 +22,4 @@ let refer_parse str =
     Seq.to_list (Refer.Seq.of_string str)
   in
   sequence lst >>| collapse
+
