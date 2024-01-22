@@ -66,27 +66,27 @@ module Dirs = struct
 end
 
 module Files = struct
-  let from_files pname path = 
+  let from_files pname template_path config = 
     let open Template.Unprocessed in
     let open Stdlib.Filename in
-    let dirname path =
-      match Stdlib.Filename.dirname path with
+    let dirname template_path =
+      match Stdlib.Filename.dirname template_path with
       | "." -> ""
       | p -> p
     in
-    { template_filename = basename path ;
-      output_filename = basename path ;
+    { template_filename = basename template_path ;
+      output_filename = basename template_path ;
       template_path = "" ;
-      output_path = dirname path ;
+      output_path = dirname template_path ;
       context = [ "pname", pname ] ;
-      umessage = "creating " ^ path ^ " file..." ; } 
+      umessage = "creating " ^ template_path ^ " file..." ; } 
 
-  let files pname =
+  let files pname config =
     let open Prelude in
     let lst =
       List.delete ".dir-locals.el" Crunched_templates.file_list
     in
-    List.map (from_files pname) lst
+    List.map (from_files pname config) lst
 end
 
 module Conclude = struct
@@ -124,11 +124,11 @@ module Conclude = struct
       cmessage = msg ; }
 end
 
-let directory_actions pname =
+let directory_actions pname config =
   let open Template in
   let open R in
   let dirs = Dirs.dirs () in
-  let files = Files.files pname in
+  let files = Files.files pname config in
   let+ processed =
     traverse
       Unprocessed.process
@@ -148,6 +148,7 @@ let directory_actions pname =
 let main_action pname config_path =
   let open R in
   let* () = Errors.already_exists pname in
-  let+ actions = directory_actions pname in
+  let* config = Config.get_config pname ".spinuprc" in
+  let+ actions = directory_actions pname config in
   WithCD { dir = pname ;
            actions = actions ; }
