@@ -42,13 +42,9 @@ module Engine = struct
 
   let expand_crunched ~template ~context =
     let open R in
-    let option_to_result = function
-      | Some contents -> Ok contents
-      | None -> Error ("filesystem crunching error: " ^ template)
-    in
     let* raw_contents =
-      Crunched.read template
-      |> option_to_result
+      Crunched_templates.read template
+      |> Crunch.option_to_result template
     in
     expand_string ~context raw_contents
 end

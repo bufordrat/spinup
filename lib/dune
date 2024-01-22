@@ -7,7 +7,7 @@
 (rule
  (deps (source_tree templates))
  (action
-  (with-stdout-to crunched.ml
+  (with-stdout-to crunched_templates.ml
   (run ocaml-crunch -m plain templates))))
 
 (rule

@@ -1,9 +1,10 @@
+module R = Etude.Result.Make (String)
+
 type t = { pname : string ;
            context : (string * string) list ; }
 
-let default_context pname =
-  let context = []
-  in { pname ; context }
+let mk_config pname context =
+  { pname ; context }
 
 let refer_parse str =
   let module E =
@@ -21,3 +22,19 @@ let refer_parse str =
   in
   sequence lst >>| collapse
 
+let get_config pname crunch_path =
+  let open R in
+  let e_to_string (i, msg) =
+    Printf.sprintf
+      "Refer parse error:\nline %d:\n%s" i msg
+  in
+  let parse str =
+    map_error e_to_string (refer_parse str)
+  in
+  let read crunch_path =
+    Crunched_config.read crunch_path
+    |> Crunch.option_to_result crunch_path
+  in
+  let process = read >=> parse in
+  let+ context = process crunch_path in
+  { pname ; context }

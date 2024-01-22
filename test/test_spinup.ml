@@ -1,6 +1,6 @@
 let dune_project_is_there () =
   let open Alcotest in
-  let dp = Lib.Crunched.read "dune-project" in
+  let dp = Lib.Crunched_templates.read "dune-project" in
   (check (neg (option string)))
     "crunched file is present"
     dp
@@ -8,7 +8,7 @@ let dune_project_is_there () =
 
 let gnumakefile_is_there () =
   let open Alcotest in
-  let dp = Lib.Crunched.read "GNUmakefile" in
+  let dp = Lib.Crunched_templates.read "GNUmakefile" in
   (check (neg (option string)))
     "crunched file is present"
     dp
