@@ -145,7 +145,7 @@ let directory_actions pname =
   in
   dirs @ writes @ finish_up
 
-let main_action pname =
+let main_action pname config_path =
   let open R in
   let* () = Errors.already_exists pname in
   let+ actions = directory_actions pname in

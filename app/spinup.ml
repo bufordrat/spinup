@@ -9,12 +9,12 @@ let handle_result handler = function
       exit 1
     end
 
-let main dr_arg pname_arg  =
+let main dr_arg pname_arg =
   let open Lib.Action in
   let doit handler name =
     handle_result
       handler
-      (main_action name)
+      (main_action name ".spinuprc")
   in
   match dr_arg, pname_arg with
   | true, pname -> doit dry_run pname
