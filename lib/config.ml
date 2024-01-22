@@ -1,11 +1,9 @@
-type t = { context : (string * string) list }
+type t = { pname : string ;
+           context : (string * string) list ; }
 
 let default_context pname =
-  [ "pname", pname ]
-
-let default pname =
-  let context = default_context pname
-  in { context }
+  let context = []
+  in { pname ; context }
 
 let refer_parse str =
   let module E =
