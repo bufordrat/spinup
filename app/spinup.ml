@@ -20,8 +20,12 @@ let main dr_arg pname_arg  =
   | true, pname -> doit dry_run pname
   | _, pname -> doit run pname
               
-let () = let open Lib.Cli in
-         Command.to_exe
-           main
-           Arguments.dry_run
-           Arguments.project_name
+(* let () = let open Lib.Cli in
+ *          Command.to_exe
+ *            main
+ *            Arguments.dry_run
+ *            Arguments.project_name *)
+
+let () =
+  let config = Lib.Config.get_config "hi" ".spinuprc" |> Stdlib.Result.get_ok
+  in print_endline (List.assoc "description" config.context)
