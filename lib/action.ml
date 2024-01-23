@@ -66,7 +66,7 @@ module Dirs = struct
 end
 
 module Files = struct
-  let from_files pname template_path config = 
+  let from_files config template_path = 
     let open Template.Unprocessed in
     let open Stdlib.Filename in
     let dirname template_path =
@@ -78,15 +78,15 @@ module Files = struct
       output_filename = basename template_path ;
       template_path = "" ;
       output_path = dirname template_path ;
-      context = [ "pname", pname ] ;
+      context = Config.(config.context) ;
       umessage = "creating " ^ template_path ^ " file..." ; } 
 
-  let files pname config =
+  let files config =
     let open Prelude in
     let lst =
       List.delete ".dir-locals.el" Crunched_templates.file_list
     in
-    List.map (from_files pname config) lst
+    List.map (from_files config) lst
 end
 
 module Conclude = struct
@@ -107,8 +107,9 @@ module Conclude = struct
     { args = [] ;
       cmessage = "DONE!" ; }
 
-  let sandbox_msg pname =
+  let sandbox_msg config =
     let msg =
+      let open Config in
       Prelude.sprintf "\nto install project dependencies into the current opam \
                        switch, run this command inside the %s/ directory:\n\
                        \n\
@@ -117,18 +118,18 @@ module Conclude = struct
                        to create a sandboxed opam switch, run this command \
                        inside the %s/ directory:\n\
                        \n\
-                       \  $ make sandbox\n" pname pname
+                       \  $ make sandbox\n" config.pname config.pname
     in
     Run Command.
     { args = [] ;
       cmessage = msg ; }
 end
 
-let directory_actions pname config =
+let directory_actions config =
   let open Template in
   let open R in
   let dirs = Dirs.dirs () in
-  let files = Files.files pname config in
+  let files = Files.files config in
   let+ processed =
     traverse
       Unprocessed.process
@@ -141,14 +142,14 @@ let directory_actions pname config =
         do_a_build ;
         do_a_clean ;
         done_msg ;
-        sandbox_msg pname ; ]
+        sandbox_msg config ; ]
   in
   dirs @ writes @ finish_up
 
 let main_action pname config_path =
   let open R in
   let* () = Errors.already_exists pname in
-  let* config = Config.get_config pname ".spinuprc" in
-  let+ actions = directory_actions pname config in
+  let* config = Config.get_config pname config_path in
+  let+ actions = directory_actions config in
   WithCD { dir = pname ;
            actions = actions ; }

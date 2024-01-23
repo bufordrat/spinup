@@ -3,7 +3,10 @@ module R = Etude.Result.Make (String)
 type t = { pname : string ;
            context : (string * string) list ; }
 
-let mk_config pname context =
+let mk_config pname old_context =
+  let context =
+    ("pname", pname) :: old_context
+  in 
   { pname ; context }
 
 let refer_parse str =
@@ -37,4 +40,4 @@ let get_config pname crunch_path =
   in
   let process = read >=> parse in
   let+ context = process crunch_path in
-  { pname ; context }
+  mk_config pname context
