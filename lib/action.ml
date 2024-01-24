@@ -136,15 +136,16 @@ module Conclude = struct
   let sandbox_msg config =
     let msg =
       let open Config in
-      Prelude.sprintf "\nto install project dependencies into the current opam \
-                       switch, run this command inside the %s/ directory:\n\
+      Prelude.sprintf "\nto install project dependencies into the \
+                       current opam switch, run this command inside \
+                       the %s/ directory:\n\
                        \n\
-                       \  $ make deps\n\
+                       \ $ make deps\n\
                        \n\
-                       to create a sandboxed opam switch, run this command \
-                       inside the %s/ directory:\n\
+                       to create a sandboxed opam switch, run this \
+                       command inside the %s/ directory:\n\
                        \n\
-                       \  $ make sandbox\n" config.pname config.pname
+                       \ $ make sandbox\n" config.pname config.pname
     in
     Run Command.
     { args = [] ;
