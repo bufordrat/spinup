@@ -48,6 +48,19 @@ let rec dry_run =
 
 let write v = Write v
 
+module Begin = struct
+  let say_which_config config =
+    let open Config in
+    let msg = match config.which with
+      | FromAFile path ->
+         "using config file at: " ^ path ^ "..."
+      | _ -> "using default config..."
+    in
+    Run Command.
+    { args = [] ;
+      cmessage = msg ; }
+end
+
 module Dirs = struct
   let dirnames flist =
     let open Stdlib.Filename in

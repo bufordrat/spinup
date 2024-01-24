@@ -26,4 +26,3 @@ let () = let open Lib.Cli in
            Arguments.dry_run
            Arguments.project_name
 
-
