@@ -6,6 +6,7 @@ type t = { pname : string ;
 let default_paths = [
     "~/.config/spinup/spinuprc" ;
     "~/.spinuprc" ;
+    "/etc/spinuprc" ;
   ]
 
 let mk_config pname old_context =
