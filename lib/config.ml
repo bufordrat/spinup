@@ -53,6 +53,5 @@ let get_config pname filesystem_path =
        let process = read >=> parse in
        let+ context = process filesystem_path in
        mk_config pname context
-  else (print_endline filesystem_path ; exit 1)
-        (* FromCrunch.get_config pname ".spinuprc" *)
+  else FromCrunch.get_config pname ".spinuprc"
 

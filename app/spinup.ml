@@ -12,7 +12,7 @@ let handle_result handler = function
 let main dr_arg pname_arg =
   let open Lib.Action in
   let config_path =
-    Prelude.File.squiggle ".spinuprc"
+    Prelude.File.squiggle "~/.spinuprc"
   in
   let doit handler name =
     handle_result
