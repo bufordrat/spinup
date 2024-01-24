@@ -141,6 +141,9 @@ end
 let directory_actions config =
   let open Template in
   let open R in
+  let start_up =
+    [ Begin.(say_which_config config) ]
+  in
   let dirs = Dirs.dirs () in
   let files = Files.files config in
   let+ processed =
@@ -157,7 +160,7 @@ let directory_actions config =
         done_msg ;
         sandbox_msg config ; ]
   in
-  dirs @ writes @ finish_up
+  start_up @ dirs @ writes @ finish_up
 
 let main_action pname =
   let open R in
