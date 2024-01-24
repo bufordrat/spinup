@@ -3,6 +3,11 @@ module R = Etude.Result.Make (String)
 type t = { pname : string ;
            context : (string * string) list ; }
 
+let default_paths = [
+    "~/.config/spinup/spinuprc" ;
+    "~/.spinuprc" ;
+  ]
+
 let mk_config pname old_context =
   let context =
     ("pname", pname) :: old_context
@@ -44,14 +49,17 @@ module FromCrunch = struct
     mk_config pname context
 end
 
-let get_config pname filesystem_path =
-  if Sys.file_exists filesystem_path
-  then let open R in
-       let read fpath =
-         Prelude.(trap Exn.to_string readfile fpath)
-       in
-       let process = read >=> parse in
-       let+ context = process filesystem_path in
-       mk_config pname context
-  else FromCrunch.get_config pname ".spinuprc"
+let get_config pname filesystem_paths =
+  let open Etude.Config in
+  match get_config_path filesystem_paths with
+  | Some p ->
+     let open R in
+     let read fpath =
+       Prelude.(trap Exn.to_string readfile fpath)
+     in
+     let process = read >=> parse in
+     let+ context = process p in
+     mk_config pname context
+  | None ->
+     FromCrunch.get_config pname ".spinuprc"
 

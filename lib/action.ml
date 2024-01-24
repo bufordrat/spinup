@@ -146,10 +146,10 @@ let directory_actions config =
   in
   dirs @ writes @ finish_up
 
-let main_action pname config_path =
+let main_action pname =
   let open R in
   let* () = Errors.already_exists pname in
-  let* config = Config.get_config pname config_path in
+  let* config = Config.(get_config pname default_paths) in
   let+ actions = directory_actions config in
   WithCD { dir = pname ;
            actions = actions ; }
