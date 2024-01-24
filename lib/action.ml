@@ -1,7 +1,8 @@
 module R = Etude.Result.Make (String)
 
 type dir = { dir : string ;
-             actions : t list ; }
+             actions : t list ;
+             config : Config.t ; }
 
 and t =
   | Write of Template.Processed.t
@@ -9,6 +10,17 @@ and t =
   | WithCD of dir
 
 module Opening = struct
+  let say_which_config config =
+    let open Config in
+    let msg = match config.which with
+      | FromAFile path ->
+         "using config file at: " ^ path ^ "..."
+      | _ -> "using default config..."
+    in
+    Run Command.
+    { args = [] ;
+      cmessage = msg ; }
+
   let mk_projectdir name =
     Run Command.
     { args = [ "mkdir" ; name ] ;
@@ -23,6 +35,7 @@ let rec run = function
      let handler _ =
        List.iter run d.actions
      in
+     run (Opening.say_which_config d.config) ;
      run (Opening.mk_projectdir d.dir) ;
      Prelude.(withcd handler d.dir)
 
@@ -32,7 +45,18 @@ let rec dry_run =
      let output =
        "    WRITE    " ^ tmpl.write_path
      in print_endline output
-  | Run { args = [] ; _ } -> ()
+  | Run { args = [] ; cmessage = "" } -> ()
+  | Run { args = [] ; cmessage = msg } ->
+     let open Prelude.String in
+     let trimmed =
+       if length msg <= 40
+       then msg
+       else (trim whitespace) (take 20 msg)
+            ^ "... etc."
+     in
+     let output =
+       "    PRINT    " ^ trimmed
+     in print_endline output
   | Run cmd ->
      let open Prelude.String in
      let output =
@@ -41,25 +65,13 @@ let rec dry_run =
   | WithCD d ->
      let msg = "      RUN    cd " ^ d.dir in
      begin
+       dry_run (Opening.say_which_config d.config) ;
        dry_run (Opening.mk_projectdir d.dir) ;
        print_endline msg ;
        List.iter dry_run d.actions
      end
 
 let write v = Write v
-
-module Begin = struct
-  let say_which_config config =
-    let open Config in
-    let msg = match config.which with
-      | FromAFile path ->
-         "using config file at: " ^ path ^ "..."
-      | _ -> "using default config..."
-    in
-    Run Command.
-    { args = [] ;
-      cmessage = msg ; }
-end
 
 module Dirs = struct
   let dirnames flist =
@@ -141,9 +153,6 @@ end
 let directory_actions config =
   let open Template in
   let open R in
-  let start_up =
-    [ Begin.(say_which_config config) ]
-  in
   let dirs = Dirs.dirs () in
   let files = Files.files config in
   let+ processed =
@@ -160,7 +169,7 @@ let directory_actions config =
         done_msg ;
         sandbox_msg config ; ]
   in
-  start_up @ dirs @ writes @ finish_up
+  dirs @ writes @ finish_up
 
 let main_action pname =
   let open R in
@@ -168,4 +177,5 @@ let main_action pname =
   let* config = Config.(get_config pname default_paths) in
   let+ actions = directory_actions config in
   WithCD { dir = pname ;
-           actions = actions ; }
+           actions = actions ;
+           config = config ; }

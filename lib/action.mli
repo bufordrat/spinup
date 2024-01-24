@@ -1,5 +1,6 @@
 type dir = { dir : string ;
-             actions : t list ; }
+             actions : t list ;
+             config : Config.t ; }
 
 and t =
   | Write of Template.Processed.t
