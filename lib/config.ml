@@ -25,19 +25,34 @@ let refer_parse str =
   in
   sequence lst >>| collapse
 
-let get_config pname crunch_path =
-  let open R in
-  let e_to_string (i, msg) =
-    Printf.sprintf
-      "Refer parse error:\nline %d:\n%s" i msg
-  in
-  let parse str =
-    map_error e_to_string (refer_parse str)
-  in
-  let read crunch_path =
-    Crunched_config.read crunch_path
-    |> Crunch.option_to_result crunch_path
-  in
-  let process = read >=> parse in
-  let+ context = process crunch_path in
-  mk_config pname context
+let e_to_string (i, msg) =
+  Printf.sprintf
+    "Refer parse error!\nline %d:\n%s" i msg
+
+let parse str =
+  R.map_error e_to_string (refer_parse str)
+
+module FromCrunch = struct
+  let get_config pname crunch_path =
+    let open R in
+    let read crunch_path =
+      Crunched_config.read crunch_path
+      |> Crunch.option_to_result crunch_path
+    in
+    let process = read >=> parse in
+    let+ context = process crunch_path in
+    mk_config pname context
+end
+
+let get_config pname filesystem_path =
+  if Sys.file_exists filesystem_path
+  then let open R in
+       let read fpath =
+         Prelude.(trap Exn.to_string readfile fpath)
+       in
+       let process = read >=> parse in
+       let+ context = process filesystem_path in
+       mk_config pname context
+  else (print_endline filesystem_path ; exit 1)
+        (* FromCrunch.get_config pname ".spinuprc" *)
+

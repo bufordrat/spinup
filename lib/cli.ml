@@ -77,5 +77,7 @@ module Command = struct
 
   let to_exe exe dry_run project_name =
     let open Cmdliner.Cmd in
-    exit (eval (command exe dry_run project_name))
+    command exe dry_run project_name
+    |> eval
+    |> exit
 end

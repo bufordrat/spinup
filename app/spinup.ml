@@ -11,10 +11,13 @@ let handle_result handler = function
 
 let main dr_arg pname_arg =
   let open Lib.Action in
+  let config_path =
+    Prelude.File.squiggle ".spinuprc"
+  in
   let doit handler name =
     handle_result
       handler
-      (main_action name ".spinuprc")
+      (main_action name config_path)
   in
   match dr_arg, pname_arg with
   | true, pname -> doit dry_run pname
