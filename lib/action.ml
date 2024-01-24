@@ -6,6 +6,7 @@ type dir = { dir : string ;
 
 and t =
   | Write of Template.Processed.t
+  (* TODO: just add a Print variant already, jeez *)
   | Run of Command.t
   | WithCD of dir
 
