@@ -6,6 +6,18 @@ let handle_result handler = function
       exit 1 ;
     end
 
+let print_crunch path =
+  let open Lib.Crunched_config in
+  let msg = Lib.Errors.wrap_in_argv0
+              "internal crunch error"
+  in
+  match read path with
+  | Some conf -> print_endline conf
+  | None -> begin
+      print_endline msg ;
+      exit 1 ;
+    end
+
 let main dr_arg pname_arg =
   let open Lib.Action in
   let doit handler pname =
