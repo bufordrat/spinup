@@ -1,12 +1,4 @@
-module Path : sig
-  val path : string
-end
-
 module Engine : sig
-  (* val expand_template : template:string ->
-   *                        context:(string * string) list ->
-   *                        (string, string) result *)
-
   val expand_string : context:(string * string) list ->
                       string ->
                       (string, string) result

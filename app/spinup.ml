@@ -2,11 +2,8 @@ let handle_result handler = function
   | Ok actions ->
      handler actions
   | Error e -> begin
-      let executable =
-        Filename.basename Prelude.argv0
-      in
-      print_endline (executable ^ ": " ^ e) ;
-      exit 1
+      print_endline e ;
+      exit 1 ;
     end
 
 let main dr_arg pname_arg =

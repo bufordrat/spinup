@@ -15,7 +15,7 @@ module Opening = struct
     let open Config in
     let msg = match config.which with
       | FromAFile path ->
-         "using config file at: " ^ path ^ "..."
+         "using config file at: " ^ path
       | _ -> "using default config..."
     in
     Run Command.
@@ -50,9 +50,9 @@ let rec dry_run =
   | Run { args = [] ; cmessage = msg } ->
      let open Prelude.String in
      let trimmed =
-       if length msg <= 40
+       if length msg <= 200
        then msg
-       else (trim whitespace) (take 20 msg)
+       else (trim whitespace) (take 41 msg)
             ^ "... etc."
      in
      let output =

@@ -7,9 +7,15 @@ let dir_or_file path =
   then ("/", "directory")
   else ("", "file")
   
+let wrap_in_argv0 msg =
+  let executable =
+    Filename.basename Prelude.argv0
+  in
+  executable ^ ": " ^ msg
+
 let already_exists name =
   let open Prelude in
-  let msg (slash, dir_or_file) =
+  let prose (slash, dir_or_file) =
     String.join ~sep:"" [
                   "a " ;
                   dir_or_file ;
@@ -19,5 +25,8 @@ let already_exists name =
                   " already exists." ; ]
   in
   if Sys.file_exists name
-  then Error (msg @@ dir_or_file name)
+  then let msg = dir_or_file name
+                 |> prose
+                 |> wrap_in_argv0
+       in Error msg
   else Ok ()

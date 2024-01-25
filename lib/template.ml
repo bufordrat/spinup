@@ -1,9 +1,5 @@
 module R = Etude.Result.Make (String)
 
-module Path = struct
-  let path = ""
-end
-
 module Engine = struct
   let default_syntax = Tint.Types.Syntax.tracstring
 
