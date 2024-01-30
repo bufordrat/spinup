@@ -4,6 +4,7 @@ type dir = { dir : string ;
 
 and t =
   | Write of Template.Processed.t
+  | Print of string
   | Run of Command.t
   | WithCD of dir
 

@@ -6,7 +6,7 @@ type dir = { dir : string ;
 
 and t =
   | Write of Template.Processed.t
-  (* TODO: just add a Print variant already, jeez *)
+  | Print of string
   | Run of Command.t
   | WithCD of dir
 
@@ -18,9 +18,7 @@ module Opening = struct
          "using config file at: " ^ path
       | _ -> "using default config..."
     in
-    Run Command.
-    { args = [] ;
-      cmessage = msg ; }
+    Print msg
 
   let mk_projectdir name =
     Run Command.
@@ -32,6 +30,7 @@ let rec run = function
   | Write tmpl ->
      Template.Processed.write tmpl
   | Run cmd -> Command.run cmd
+  | Print msg -> print_endline msg
   | WithCD d ->
      let handler _ =
        List.iter run d.actions
@@ -46,8 +45,7 @@ let rec dry_run =
      let output =
        "    WRITE    " ^ tmpl.write_path
      in print_endline output
-  | Run { args = [] ; cmessage = "" } -> ()
-  | Run { args = [] ; cmessage = msg } ->
+  | Print msg ->
      let open Prelude.String in
      let trimmed =
        if length msg <= 200
@@ -128,10 +126,7 @@ module Conclude = struct
       cmessage =
         "doing a `dune clean` to remove compiler detritus..." ; }
 
-  let done_msg =
-    Run Command.
-    { args = [] ;
-      cmessage = "DONE!" ; }
+  let done_msg = Print "DONE!"
 
   let sandbox_msg config =
     let msg =
@@ -147,9 +142,7 @@ module Conclude = struct
                        \n\
                        \ $ make sandbox\n" config.pname config.pname
     in
-    Run Command.
-    { args = [] ;
-      cmessage = msg ; }
+    Print msg
 end
 
 let directory_actions config =
