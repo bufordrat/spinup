@@ -39,8 +39,7 @@ let rec run = function
      run (Opening.mk_projectdir d.dir) ;
      Prelude.(withcd handler d.dir)
 
-let rec dry_run =
-  function
+let rec dry_run = function
   | Write tmpl ->
      let output =
        "    WRITE    " ^ tmpl.write_path
