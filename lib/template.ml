@@ -1,11 +1,11 @@
 module E = struct
   type t = [
-    | `BadSyntax of string
-    | `BadState of string
+    | `SyntaxString of string
+    | `TintSyntax of string
     ]
   module Smart = struct
-    let bad_syntax s = `BadSyntax s
-    let bad_state s = `BadState s
+    let syntax_string s = `SyntaxString s
+    let tint_syntax s = `TintSyntax s
   end
 end
 
@@ -25,22 +25,18 @@ module Engine = struct
   let string_to_syntax s =
     let open E.Smart in
     let open Tint.Types.Syntax in
-    map_error bad_syntax (of_string s)
+    map_error syntax_string (of_string s)
 
-  let init_state ?(syntax=default_syntax) context =
+  let context_to_state' ?(syntax=default_syntax) context =
+    (* note: when TINT updates so that init doesn't return a result,
+       this code will need to be modified *)
     let open R' in
     let open E.Smart in
     let* syntax = string_to_syntax syntax in
     let string_version =
       Tint.Eval.(init ~syntax prims (Forms.forms context))
     in
-    map_error bad_state string_version
-
-
-  (* let context_to_state' ?(syntax=default_syntax) context =
-   *   let open R' in
-   *   let* syntax = map_error mk_error (Tint.Types.Syntax.of_string syntax) in
-   *   map_error mk_error ( Tint.Eval.(init ~syntax prims (Forms.forms context))) *)
+    map_error syntax_string string_version
 
   let macro_expand ?syntax ~context tint =
     let open R in
@@ -51,8 +47,22 @@ module Engine = struct
         (Tint.Eval.eval state tint)
     in processed_string
 
+  (* let macro_expand' ?syntax ~context tint =
+   *   let open R' in
+   *   let open E.Smart in
+   *   let* state = context_to_state' ?syntax context in
+   *   let prep_error tint_error =
+   *     Tint.Types.error_message state.syntax tint_error
+   *     |> tint_error
+   *   in
+   *   let+ (_, processed_string) =
+   *     map_error
+   *       prep_error
+   *       (Tint.Eval.eval state tint)
+   *   in processed_string *)
+
   let expand_string ~context str =
-    macro_expand ~syntax:"#[,]" ~context str
+    macro_expand ~syntax:default_syntax ~context str
 
   (* let expand_template_path path template context =
    *   let open R in
