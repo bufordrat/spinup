@@ -1,4 +1,14 @@
+module E = struct
+  type t = [
+    | `BadSyntaxString of string
+    ]
+  module Make = struct
+    
+  end
+end
+
 module R = Etude.Result.Make (String)
+module R' = Etude.Result.Make (E)
 
 module Engine = struct
   let default_syntax = Tint.Types.Syntax.tracstring
@@ -7,6 +17,11 @@ module Engine = struct
     let open R in
     let* syntax = Tint.Types.Syntax.of_string syntax in
     Tint.Eval.(init ~syntax prims (Forms.forms context))
+
+  let context_to_state' ?(syntax=default_syntax) context =
+    let open R' in
+    let* syntax = map_error mk_error (Tint.Types.Syntax.of_string syntax) in
+    map_error mk_error ( Tint.Eval.(init ~syntax prims (Forms.forms context)))
 
   let macro_expand ?syntax ~context tint =
     let open R in
