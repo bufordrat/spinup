@@ -1,9 +1,11 @@
 module E = struct
   type t = [
-    | `BadSyntaxString of string
+    | `BadSyntax of string
+    | `BadState of string
     ]
-  module Make = struct
-    
+  module Smart = struct
+    let bad_syntax s = `BadSyntax s
+    let bad_state s = `BadState s
   end
 end
 
@@ -13,15 +15,32 @@ module R' = Etude.Result.Make (E)
 module Engine = struct
   let default_syntax = Tint.Types.Syntax.tracstring
 
+  let map_error = Stdlib.Result.map_error
+
   let context_to_state ?(syntax=default_syntax) context =
     let open R in
     let* syntax = Tint.Types.Syntax.of_string syntax in
     Tint.Eval.(init ~syntax prims (Forms.forms context))
 
-  let context_to_state' ?(syntax=default_syntax) context =
+  let string_to_syntax s =
+    let open E.Smart in
+    let open Tint.Types.Syntax in
+    map_error bad_syntax (of_string s)
+
+  let init_state ?(syntax=default_syntax) context =
     let open R' in
-    let* syntax = map_error mk_error (Tint.Types.Syntax.of_string syntax) in
-    map_error mk_error ( Tint.Eval.(init ~syntax prims (Forms.forms context)))
+    let open E.Smart in
+    let* syntax = string_to_syntax syntax in
+    let string_version =
+      Tint.Eval.(init ~syntax prims (Forms.forms context))
+    in
+    map_error bad_state string_version
+
+
+  (* let context_to_state' ?(syntax=default_syntax) context =
+   *   let open R' in
+   *   let* syntax = map_error mk_error (Tint.Types.Syntax.of_string syntax) in
+   *   map_error mk_error ( Tint.Eval.(init ~syntax prims (Forms.forms context))) *)
 
   let macro_expand ?syntax ~context tint =
     let open R in
