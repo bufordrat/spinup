@@ -79,3 +79,9 @@ let get_config pname filesystem_paths =
      mk_config ~which:(FromAFile p) pname context
   | None ->
      FromCrunch.get_config pname ".spinuprc"
+
+let print_crunch path =
+  let open Crunched_config in
+  match read path with
+  | Some conf -> print_endline conf
+  | None -> ()

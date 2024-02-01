@@ -1,33 +1,40 @@
-module E = struct
+module Error = struct
   type t = [
     | `SyntaxString of string
     | `TintSyntax of string
+    | `CrunchPath of string
     ]
   module Smart = struct
     let syntax_string s = `SyntaxString s
     let tint_syntax s = `TintSyntax s
+    let crunch_path s = `CrunchPath s
   end
 end
+
+module E = Error
+module Ty = Tint.Types
 
 module R = Etude.Result.Make (String)
 module R' = Etude.Result.Make (E)
 
 module Engine = struct
-  let default_syntax = Tint.Types.Syntax.tracstring
+  let default_syntax = Ty.Syntax.tracstring
+
+  let spinup_syntax = "#[,]"
 
   let map_error = Stdlib.Result.map_error
 
-  let context_to_state ?(syntax=default_syntax) context =
+  let context_to_state ?(syntax=spinup_syntax) context =
     let open R in
-    let* syntax = Tint.Types.Syntax.of_string syntax in
+    let* syntax = Ty.Syntax.of_string syntax in
     Tint.Eval.(init ~syntax prims (Forms.forms context))
 
   let string_to_syntax s =
     let open E.Smart in
-    let open Tint.Types.Syntax in
+    let open Ty.Syntax in
     map_error syntax_string (of_string s)
 
-  let context_to_state' ?(syntax=default_syntax) context =
+  let context_to_state' ?(syntax=spinup_syntax) context =
     (* note: when TINT updates so that init doesn't return a result,
        this code will need to be modified *)
     let open R' in
@@ -38,47 +45,32 @@ module Engine = struct
     in
     map_error syntax_string string_version
 
-  let macro_expand ?syntax ~context tint =
+  let macro_expand ?(syntax=spinup_syntax) ~context tint =
     let open R in
-    let* state = context_to_state ?syntax context in
+    let* state = context_to_state ~syntax context in
     let+ (_, processed_string) =
       map_error
-        (Tint.Types.error_message state.syntax)
+        (Ty.error_message state.syntax)
         (Tint.Eval.eval state tint)
     in processed_string
 
-  (* let macro_expand' ?syntax ~context tint =
-   *   let open R' in
-   *   let open E.Smart in
-   *   let* state = context_to_state' ?syntax context in
-   *   let prep_error tint_error =
-   *     Tint.Types.error_message state.syntax tint_error
-   *     |> tint_error
-   *   in
-   *   let+ (_, processed_string) =
-   *     map_error
-   *       prep_error
-   *       (Tint.Eval.eval state tint)
-   *   in processed_string *)
+  let macro_expand' ?(syntax=spinup_syntax) ~context tint =
+    let open R' in
+    let open E.Smart in
+    let* state = context_to_state' ~syntax context in
+    let prep_error tint_error =
+      Ty.error_message state.syntax tint_error
+      |> tint_syntax
+    in
+    let+ (_, processed_string) =
+      map_error prep_error (Tint.Eval.eval state tint)
+    in processed_string
 
-  let expand_string ~context str =
-    macro_expand ~syntax:default_syntax ~context str
+  let expand_string ?(syntax=spinup_syntax) ~context str =
+    macro_expand ~syntax:syntax ~context str
 
-  (* let expand_template_path path template context =
-   *   let open R in
-   *   let fullpath = path ^ "/" ^ template in
-   *   let* raw_contents =
-   *     let open Prelude in
-   *     trap Exn.to_string readfile fullpath
-   *   in
-   *   let append_path s = s ^ "\n" ^ fullpath in
-   *   let res = 
-   *     expand_string ~context raw_contents
-   *   in
-   *   map_error append_path res
-   *   
-   * let expand_template ~template ~context =
-   *   expand_template_path Path.path template context *)
+  let expand_string' ?(syntax=spinup_syntax) ~context str =
+    macro_expand' ~syntax:syntax ~context str
 
   let expand_crunched ~template ~context =
     let open R in
@@ -87,6 +79,20 @@ module Engine = struct
       |> Crunch.option_to_result template
     in
     expand_string ~context raw_contents
+
+  let option_to_result' path =
+    let open E.Smart in
+    function
+    | Some contents -> Ok contents
+    | None -> Error (crunch_path path)
+
+  let expand_crunched' ~template ~context =
+    let open R' in
+    let* raw_contents =
+      Crunched_templates.read template
+      |> option_to_result' template
+    in
+    expand_string' ~context raw_contents
 end
   
 module Processed = struct
