@@ -2,12 +2,6 @@
 (* TODO: check for dependencies *)
 (* TODO: check for missing templates *)
 
-type error = [
-  | `ReferParse of string
-  | `BadArgv of string
-  | `BadPath of string
-  ]
-
 let dir_or_file path = 
   if Sys.is_directory path
   then ("/", "directory")

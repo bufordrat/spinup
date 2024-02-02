@@ -1,25 +1,9 @@
-module Error = struct
-  type t = [
-    | `SyntaxString of string
-    | `TintSyntax of string
-    | `CrunchPath of string
-    ]
-  module Smart = struct
-    let syntax_string s = `SyntaxString s
-    let tint_syntax s = `TintSyntax s
-    let crunch_path s = `CrunchPath s
-  end
-end
-
-module E = Error
+module E = Template_error
 module Ty = Tint.Types
-
 module R = Etude.Result.Make (String)
 module R' = Etude.Result.Make (E)
 
 module Engine = struct
-  let default_syntax = Ty.Syntax.tracstring
-
   let spinup_syntax = "#[,]"
 
   let map_error = Stdlib.Result.map_error
@@ -84,7 +68,7 @@ module Engine = struct
     let open E.Smart in
     function
     | Some contents -> Ok contents
-    | None -> Error (crunch_path path)
+    | None -> Error (template_crunch path)
 
   let expand_crunched' ~template ~context =
     let open R' in
@@ -129,7 +113,26 @@ module Unprocessed = struct
       expand_string ~context unp.umessage
     in
     { template_filename ;
+      output_filename ;
+      template_path ;
+      output_path ;
+      context ;
+      umessage ; }
 
+  let expand_filenames' unp =
+    let open R' in
+    let open Engine in
+    let context = unp.context in
+    let template_filename = unp.template_filename in
+    let template_path = unp.template_path in
+    let+ output_filename =
+      expand_string' ~context unp.output_filename
+    and+ output_path =
+      expand_string' ~context unp.output_path
+    and+ umessage =
+      expand_string' ~context unp.umessage
+    in
+    { template_filename ;
       output_filename ;
       template_path ;
       output_path ;
@@ -160,6 +163,34 @@ module Unprocessed = struct
           partial.template_filename ]
     in
     let+ data = Engine.expand_crunched
+                  ~template:template_path
+                  ~context:context
+    in Processed.{ write_path ; data ; vmessage }
+
+  let process' unp =
+    let open R' in
+    let context = unp.context in
+    let* partial = expand_filenames' unp in
+    let write_path =
+      let open Prelude in
+      match partial.output_path with
+      | "" ->
+         Prelude.File.join "." partial.output_filename
+      | other -> String.join
+                   ~sep:"/"
+                   [ "." ;
+                     other ;
+                     partial.output_filename ]
+    in
+    let vmessage = partial.umessage in
+    let template_path =
+      let open Prelude in
+      String.join
+        ~sep:"/"
+        [ partial.output_path ;
+          partial.template_filename ]
+    in
+    let+ data = Engine.expand_crunched'
                   ~template:template_path
                   ~context:context
     in Processed.{ write_path ; data ; vmessage }

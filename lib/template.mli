@@ -1,11 +1,21 @@
 module Engine : sig
-  val expand_string : context:(string * string) list ->
+  val expand_string : ?syntax:string ->
+                      context:(string * string) list ->
                       string ->
                       (string, string) result
 
   val expand_crunched : template:string ->
+                        context:(string * string) list ->
+                        (string, string) result 
+
+  val expand_string' : ?syntax:string ->
+                       context:(string * string) list ->
+                       string ->
+                       (string, Template_error.t) result
+
+  val expand_crunched' : template:string ->
                          context:(string * string) list ->
-                         (string, string) result
+                         (string, Template_error.t) result
 end
 
 module Processed : sig
@@ -28,4 +38,6 @@ module Unprocessed : sig
   val expand_filenames : t -> (t, string) result
 
   val process : t -> (Processed.t, string) result
+
+  val process' : t -> (Processed.t, Template_error.t) result
 end
