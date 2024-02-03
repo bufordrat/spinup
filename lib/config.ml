@@ -1,4 +1,6 @@
+module Error = Config_error
 module R = Etude.Result.Make (String)
+module R' = Etude.Result.Make (Error)
 
 module Which = struct
   type t =
@@ -44,6 +46,20 @@ let refer_parse str =
   in
   sequence lst >>| collapse
 
+let refer_parse' str =
+  let open R' in
+  let collapse db =
+    let open Etude.List in
+    let each_pair (_, assocs) = assocs in
+    db >>= each_pair
+  in
+  let lst =
+    let open Prelude in
+    Seq.to_list (Refer.Seq.of_string str)
+    |> List.map (map_error Error.Smart.refer_parsing)
+  in
+  sequence lst >>| collapse
+
 (* TODO: make the line number message be in UNIX format for line number error messages *)
 (* /etc/passwd:15:teichman:x:1158:11158::/home/teichman:/usr/bin/fish *)
 let e_to_string (i, msg) =
@@ -63,6 +79,21 @@ module FromCrunch = struct
     let process = read >=> parse in
     let+ context = process crunch_path in
     mk_config pname context
+
+  let option_to_result path = function
+    | Some contents -> Ok contents
+    | None -> let open Error.Smart in
+              Error (config_crunch path)
+
+  (* let get_config' pname crunch_path =
+   *   let open R' in
+   *   let read crunch_path =
+   *     Crunched_config.read crunch_path
+   *     |> Crunch.option_to_result crunch_path
+   *   in
+   *   let process = read >=> parse in
+   *   let+ context = process crunch_path in
+   *   mk_config pname context *)
 end
 
 let get_config pname filesystem_paths =
