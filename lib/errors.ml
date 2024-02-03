@@ -2,6 +2,12 @@
 (* TODO: check for dependencies *)
 (* TODO: check for missing templates *)
 
+type t = [
+  | `DirAlreadyExists of string
+  ]
+
+let dir_already_exists s = `DirAlreadyExists s
+
 let dir_or_file path = 
   if Sys.is_directory path
   then ("/", "directory")
@@ -29,4 +35,22 @@ let already_exists name =
                  |> prose
                  |> wrap_in_argv0
        in Error msg
+  else Ok ()
+
+let already_exists' name =
+  let open Prelude in
+  let prose (slash, dir_or_file) =
+    String.join ~sep:"" [
+                  "a " ;
+                  dir_or_file ;
+                  " called " ;
+                  name ; 
+                  slash ;
+                  " already exists." ; ]
+  in
+  if Sys.file_exists name
+  then let msg = dir_or_file name
+                 |> prose
+                 |> wrap_in_argv0
+       in Error (dir_already_exists msg)
   else Ok ()
