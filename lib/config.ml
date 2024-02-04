@@ -85,15 +85,15 @@ module FromCrunch = struct
     | None -> let open Error.Smart in
               Error (config_crunch path)
 
-  (* let get_config' pname crunch_path =
-   *   let open R' in
-   *   let read crunch_path =
-   *     Crunched_config.read crunch_path
-   *     |> Crunch.option_to_result crunch_path
-   *   in
-   *   let process = read >=> parse in
-   *   let+ context = process crunch_path in
-   *   mk_config pname context *)
+  let get_config' pname crunch_path =
+    let open R' in
+    let read crunch_path =
+      Crunched_config.read crunch_path
+      |> option_to_result crunch_path
+    in
+    let process = read >=> refer_parse' in
+    let+ context = process crunch_path in
+    mk_config pname context
 end
 
 let get_config pname filesystem_paths =
