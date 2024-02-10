@@ -8,7 +8,7 @@ let handle_result handler = function
 
 let print_config () =
   let open Lib.Crunched_config in
-  let msg = Lib.Errors.wrap_in_argv0
+  let msg = Lib.Filesystem.wrap_in_argv0
               "internal crunch error"
   in
   match read ".spinuprc" with

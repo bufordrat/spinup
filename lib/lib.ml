@@ -1,4 +1,4 @@
-module Errors = Errors
+module Filesystem = Filesystem
 module Template = Template
 module Template_error = Template_error
 module Action = Action

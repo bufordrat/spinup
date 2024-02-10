@@ -1,6 +1,4 @@
-type t = [
-  | `DirAlreadyExists of string
-  ]
+type t = Filesystem_error.t
 
 val already_exists : string -> (unit, string) result
 

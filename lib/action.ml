@@ -190,7 +190,7 @@ let directory_actions' config =
 
 let main_action pname =
   let open R in
-  let* () = Errors.already_exists pname in
+  let* () = Filesystem.already_exists pname in
   let* config = Config.(get_config pname default_paths) in
   let+ actions = directory_actions config in
   WithCD { dir = pname ;

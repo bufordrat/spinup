@@ -2,9 +2,7 @@
 (* TODO: check for dependencies *)
 (* TODO: check for missing templates *)
 
-type t = [
-  | `DirAlreadyExists of string
-  ]
+type t = Filesystem_error.t
 
 let dir_already_exists s = `DirAlreadyExists s
 
