@@ -29,7 +29,7 @@ module Arguments = struct
        normal mode."
     in
     let docv = "D" in
-    let inf = info ["d"; "dry-run"] ~doc ~docv in
+    let inf = info [ "d"; "dry-run" ] ~doc ~docv in
     let arg_type = flag in
     value (arg_type inf)
 
@@ -40,7 +40,7 @@ module Arguments = struct
        redirected to a config file for the user to customize."
     in
     let docv = "P" in
-    let inf = info ["p"; "print-config"] ~doc ~docv in
+    let inf = info [ "p"; "print-config" ] ~doc ~docv in
     let arg_type = flag in
     value (arg_type inf)
 
@@ -68,7 +68,7 @@ module Command = struct
        that assumes the UChicago Library's opam repository and standard \
        libraries."
     in
-    let man = Cmdliner.[`S Manpage.s_description; `P description] in
+    let man = Cmdliner.[ `S Manpage.s_description; `P description ] in
     let doc = "Spins up an OCaml project skeleton." in
     Cmdliner.Cmd.info "spinup" ~doc ~man
 

@@ -45,7 +45,7 @@ module Engine = struct
 end
 
 module Processed = struct
-  type t = {write_path: string; data: string; vmessage: string}
+  type t = {write_path : string; data : string; vmessage : string}
 
   let write {write_path; data; vmessage} =
     let open Prelude in
@@ -55,12 +55,12 @@ end
 
 module Unprocessed = struct
   type t =
-    { template_filename: string
-    ; output_filename: string
-    ; template_path: string
-    ; output_path: string
-    ; context: (string * string) list
-    ; umessage: string }
+    { template_filename : string;
+      output_filename : string;
+      template_path : string;
+      output_path : string;
+      context : (string * string) list;
+      umessage : string }
 
   let expand_filenames unp =
     let open R in
@@ -71,12 +71,12 @@ module Unprocessed = struct
     let+ output_filename = expand_string ~context unp.output_filename
     and+ output_path = expand_string ~context unp.output_path
     and+ umessage = expand_string ~context unp.umessage in
-    { template_filename
-    ; output_filename
-    ; template_path
-    ; output_path
-    ; context
-    ; umessage }
+    { template_filename;
+      output_filename;
+      template_path;
+      output_path;
+      context;
+      umessage }
 
   let process unp =
     let open R in
@@ -86,12 +86,12 @@ module Unprocessed = struct
       let open Prelude in
       match partial.output_path with
       | "" -> Prelude.File.join "." partial.output_filename
-      | other -> String.join ~sep:"/" ["."; other; partial.output_filename]
+      | other -> String.join ~sep:"/" [ "."; other; partial.output_filename ]
     in
     let vmessage = partial.umessage in
     let template_path =
       let open Prelude in
-      String.join ~sep:"/" [partial.output_path; partial.template_filename]
+      String.join ~sep:"/" [ partial.output_path; partial.template_filename ]
     in
     let+ data = Engine.expand_crunched ~template:template_path ~context in
     Processed.{write_path; data; vmessage}

@@ -11,7 +11,8 @@ let gnumakefile_is_there () =
 let () =
   let open Alcotest in
   run "Spinup Tests"
-    [ ( "check crunched dir"
-      , [ test_case "dune-project is present" `Quick dune_project_is_there
-        ; test_case "GNUmakefile is present" `Quick gnumakefile_is_there ] )
+    [ ( "check crunched dir",
+        [ test_case "dune-project is present" `Quick dune_project_is_there;
+          test_case "GNUmakefile is present" `Quick gnumakefile_is_there
+        ] )
     ]

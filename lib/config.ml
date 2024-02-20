@@ -4,13 +4,13 @@ module Which = struct
   type t = Default | FromAFile of string
 end
 
-type t = {pname: string; context: (string * string) list; which: Which.t}
+type t = {pname : string; context : (string * string) list; which : Which.t}
 
 let default_paths =
-  ["~/.config/spinup/spinuprc"; "~/.spinuprc"; "/etc/spinuprc"]
+  [ "~/.config/spinup/spinuprc"; "~/.spinuprc"; "/etc/spinuprc" ]
 
 let is_default = function
-  | {pname= _; context= _; which= Default} -> true
+  | {pname = _; context = _; which = Default} -> true
   | _ -> false
 
 let mk_config ?(which = Which.Default) pname old_context =
@@ -57,9 +57,9 @@ let get_config pname filesystem_paths =
   let open Which in
   match get_config_path filesystem_paths with
   | Some p ->
-      let open R in
-      let read fpath = Prelude.(trap Exn.to_string readfile fpath) in
-      let process = read >=> parse in
-      let+ context = process p in
-      mk_config ~which:(FromAFile p) pname context
+    let open R in
+    let read fpath = Prelude.(trap Exn.to_string readfile fpath) in
+    let process = read >=> parse in
+    let+ context = process p in
+    mk_config ~which:(FromAFile p) pname context
   | None -> FromCrunch.get_config pname ".spinuprc"

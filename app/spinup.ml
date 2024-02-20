@@ -1,13 +1,17 @@
 let handle_result handler = function
   | Ok actions -> handler actions
-  | Error e -> print_endline e ; exit 1
+  | Error e ->
+    print_endline e ;
+    exit 1
 
 let print_config () =
   let open Lib.Crunched_config in
   let msg = Lib.Errors.wrap_in_argv0 "internal crunch error" in
   match read ".spinuprc" with
   | Some conf -> print_endline conf
-  | None -> print_endline msg ; exit 1
+  | None ->
+    print_endline msg ;
+    exit 1
 
 let main pc_arg dr_arg pname_arg =
   let open Lib.Action in
@@ -17,10 +21,10 @@ let main pc_arg dr_arg pname_arg =
   | _, true, Some pname -> doit dry_run pname
   | _, _, Some pname -> doit run pname
   | _, _, None ->
-      let open Prelude.Message in
-      message ~myself:"" ~exit:1
-        "Usage: spinup [--dry-run] [--print-config] [OPTION]...[PROJECT_NAME]\n\
-         Try 'spinup --help' for more information."
+    let open Prelude.Message in
+    message ~myself:"" ~exit:1
+      "Usage: spinup [--dry-run] [--print-config] [OPTION]...[PROJECT_NAME]\n\
+       Try 'spinup --help' for more information."
 
 let () =
   let open Lib.Cli in
