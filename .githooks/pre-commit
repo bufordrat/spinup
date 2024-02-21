@@ -4,4 +4,4 @@ unset GIT_LITERAL_PATHSPECS
 opam exec -- dune build @fmt
 opam exec -- dune promote
 git update-index --verbose --again :/:
-echo "DUDEFACE"
+
