@@ -45,9 +45,9 @@ module Engine = struct
 end
 
 module Processed = struct
-  type t = {write_path : string; data : string; vmessage : string}
+  type t = { write_path : string; data : string; vmessage : string }
 
-  let write {write_path; data; vmessage} =
+  let write { write_path; data; vmessage } =
     let open Prelude in
     print vmessage ;
     writefile ~fn:write_path data
@@ -60,7 +60,8 @@ module Unprocessed = struct
       template_path : string;
       output_path : string;
       context : (string * string) list;
-      umessage : string }
+      umessage : string
+    }
 
   let expand_filenames unp =
     let open R in
@@ -76,7 +77,8 @@ module Unprocessed = struct
       template_path;
       output_path;
       context;
-      umessage }
+      umessage
+    }
 
   let process unp =
     let open R in
@@ -94,5 +96,5 @@ module Unprocessed = struct
       String.join ~sep:"/" [ partial.output_path; partial.template_filename ]
     in
     let+ data = Engine.expand_crunched ~template:template_path ~context in
-    Processed.{write_path; data; vmessage}
+    Processed.{ write_path; data; vmessage }
 end

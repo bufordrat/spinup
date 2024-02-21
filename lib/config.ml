@@ -4,18 +4,19 @@ module Which = struct
   type t = Default | FromAFile of string
 end
 
-type t = {pname : string; context : (string * string) list; which : Which.t}
+type t =
+  { pname : string; context : (string * string) list; which : Which.t }
 
 let default_paths =
   [ "~/.config/spinup/spinuprc"; "~/.spinuprc"; "/etc/spinuprc" ]
 
 let is_default = function
-  | {pname = _; context = _; which = Default} -> true
+  | { pname = _; context = _; which = Default } -> true
   | _ -> false
 
 let mk_config ?(which = Which.Default) pname old_context =
   let context = ("pname", pname) :: old_context in
-  {pname; context; which}
+  { pname; context; which }
 
 let refer_parse str =
   let module E = struct

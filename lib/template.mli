@@ -9,7 +9,7 @@ module Engine : sig
 end
 
 module Processed : sig
-  type t = {write_path : string; data : string; vmessage : string}
+  type t = { write_path : string; data : string; vmessage : string }
 
   val write : t -> unit
 end
@@ -21,7 +21,8 @@ module Unprocessed : sig
       template_path : string;
       output_path : string;
       context : (string * string) list;
-      umessage : string }
+      umessage : string
+    }
 
   val expand_filenames : t -> (t, string) result
 

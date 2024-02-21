@@ -1,6 +1,6 @@
 module R = Etude.Result.Make (String)
 
-type dir = {dir : string; actions : t list; config : Config.t}
+type dir = { dir : string; actions : t list; config : Config.t }
 
 and t =
   | Write of Template.Processed.t
@@ -22,7 +22,8 @@ module Opening = struct
     Run
       Command.
         { args = [ "mkdir"; name ];
-          cmessage = "making " ^ name ^ "/ directory..." }
+          cmessage = "making " ^ name ^ "/ directory..."
+        }
 end
 
 let rec run = function
@@ -71,7 +72,8 @@ module Dirs = struct
     Run
       Command.
         { args = [ "mkdir"; "-p"; dir ];
-          cmessage = "making " ^ dir ^ "/ directory..." }
+          cmessage = "making " ^ dir ^ "/ directory..."
+        }
 
   let dirs () =
     let ds = dirnames Crunched_templates.file_list in
@@ -92,7 +94,8 @@ module Files = struct
       template_path = "";
       output_path = dirname template_path;
       context = Config.(config.context);
-      umessage = "creating " ^ template_path ^ " file..." }
+      umessage = "creating " ^ template_path ^ " file..."
+    }
 
   let files config =
     let open Prelude in
@@ -112,7 +115,8 @@ module Conclude = struct
     Run
       Command.
         { args = [ "dune"; "clean" ];
-          cmessage = "doing a `dune clean` to remove compiler detritus..." }
+          cmessage = "doing a `dune clean` to remove compiler detritus..."
+        }
 
   let done_msg = Print "DONE!"
 
@@ -149,4 +153,4 @@ let main_action pname =
   let* () = Errors.already_exists pname in
   let* config = Config.(get_config pname default_paths) in
   let+ actions = directory_actions config in
-  WithCD {dir = pname; actions; config}
+  WithCD { dir = pname; actions; config }
