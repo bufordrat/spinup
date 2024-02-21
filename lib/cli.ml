@@ -1,9 +1,13 @@
-module type TERM = Etude.Endofunctors_intf.Applicative.AUGMENTED
+module type TERM =
+  Etude.Endofunctors_intf.Applicative.AUGMENTED
 
-module Term : TERM with type 'a t = 'a Cmdliner.Term.t = struct
-  module type BASIC = Etude.Endofunctors_intf.Applicative.BASIC
+module Term : TERM with type 'a t = 'a Cmdliner.Term.t =
+struct
+  module type BASIC =
+    Etude.Endofunctors_intf.Applicative.BASIC
 
-  module BasicApp : BASIC with type 'a t = 'a Cmdliner.Term.t = struct
+  module BasicApp :
+    BASIC with type 'a t = 'a Cmdliner.Term.t = struct
     open Cmdliner.Term
 
     type 'a t = 'a Cmdliner.Term.t
@@ -25,22 +29,23 @@ module Arguments = struct
   let dry_run =
     let open Cmdliner.Arg in
     let doc =
-      "Print description of what would happen if $(tname) were run in normal \
-       mode."
+      "Print description of what would happen if $(tname) \
+       were run in normal mode."
     in
     let docv = "D" in
-    let inf = info ["d"; "dry-run"] ~doc ~docv in
+    let inf = info [ "d"; "dry-run" ] ~doc ~docv in
     let arg_type = flag in
     value (arg_type inf)
 
   let print_config =
     let open Cmdliner.Arg in
     let doc =
-      "Print the default configuration to stdout so that it can be redirected \
-       to a config file for the user to customize."
+      "Print the default configuration to stdout so that \
+       it can be redirected to a config file for the user \
+       to customize."
     in
     let docv = "P" in
-    let inf = info ["p"; "print-config"] ~doc ~docv in
+    let inf = info [ "p"; "print-config" ] ~doc ~docv in
     let arg_type = flag in
     value (arg_type inf)
 
@@ -64,18 +69,26 @@ module Command = struct
 
   let manpage_info =
     let description =
-      "$(tname) creates a skeleton for a library-executable OCaml project that \
-       assumes the UChicago Library's opam repository and standard libraries."
+      "$(tname) creates a skeleton for a \
+       library-executable OCaml project that assumes the \
+       UChicago Library's opam repository and standard \
+       libraries."
     in
-    let man = Cmdliner.[`S Manpage.s_description; `P description] in
+    let man =
+      Cmdliner.[ `S Manpage.s_description; `P description ]
+    in
     let doc = "Spins up an OCaml project skeleton." in
     Cmdliner.Cmd.info "spinup" ~doc ~man
 
   let command exe print_conf dry_run project_name =
-    let term = main_term exe print_conf dry_run project_name in
+    let term =
+      main_term exe print_conf dry_run project_name
+    in
     Cmdliner.Cmd.v manpage_info term
 
   let to_exe exe print_conf dry_run project_name =
     let open Cmdliner.Cmd in
-    command exe print_conf dry_run project_name |> eval |> exit
+    command exe print_conf dry_run project_name
+    |> eval
+    |> exit
 end
