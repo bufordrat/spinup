@@ -80,4 +80,3 @@ module Command = struct
     let open Cmdliner.Cmd in
     command exe print_conf dry_run project_name |> eval |> exit
 end
-

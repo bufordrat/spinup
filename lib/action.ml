@@ -154,3 +154,4 @@ let main_action pname =
   let* config = Config.(get_config pname default_paths) in
   let+ actions = directory_actions config in
   WithCD { dir = pname; actions; config }
+
