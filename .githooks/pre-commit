@@ -2,3 +2,4 @@
 
 opam exec -- dune build @fmt
 opam exec -- dune promote
+git update-index --again :/:
