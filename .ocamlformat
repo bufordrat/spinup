@@ -1,7 +1,11 @@
 profile = ocamlformat
 break-cases = fit-or-vertical
+break-collection-expressions = fit-or-vertical
+break-infix = wrap-or-vertical
+break-infix-before-func = true
 break-sequences = true
 break-separators = after
+break-struct = force
 cases-exp-indent = 2
 field-space = loose
 if-then-else = keyword-first
