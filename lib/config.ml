@@ -73,7 +73,3 @@ let get_config pname filesystem_paths =
     let+ context = process p in
     mk_config ~which:(FromAFile p) pname context
   | None -> FromCrunch.get_config pname ".spinuprc"
-
-let x = 6
-
-let y = 12
