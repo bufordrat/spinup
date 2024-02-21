@@ -1,6 +1,8 @@
 module Engine : sig
   val expand_string :
-    context:(string * string) list -> string -> (string, string) result
+    context:(string * string) list ->
+    string ->
+    (string, string) result
 
   val expand_crunched :
     template:string ->
@@ -9,7 +11,11 @@ module Engine : sig
 end
 
 module Processed : sig
-  type t = { write_path : string; data : string; vmessage : string }
+  type t =
+    { write_path : string;
+      data : string;
+      vmessage : string
+    }
 
   val write : t -> unit
 end

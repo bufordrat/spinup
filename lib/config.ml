@@ -5,10 +5,16 @@ module Which = struct
 end
 
 type t =
-  { pname : string; context : (string * string) list; which : Which.t }
+  { pname : string;
+    context : (string * string) list;
+    which : Which.t
+  }
 
 let default_paths =
-  [ "~/.config/spinup/spinuprc"; "~/.spinuprc"; "/etc/spinuprc" ]
+  [ "~/.config/spinup/spinuprc";
+    "~/.spinuprc";
+    "/etc/spinuprc"
+  ]
 
 let is_default = function
   | { pname = _; context = _; which = Default } -> true
@@ -34,8 +40,8 @@ let refer_parse str =
   in
   sequence lst >>| collapse
 
-(* TODO: make the line number message be in UNIX format for line number error
-   messages *)
+(* TODO: make the line number message be in UNIX format for
+   line number error messages *)
 (* /etc/passwd:15:teichman:x:1158:11158::/home/teichman:/usr/bin/fish *)
 let e_to_string (i, msg) =
   Printf.sprintf "Refer parse error!\nline %d:\n%s" i msg
@@ -46,7 +52,8 @@ module FromCrunch = struct
   let get_config pname crunch_path =
     let open R in
     let read crunch_path =
-      Crunched_config.read crunch_path |> Crunch.option_to_result crunch_path
+      Crunched_config.read crunch_path
+      |> Crunch.option_to_result crunch_path
     in
     let process = read >=> parse in
     let+ context = process crunch_path in
@@ -59,7 +66,9 @@ let get_config pname filesystem_paths =
   match get_config_path filesystem_paths with
   | Some p ->
     let open R in
-    let read fpath = Prelude.(trap Exn.to_string readfile fpath) in
+    let read fpath =
+      Prelude.(trap Exn.to_string readfile fpath)
+    in
     let process = read >=> parse in
     let+ context = process p in
     mk_config ~which:(FromAFile p) pname context

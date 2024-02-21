@@ -3,7 +3,10 @@ module Which : sig
 end
 
 type t =
-  { pname : string; context : (string * string) list; which : Which.t }
+  { pname : string;
+    context : (string * string) list;
+    which : Which.t
+  }
 
 val default_paths : string list
 

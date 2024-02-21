@@ -1,6 +1,7 @@
 module R = Etude.Result.Make (String)
 
-type dir = { dir : string; actions : t list; config : Config.t }
+type dir =
+  { dir : string; actions : t list; config : Config.t }
 
 and t =
   | Write of Template.Processed.t
@@ -99,7 +100,10 @@ module Files = struct
 
   let files config =
     let open Prelude in
-    let lst = List.delete ".dir-locals.el" Crunched_templates.file_list in
+    let lst =
+      List.delete ".dir-locals.el"
+        Crunched_templates.file_list
+    in
     List.map (from_files config) lst
 end
 
@@ -108,14 +112,18 @@ module Conclude = struct
     Run
       Command.
         { args = [ "dune"; "build" ];
-          cmessage = "doing initial `dune build` to generate .opam file..."
+          cmessage =
+            "doing initial `dune build` to generate .opam \
+             file..."
         }
 
   let do_a_clean =
     Run
       Command.
         { args = [ "dune"; "clean" ];
-          cmessage = "doing a `dune clean` to remove compiler detritus..."
+          cmessage =
+            "doing a `dune clean` to remove compiler \
+             detritus..."
         }
 
   let done_msg = Print "DONE!"
@@ -125,11 +133,12 @@ module Conclude = struct
       let open Config in
       Prelude.sprintf
         "\n\
-         to install project dependencies into the current opam switch, run \
-         this command inside the %s/ directory:\n\n\
-        \ $ make deps\n\n\
-         to create a sandboxed opam switch, run this command inside the %s/ \
+         to install project dependencies into the current \
+         opam switch, run this command inside the %s/ \
          directory:\n\n\
+        \ $ make deps\n\n\
+         to create a sandboxed opam switch, run this \
+         command inside the %s/ directory:\n\n\
         \ $ make sandbox\n"
         config.pname config.pname
     in
@@ -144,7 +153,12 @@ let directory_actions config =
   let+ processed = traverse Unprocessed.process files in
   let writes = List.map write processed in
   let finish_up =
-    Conclude.[ do_a_build; do_a_clean; done_msg; sandbox_msg config ]
+    Conclude.
+      [ do_a_build;
+        do_a_clean;
+        done_msg;
+        sandbox_msg config
+      ]
   in
   dirs @ writes @ finish_up
 
@@ -154,4 +168,3 @@ let main_action pname =
   let* config = Config.(get_config pname default_paths) in
   let+ actions = directory_actions config in
   WithCD { dir = pname; actions; config }
-
