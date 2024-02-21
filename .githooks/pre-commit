@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 unset GIT_LITERAL_PATHSPECS
-xopam exec -- dune build @fmt &&
+opam exec -- dune build @fmt &&
 opam exec -- dune promote &&
 git update-index --verbose --again :/:
 true
