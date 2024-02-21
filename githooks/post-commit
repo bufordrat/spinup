@@ -1,0 +1,4 @@
+#!/bin/sh
+
+opam exec -- dune build @fmt
+opam exec -- dune promote
