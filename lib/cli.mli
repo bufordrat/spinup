@@ -8,9 +8,9 @@ end
 
 module Command : sig
   val to_exe :
-       ('a -> 'b -> 'c -> unit)
-    -> 'a Cmdliner.Term.t
-    -> 'b Cmdliner.Term.t
-    -> 'c Cmdliner.Term.t
-    -> 'd
+    ('a -> 'b -> 'c -> unit) ->
+    'a Cmdliner.Term.t ->
+    'b Cmdliner.Term.t ->
+    'c Cmdliner.Term.t ->
+    'd
 end
