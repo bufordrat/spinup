@@ -1,0 +1,5 @@
+* to put git hooks into effect:
+
+#+begin_example
+  $ git config --local core.hooksPath ./.githooks
+#+end_example
