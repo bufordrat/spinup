@@ -12,4 +12,3 @@ let run {args; cmessage} =
         ~reader:Prelude.(ignore << read)
         args
       |> ignore
-
