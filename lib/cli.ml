@@ -6,11 +6,7 @@ module Term : TERM with type 'a t = 'a Cmdliner.Term.t = struct
   module BasicApp : BASIC with type 'a t = 'a Cmdliner.Term.t = struct
     open Cmdliner.Term
 
-    type 'a t =
-
-
-
-      'a Cmdliner.Term.t
+    type 'a t = 'a Cmdliner.Term.t
 
     let map f x = const f $ x
 
