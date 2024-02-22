@@ -3,9 +3,7 @@
 (* TODO: check for dependencies *)
 (* TODO: check for missing templates *)
 
-type t = Filesystem_error.t
-
-let dir_already_exists s = `DirAlreadyExists s
+module E = Filesystem_error
 
 let dir_or_file path =
   if Sys.is_directory path
@@ -36,6 +34,7 @@ let already_exists name =
 
 let already_exists' name =
   let open Prelude in
+  let open E.Smart in
   let prose (slash, dir_or_file) =
     String.join ~sep:""
       [ "a ";

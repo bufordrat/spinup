@@ -2,7 +2,6 @@ module Filesystem = Filesystem
 module Template = Template
 module Template_error = Template_error
 module Action = Action
-module Action_error = Action_error
 module Command = Command
 module Cli = Cli
 module Config = Config
