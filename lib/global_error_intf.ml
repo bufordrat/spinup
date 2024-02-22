@@ -9,6 +9,5 @@ module type TRACE = sig
   type 'a trace
 
   val new_error : [< global_error] -> 'a trace
-
   val trycatch : [< global_error] -> 'a trace -> 'a trace
 end

@@ -13,11 +13,8 @@ struct
     type 'a t = 'a Cmdliner.Term.t
 
     let map f x = const f $ x
-
     let product ax ay = map (fun x y -> (x, y)) ax $ ay
-
     let pure = const
-
     let unit = pure ()
   end
 

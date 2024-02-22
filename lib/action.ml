@@ -162,23 +162,6 @@ let directory_actions config =
   in
   dirs @ writes @ finish_up
 
-let directory_actions' config =
-  let open Template in
-  let open R in
-  let dirs = Dirs.dirs () in
-  let files = Files.files config in
-  let+ processed = traverse Unprocessed.process files in
-  let writes = List.map write processed in
-  let finish_up =
-    Conclude.
-      [ do_a_build;
-        do_a_clean;
-        done_msg;
-        sandbox_msg config
-      ]
-  in
-  dirs @ writes @ finish_up
-
 let main_action pname =
   let open R in
   let* () = Filesystem.already_exists pname in

@@ -43,8 +43,6 @@ module Unprocessed : sig
     }
 
   val expand_filenames : t -> (t, string) result
-
   val process : t -> (Processed.t, string) result
-
   val process' : t -> (Processed.t, Template_error.t) result
 end

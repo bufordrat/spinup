@@ -5,7 +5,6 @@ module R' = Etude.Result.Make (E)
 
 module Engine = struct
   let spinup_syntax = "#[,]"
-
   let map_error = Stdlib.Result.map_error
 
   let context_to_state ?(syntax = spinup_syntax) context =
