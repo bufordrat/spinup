@@ -1,3 +1,1 @@
-type t = [
-  | `DirAlreadyExists of string
-  ]
+type t = [`DirAlreadyExists of string]

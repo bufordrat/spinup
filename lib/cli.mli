@@ -1,6 +1,8 @@
 module Arguments : sig
   val print_config : bool Cmdliner.Term.t
+
   val dry_run : bool Cmdliner.Term.t
+
   val project_name : string option Cmdliner.Term.t
 end
 

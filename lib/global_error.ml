@@ -1,6 +1,5 @@
 type t = Global_error_intf.global_error
 
-
 (* module Errlist = Trace_intf.Errlist
  * 
  * module type TRACE = Trace_intf.TRACE
