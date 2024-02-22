@@ -12,7 +12,7 @@ val default_paths : string list
 val is_default : t -> bool
 val get_config : string -> string list -> (t, string) result
 
-val get_config :
+val get_config' :
   string -> string list -> (t, Config_error.t) result
 
 val print_crunch : string -> unit
