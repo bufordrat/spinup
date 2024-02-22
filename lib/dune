@@ -5,17 +5,22 @@
 (data_only_dirs templates)
 
 (rule
- (deps (source_tree templates))
+ (deps
+  (source_tree templates))
  (action
-  (with-stdout-to crunched_templates.ml
-  (run ocaml-crunch -m plain templates))))
+  (with-stdout-to
+   crunched_templates.ml
+   (run ocaml-crunch -m plain templates))))
 
 (rule
- (deps (source_tree config))
+ (deps
+  (source_tree config))
  (action
-  (with-stdout-to crunched_config.ml
-  (run ocaml-crunch -m plain config))))
+  (with-stdout-to
+   crunched_config.ml
+   (run ocaml-crunch -m plain config))))
 
 (env
  (dev
-  (flags (:standard -warn-error -A))))
+  (flags
+   (:standard -warn-error -A))))
