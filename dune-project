@@ -17,6 +17,7 @@
     etude
     utop
     ocp-index
+    ocamlformat
     crunch
     (alcotest :with-test)
     qcheck
