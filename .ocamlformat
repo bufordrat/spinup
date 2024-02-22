@@ -15,6 +15,7 @@ line-endings = lf
 module-item-spacing = compact
 margin = 60
 sequence-style = separator
+sequence-blank = compact
 single-case = compact
 space-around-lists = true
 space-around-records = true
