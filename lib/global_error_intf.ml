@@ -5,6 +5,8 @@ module Errlist = struct
   type t = global_error list
 end
 
+type t = Errlist.t
+
 module type TRACE = sig
   type 'a trace
 

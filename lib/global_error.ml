@@ -2,6 +2,8 @@ module Errlist = Global_error_intf.Errlist
 
 module type TRACE = Global_error_intf.TRACE
 
+type t = Global_error_intf.t
+
 module T = struct
   type 'a trace = ('a, Global_error_intf.Errlist.t) result
 

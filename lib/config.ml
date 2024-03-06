@@ -1,6 +1,23 @@
 module E = Config_error
 module R = Etude.Result.Make (String)
 module R' = Etude.Result.Make (E)
+module R'' = Etude.Result.Make (Global_error)
+module Trace = Global_error.T
+
+module Smart = struct
+  open Prelude
+
+  let refer_parsing =
+    Trace.new_error << E.Smart.refer_parsing
+
+  let config_crunch =
+    Trace.new_error << E.Smart.config_crunch
+
+  let file_read_error =
+    Trace.new_error << E.Smart.file_read_error
+end
+
+open Smart
 
 module Which = struct
   type t = Default | FromAFile of string
@@ -42,6 +59,24 @@ let refer_parse str =
   in
   sequence lst >>| collapse
 
+let collapse db =
+  let open Etude.List in
+  let each_pair (_, assocs) = assocs in
+  db >>= each_pair
+
+let str_to_lst str =
+  let open Prelude in
+  Seq.to_list (Refer.Seq.of_string str)
+  |> List.map
+       (Stdlib.Result.map_error E.Smart.refer_parsing)
+
+let str_to_lst' str =
+  let open Prelude in
+  Seq.to_list (Refer.Seq.of_string str)
+  |> List.map
+       (Stdlib.Result.map_error
+          Prelude.(Trace.new_error << E.Smart.refer_parsing) )
+
 let refer_parse' str =
   let open R' in
   let collapse db =
@@ -55,6 +90,8 @@ let refer_parse' str =
     |> List.map (map_error E.Smart.refer_parsing)
   in
   sequence lst >>| collapse
+
+let refer_parse'' () = assert false
 
 (* TODO: make the line number message be in UNIX format for
    line number error messages *)
@@ -110,6 +147,24 @@ let get_config pname filesystem_paths =
     let+ context = process p in
     mk_config ~which:(FromAFile p) pname context
   | None -> FromCrunch.get_config pname ".spinuprc"
+
+let get_config' pname filesystem_paths =
+  let open Etude.Config in
+  let open Which in
+  let open E.Smart in
+  match get_config_path filesystem_paths with
+  | Some p ->
+    let open R' in
+    let trapper =
+      Prelude.(file_read_error << Exn.to_string)
+    in
+    let read fpath =
+      Prelude.(trap trapper readfile fpath)
+    in
+    let process = read >=> refer_parse' in
+    let+ context = process p in
+    mk_config ~which:(FromAFile p) pname context
+  | None -> FromCrunch.get_config' pname ".spinuprc"
 
 let get_config' pname filesystem_paths =
   let open Etude.Config in

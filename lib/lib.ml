@@ -9,3 +9,4 @@ module Config_error = Config_error
 module Crunch = Crunch
 module Crunched_templates = Crunched_templates
 module Crunched_config = Crunched_config
+module Global_error = Global_error
