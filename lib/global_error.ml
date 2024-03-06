@@ -13,6 +13,7 @@ module T = struct
       :> Global_error_intf.global_error )
 
   let new_error e = Error [ coerce e ]
+  let constructor con x = new_error (con x)
 
   let with_error e = function
     | Ok _ as o -> o
