@@ -108,17 +108,21 @@ let refer_parse' str =
  *  [`ReferParsing
  *     (1, "continuation line at beginning of record: \" %dune_version 3.13\"")] *)
 
-(* let refer_parse'' str =
- *   let module ReferStuff = struct
- *       type t = int * string
- *     end in
- *   let open Etude.Result.Make (ReferStuff) in
- *   let str_to_lst'' str =
- *     let open Prelude in
- *     Seq.to_list (Refer.Seq.of_string str)
- *     |> List.map (Stdlib.Result.map_error (fun x -> [E.Smart.refer_parsing x]))
- *   in
- *   sequence (str_to_lst'' str) >>| collapse *)
+let refer_parse'' str =
+  let module ReferStuff = struct
+    type t = int * string
+  end in
+  let open Etude.Result.Make (ReferStuff) in
+  let str_to_lst str =
+    let open Prelude in
+    Seq.to_list (Refer.Seq.of_string str)
+  in
+  let err x =
+    let open Prelude in
+    Trace.new_error << E.Smart.refer_parsing
+  in
+  let res = sequence (str_to_lst str) >>| collapse in
+  map_error err res
 
 (* TODO: make the line number message be in UNIX format for
    line number error messages *)
