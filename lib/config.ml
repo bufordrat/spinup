@@ -10,13 +10,13 @@ module Error = struct
   open Prelude
 
   let refer_parsing =
-    Trace.constructor E.Smart.refer_parsing
+    Trace.new_error << E.Smart.refer_parsing
 
   let config_crunch =
-    Trace.constructor E.Smart.config_crunch
+    Trace.new_error << E.Smart.config_crunch
 
   let file_read_error =
-    Trace.constructor E.Smart.file_read_error
+    Trace.new_error << E.Smart.file_read_error
 end
 
 module Which = struct
@@ -59,30 +59,6 @@ let refer_parse str =
   in
   sequence lst >>| collapse
 
-let collapse db =
-  let open Etude.List in
-  let each_pair (_, assocs) = assocs in
-  db >>= each_pair
-
-let str_to_lst str =
-  let open Prelude in
-  Seq.to_list (Refer.Seq.of_string str)
-  |> List.map
-       (Stdlib.Result.map_error E.Smart.refer_parsing)
-
-let str_to_lst' str =
-  let open Prelude in
-  Seq.to_list (Refer.Seq.of_string str)
-  |> List.map
-       (Stdlib.Result.map_error
-          Prelude.(Trace.new_error << E.Smart.refer_parsing) )
-
-let str_to_lst'' str =
-  let open Prelude in
-  let open Error in
-  Seq.to_list (Refer.Seq.of_string str)
-(* |> List.map (Stdlib.Result.map_error refer_parsing) *)
-
 let refer_parse' str =
   let open R' in
   let collapse db =
@@ -97,17 +73,6 @@ let refer_parse' str =
   in
   sequence lst >>| collapse
 
-(* kind of a hot mess, here's a REPL example to get me
-   started fixing it *)
-
-(* utop[1]> let y = Prelude.readfile "./config/.dude";;
- * utop[15]> refer_parse'' y |> Stdlib.Result.map_error (fun x -> [E.Smart.refer_parsing x]);;
- * - : ((string * string) list, [> `ReferParsing of int * string ] list) result
- * =
- * Error
- *  [`ReferParsing
- *     (1, "continuation line at beginning of record: \" %dune_version 3.13\"")] *)
-
 let refer_parse'' str =
   let module ReferStuff = struct
     type t = int * string
@@ -117,12 +82,13 @@ let refer_parse'' str =
     let open Prelude in
     Seq.to_list (Refer.Seq.of_string str)
   in
-  let err x =
-    let open Prelude in
-    Trace.new_error << E.Smart.refer_parsing
+  let collapse db =
+    let open Etude.List in
+    let each_pair (_, assocs) = assocs in
+    db >>= each_pair
   in
   let res = sequence (str_to_lst str) >>| collapse in
-  map_error err res
+  map_error Error.refer_parsing res
 
 (* TODO: make the line number message be in UNIX format for
    line number error messages *)
