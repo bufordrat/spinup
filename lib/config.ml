@@ -4,21 +4,6 @@ module R' = Etude.Result.Make (E)
 module R'' = Etude.Result.Make (Global_error)
 module Trace = Global_error.T
 
-module Error = struct
-  type t = Global_error.t
-
-  open Prelude
-
-  let refer_parsing =
-    Trace.new_error << E.Smart.refer_parsing
-
-  let config_crunch =
-    Trace.new_error << E.Smart.config_crunch
-
-  let file_read_error =
-    Trace.new_error << E.Smart.file_read_error
-end
-
 module Which = struct
   type t = Default | FromAFile of string
 end
@@ -74,10 +59,10 @@ let refer_parse' str =
   sequence lst >>| collapse
 
 let refer_parse'' str =
-  let module ReferStuff = struct
+  let module ReferErr = struct
     type t = int * string
   end in
-  let open Etude.Result.Make (ReferStuff) in
+  let open Etude.Result.Make (ReferErr) in
   let str_to_lst str =
     let open Prelude in
     Seq.to_list (Refer.Seq.of_string str)
@@ -87,8 +72,10 @@ let refer_parse'' str =
     let each_pair (_, assocs) = assocs in
     db >>= each_pair
   in
-  let res = sequence (str_to_lst str) >>| collapse in
-  map_error Error.refer_parsing res
+  let refer_parsing tup = [ E.Smart.refer_parsing tup ] in
+  sequence (str_to_lst str)
+  >>| collapse
+  |> map_error refer_parsing
 
 (* TODO: make the line number message be in UNIX format for
    line number error messages *)
@@ -120,6 +107,12 @@ module FromCrunch = struct
       let open E.Smart in
       Error (config_crunch path)
 
+  let option_to_result' path = function
+    | Some contents -> Ok contents
+    | None ->
+      let open E.Smart in
+      Trace.new_error (config_crunch path)
+
   let get_config' pname crunch_path =
     let open R' in
     let read crunch_path =
@@ -127,6 +120,16 @@ module FromCrunch = struct
       |> option_to_result crunch_path
     in
     let process = read >=> refer_parse' in
+    let+ context = process crunch_path in
+    mk_config pname context
+
+  let get_config'' pname crunch_path =
+    let open R'' in
+    let read crunch_path =
+      Crunched_config.read crunch_path
+      |> option_to_result' crunch_path
+    in
+    let process = read >=> refer_parse'' in
     let+ context = process crunch_path in
     mk_config pname context
 end

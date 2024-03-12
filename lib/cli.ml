@@ -14,8 +14,7 @@ struct
 
     let map f x = const f $ x
     let product ax ay = map (fun x y -> (x, y)) ax $ ay
-    let pure = const
-    let unit = pure ()
+    let unit = const ()
   end
 
   open Etude.Endofunctors

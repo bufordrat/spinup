@@ -1,8 +1,3 @@
-(* this is BS, delete this: *)
-
-(* type 'a with_error = 'a
-   Global_error.Specialize(Global_error).with_error *)
-
 module R = Etude.Result.Make (String)
 
 type dir =
