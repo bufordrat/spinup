@@ -166,23 +166,24 @@ let get_config' pname filesystem_paths =
     mk_config ~which:(FromAFile p) pname context
   | None -> FromCrunch.get_config' pname ".spinuprc"
 
-let get_config' pname filesystem_paths =
+let get_config'' pname filesystem_paths =
   let open Etude.Config in
   let open Which in
   let open E.Smart in
   match get_config_path filesystem_paths with
   | Some p ->
-    let open R' in
-    let trapper =
-      Prelude.(file_read_error << Exn.to_string)
+    let open R'' in
+    let new_error str = [ file_read_error str ] in
+    let trapper exn =
+      Prelude.Exn.to_string exn |> new_error
     in
     let read fpath =
       Prelude.(trap trapper readfile fpath)
     in
-    let process = read >=> refer_parse' in
+    let process = read >=> refer_parse'' in
     let+ context = process p in
     mk_config ~which:(FromAFile p) pname context
-  | None -> FromCrunch.get_config' pname ".spinuprc"
+  | None -> FromCrunch.get_config'' pname ".spinuprc"
 
 let print_crunch path =
   let open Crunched_config in
