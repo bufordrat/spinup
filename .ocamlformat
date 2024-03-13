@@ -1,3 +1,4 @@
+assignment-operator = end-line
 profile = ocamlformat
 break-cases = fit-or-vertical
 break-collection-expressions = fit-or-vertical
