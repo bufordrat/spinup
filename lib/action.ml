@@ -1,4 +1,7 @@
+module E = Action_error
 module R = Etude.Result.Make (String)
+module R'' = Etude.Result.Make (Global_error)
+module Trace = Global_error.T
 
 type dir =
   { dir : string; actions : t list; config : Config.t }
@@ -162,8 +165,35 @@ let directory_actions config =
   in
   dirs @ writes @ finish_up
 
+let directory_actions'' config =
+  let open Template.Unprocessed in
+  let open R'' in
+  let dirs = Dirs.dirs () in
+  let files = Files.files config in
+  let template_err = E.Smart.template_err in
+  let+ processed =
+    Trace.with_error template_err (traverse process'' files)
+  in
+  let writes = List.map write processed in
+  let finish_up =
+    Conclude.
+      [ do_a_build;
+        do_a_clean;
+        done_msg;
+        sandbox_msg config
+      ]
+  in
+  dirs @ writes @ finish_up
+
 let main_action pname =
   let open R in
+  let* () = Filesystem.already_exists pname in
+  let* config = Config.(get_config pname default_paths) in
+  let+ actions = directory_actions config in
+  WithCD { dir = pname; actions; config }
+
+let main_action'' pname =
+  let open R'' in
   let* () = Filesystem.already_exists pname in
   let* config = Config.(get_config pname default_paths) in
   let+ actions = directory_actions config in
