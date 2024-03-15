@@ -192,9 +192,18 @@ let main_action pname =
   let+ actions = directory_actions config in
   WithCD { dir = pname; actions; config }
 
-let main_action'' pname =
-  let open R'' in
-  let* () = Filesystem.already_exists pname in
-  let* config = Config.(get_config pname default_paths) in
-  let+ actions = directory_actions config in
-  WithCD { dir = pname; actions; config }
+(* gotta do Filesystem.already_exists before you can do this
+   next one *)
+
+(* let main_action'' pname =
+ *   let open R'' in
+ *   let open E.Smart in
+ *   let open Trace in
+ *   let already_exists = Filesystem.already_exists pname in
+ *   let* () = with_error
+ *               filesystem_err
+ *               (new_error already_exists)
+ *   in
+ *   let* config = Config.(get_config pname default_paths) in
+ *   let+ actions = directory_actions config in
+ *   WithCD { dir = pname; actions; config } *)
