@@ -1,7 +1,7 @@
 let handle_result handler = function
   | Ok actions -> handler actions
   | Error e ->
-    print_endline e ;
+    print_endline (Lib.Global_error.to_string e) ;
     exit 1
 
 let print_config () =
@@ -18,7 +18,7 @@ let print_config () =
 let main pc_arg dr_arg pname_arg =
   let open Lib.Action in
   let doit handler pname =
-    handle_result handler (main_action pname)
+    handle_result handler (main_action'' pname)
   in
   match (pc_arg, dr_arg, pname_arg) with
   | true, _, _ -> print_config ()
