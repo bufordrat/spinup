@@ -20,7 +20,7 @@ let t_to_string =
   | `TemplateCrunch s ->
     sprintf "Template crunch filepath not found:\n%s" s
   | `TemplateErr -> "Template error:"
-  | `FilesystemErr -> "Filesystem error"
+  | `FilesystemErr -> "Filesystem error:"
 
 let to_string errlist =
   let open Prelude in
