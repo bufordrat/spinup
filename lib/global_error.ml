@@ -16,7 +16,7 @@ let t_to_string =
     sprintf "Directory already exists:\n%s" s
   | `SyntaxString s ->
     sprintf "Bad TINT syntax string:\n%s" s
-  | `TintSyntax s -> sprintf "TINT syntax error:\n%s" s
+  | `TintSyntax s -> sprintf "TINT error:\n%s" s
   | `TemplateCrunch s ->
     sprintf "Template crunch filepath not found:\n%s" s
   | `TemplateErr -> "Template error"
