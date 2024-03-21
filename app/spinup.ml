@@ -1,7 +1,9 @@
-let handle_result handler = function
+let handle_result handler =
+  let open Lib.Global_error in
+  function
   | Ok actions -> handler actions
   | Error e ->
-    print_endline (Lib.Global_error.to_string e) ;
+    print e ;
     exit 1
 
 let print_config () =

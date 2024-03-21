@@ -19,12 +19,14 @@ let t_to_string =
   | `TintSyntax s -> sprintf "TINT syntax error:\n%s" s
   | `TemplateCrunch s ->
     sprintf "Template crunch filepath not found:\n%s" s
-  | `TemplateErr -> "Template error:"
-  | `FilesystemErr -> "Filesystem error:"
+  | `TemplateErr -> "Template error"
+  | `FilesystemErr -> "Filesystem error"
 
 let to_string errlist =
   let open Prelude in
-  String.join ~sep:"\n" (map t_to_string errlist)
+  String.join ~sep:":\n" (map t_to_string errlist)
+
+let print errlist = print_endline (to_string errlist)
 
 module T = struct
   type 'a trace = ('a, Global_error_intf.Errlist.t) result
