@@ -72,15 +72,15 @@ module Engine = struct
     processed_string
 
   let macro_expand'' ?(syntax = spinup_syntax) ~context tint
-    =
+      =
     let open R'' in
     let open E.Smart in
     let* state = context_to_state'' ~syntax context in
     let new_error msg = [ tint_syntax msg ] in
     let prep_error tint_error =
-      (* change this not to use error_message so that it puts the
-         filename and line number in the error instead of stringifying
-         it *)
+      (* change this not to use error_message so that it
+         puts the filename and line number in the error
+         instead of stringifying it *)
       Ty.error_message state.syntax tint_error |> new_error
     in
     let+ _, processed_string =
