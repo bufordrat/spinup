@@ -4,22 +4,11 @@ type global_error =
   | Template_error.t
   | Action_error.t ]
 
-type global_error' =
-  [ Config_error.t
-  | Filesystem_error.t
-  | Template_error.t'
-  | Action_error.t ]
-
 module Errlist = struct
   type t = global_error list
 end
 
-module Errlist' = struct
-  type t = global_error' list
-end
-
 type t = Errlist.t
-type t' = Errlist'.t
 
 module type TRACE = sig
   type 'a trace
@@ -31,8 +20,8 @@ end
 module type TRACE' = sig
   type 'a trace'
 
-  val new_error' : [< global_error'] -> 'a trace'
+  val new_error' : [< global_error] -> 'a trace'
 
   val with_error' :
-    [< global_error'] -> 'a trace' -> 'a trace'
+    [< global_error] -> 'a trace' -> 'a trace'
 end

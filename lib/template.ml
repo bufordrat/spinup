@@ -47,65 +47,20 @@ module Engine = struct
     let new_error str = [ syntax_string str ] in
     map_error new_error string_version
 
-  let macro_expand ?(syntax = spinup_syntax) ~context tint =
-    let open R in
-    let* state = context_to_state ~syntax context in
-    let+ _, processed_string =
-      map_error
-        (Ty.error_message state.syntax)
-        (Tint.Eval.eval state tint)
-    in
-    processed_string
-
-  let macro_expand' ?(syntax = spinup_syntax) ~context tint
-      =
-    let open R' in
-    let open E.Smart in
-    let* state = context_to_state' ~syntax context in
-    let prep_error tint_error =
-      Ty.error_message state.syntax tint_error
-      |> tint_syntax
-    in
-    let+ _, processed_string =
-      map_error prep_error (Tint.Eval.eval state tint)
-    in
-    processed_string
-
   let macro_expand'' ?(syntax = spinup_syntax) ~context tint
       =
     let open R'' in
     let open E.Smart in
     let* state = context_to_state'' ~syntax context in
     let new_error msg = [ tint_syntax msg ] in
-    let prep_error tint_error =
-      (* change this not to use error_message so that it
-         puts the filename and line number in the error
-         instead of stringifying it *)
-      Ty.error_message state.syntax tint_error |> new_error
-    in
     let+ _, processed_string =
-      map_error prep_error (Tint.Eval.eval state tint)
+      map_error new_error (Tint.Eval.eval state tint)
     in
     processed_string
-
-  let expand_string ?(syntax = spinup_syntax) ~context str =
-    macro_expand ~syntax ~context str
-
-  let expand_string' ?(syntax = spinup_syntax) ~context str
-      =
-    macro_expand' ~syntax ~context str
 
   let expand_string'' ?(syntax = spinup_syntax) ~context str
       =
     macro_expand'' ~syntax ~context str
-
-  let expand_crunched ~template ~context =
-    let open R in
-    let* raw_contents =
-      Crunched_templates.read template
-      |> Crunch.option_to_result template
-    in
-    expand_string ~context raw_contents
 
   let option_to_result' path =
     let open E.Smart in
@@ -118,14 +73,6 @@ module Engine = struct
     function
     | Some contents -> Ok contents
     | None -> Error [ template_crunch path ]
-
-  let expand_crunched' ~template ~context =
-    let open R' in
-    let* raw_contents =
-      Crunched_templates.read template
-      |> option_to_result' template
-    in
-    expand_string' ~context raw_contents
 
   let expand_crunched'' ~template ~context =
     let open R'' in
@@ -159,44 +106,6 @@ module Unprocessed = struct
       umessage : string
     }
 
-  let expand_filenames unp =
-    let open R in
-    let open Engine in
-    let context = unp.context in
-    let template_filename = unp.template_filename in
-    let template_path = unp.template_path in
-    let+ output_filename =
-      expand_string ~context unp.output_filename
-    and+ output_path =
-      expand_string ~context unp.output_path
-    and+ umessage = expand_string ~context unp.umessage in
-    { template_filename;
-      output_filename;
-      template_path;
-      output_path;
-      context;
-      umessage
-    }
-
-  let expand_filenames' unp =
-    let open R' in
-    let open Engine in
-    let context = unp.context in
-    let template_filename = unp.template_filename in
-    let template_path = unp.template_path in
-    let+ output_filename =
-      expand_string' ~context unp.output_filename
-    and+ output_path =
-      expand_string' ~context unp.output_path
-    and+ umessage = expand_string' ~context unp.umessage in
-    { template_filename;
-      output_filename;
-      template_path;
-      output_path;
-      context;
-      umessage
-    }
-
   let expand_filenames'' unp =
     let open R'' in
     let open Engine in
@@ -215,54 +124,6 @@ module Unprocessed = struct
       context;
       umessage
     }
-
-  let process unp =
-    let open R in
-    let context = unp.context in
-    let* partial = expand_filenames unp in
-    let write_path =
-      let open Prelude in
-      match partial.output_path with
-      | "" -> Prelude.File.join "." partial.output_filename
-      | other ->
-        String.join ~sep:"/"
-          [ "."; other; partial.output_filename ]
-    in
-    let vmessage = partial.umessage in
-    let template_path =
-      let open Prelude in
-      String.join ~sep:"/"
-        [ partial.output_path; partial.template_filename ]
-    in
-    let+ data =
-      Engine.expand_crunched ~template:template_path
-        ~context
-    in
-    Processed.{ write_path; data; vmessage }
-
-  let process' unp =
-    let open R' in
-    let context = unp.context in
-    let* partial = expand_filenames' unp in
-    let write_path =
-      let open Prelude in
-      match partial.output_path with
-      | "" -> Prelude.File.join "." partial.output_filename
-      | other ->
-        String.join ~sep:"/"
-          [ "."; other; partial.output_filename ]
-    in
-    let vmessage = partial.umessage in
-    let template_path =
-      let open Prelude in
-      String.join ~sep:"/"
-        [ partial.output_path; partial.template_filename ]
-    in
-    let+ data =
-      Engine.expand_crunched' ~template:template_path
-        ~context
-    in
-    Processed.{ write_path; data; vmessage }
 
   let process'' unp =
     let open R'' in

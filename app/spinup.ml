@@ -3,7 +3,7 @@ let handle_result handler =
   function
   | Ok actions -> handler actions
   | Error e ->
-    print e ;
+    print' e ;
     exit 1
 
 let print_config () =
