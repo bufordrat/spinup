@@ -1,7 +1,7 @@
 module E = Config_error
 
 (* module R = Etude.Result.Make (String) *)
-module R' = Etude.Result.Make (E)
+(* module R' = Etude.Result.Make (E) *)
 module R'' = Etude.Result.Make (Global_error)
 module Trace = Global_error.T
 
@@ -45,19 +45,19 @@ let refer_parse str =
   in
   sequence lst >>| collapse
 
-let refer_parse' str =
-  let open R' in
-  let collapse db =
-    let open Etude.List in
-    let each_pair (_, assocs) = assocs in
-    db >>= each_pair
-  in
-  let lst =
-    let open Prelude in
-    Seq.to_list (Refer.Seq.of_string str)
-    |> List.map (map_error E.Smart.refer_parsing)
-  in
-  sequence lst >>| collapse
+(* let refer_parse' str =
+ *   let open R' in
+ *   let collapse db =
+ *     let open Etude.List in
+ *     let each_pair (_, assocs) = assocs in
+ *     db >>= each_pair
+ *   in
+ *   let lst =
+ *     let open Prelude in
+ *     Seq.to_list (Refer.Seq.of_string str)
+ *     |> List.map (map_error E.Smart.refer_parsing)
+ *   in
+ *   sequence lst >>| collapse *)
 
 let refer_parse'' str =
   let module ReferErr = struct
@@ -115,15 +115,15 @@ module FromCrunch = struct
       let open E.Smart in
       Trace.new_error (config_crunch path)
 
-  let get_config' pname crunch_path =
-    let open R' in
-    let read crunch_path =
-      Crunched_config.read crunch_path
-      |> option_to_result crunch_path
-    in
-    let process = read >=> refer_parse' in
-    let+ context = process crunch_path in
-    mk_config pname context
+  (* let get_config' pname crunch_path =
+   *   let open R' in
+   *   let read crunch_path =
+   *     Crunched_config.read crunch_path
+   *     |> option_to_result crunch_path
+   *   in
+   *   let process = read >=> refer_parse' in
+   *   let+ context = process crunch_path in
+   *   mk_config pname context *)
 
   let get_config'' pname crunch_path =
     let open R'' in
@@ -150,23 +150,23 @@ end
  *     mk_config ~which:(FromAFile p) pname context
  *   | None -> FromCrunch.get_config pname ".spinuprc" *)
 
-let get_config' pname filesystem_paths =
-  let open Etude.Config in
-  let open Which in
-  let open E.Smart in
-  match get_config_path filesystem_paths with
-  | Some p ->
-    let open R' in
-    let trapper =
-      Prelude.(file_read_error << Exn.to_string)
-    in
-    let read fpath =
-      Prelude.(trap trapper readfile fpath)
-    in
-    let process = read >=> refer_parse' in
-    let+ context = process p in
-    mk_config ~which:(FromAFile p) pname context
-  | None -> FromCrunch.get_config' pname ".spinuprc"
+(* let get_config' pname filesystem_paths =
+ *   let open Etude.Config in
+ *   let open Which in
+ *   let open E.Smart in
+ *   match get_config_path filesystem_paths with
+ *   | Some p ->
+ *     let open R' in
+ *     let trapper =
+ *       Prelude.(file_read_error << Exn.to_string)
+ *     in
+ *     let read fpath =
+ *       Prelude.(trap trapper readfile fpath)
+ *     in
+ *     let process = read >=> refer_parse' in
+ *     let+ context = process p in
+ *     mk_config ~which:(FromAFile p) pname context
+ *   | None -> FromCrunch.get_config' pname ".spinuprc" *)
 
 let get_config'' pname filesystem_paths =
   let open Etude.Config in
