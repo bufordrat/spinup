@@ -1,5 +1,5 @@
 module E = Action_error
-module R'' = Etude.Result.Make (Global_error)
+module R = Etude.Result.Make (Global_error)
 module Trace = Global_error.T
 
 type dir =
@@ -149,7 +149,7 @@ end
 
 let directory_actions config =
   let open Template.Unprocessed in
-  let open R'' in
+  let open R in
   let dirs = Dirs.dirs () in
   let files = Files.files config in
   let template_err = E.Smart.template_err in
@@ -168,7 +168,7 @@ let directory_actions config =
   dirs @ writes @ finish_up
 
 let main_action pname =
-  let open R'' in
+  let open R in
   let open E.Smart in
   let open Trace in
   let already_exists = Filesystem.already_exists'' pname in
