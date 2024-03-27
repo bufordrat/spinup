@@ -1,5 +1,6 @@
 module E = Action_error
-module R = Etude.Result.Make (String)
+
+(* module R = Etude.Result.Make (String) *)
 module R'' = Etude.Result.Make (Global_error)
 module Trace = Global_error.T
 

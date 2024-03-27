@@ -1,5 +1,6 @@
 module E = Config_error
-module R = Etude.Result.Make (String)
+
+(* module R = Etude.Result.Make (String) *)
 module R' = Etude.Result.Make (E)
 module R'' = Etude.Result.Make (Global_error)
 module Trace = Global_error.T
@@ -83,7 +84,8 @@ let refer_parse'' str =
 let e_to_string (i, msg) =
   Printf.sprintf "Refer parse error!\nline %d:\n%s" i msg
 
-let parse str = R.map_error e_to_string (refer_parse str)
+(* let parse str = R.map_error e_to_string (refer_parse
+   str) *)
 
 (* let parse' str =
  *   let open R' in
@@ -91,15 +93,15 @@ let parse str = R.map_error e_to_string (refer_parse str)
  *   map_error refer_parsing (refer_parse' tup) *)
 
 module FromCrunch = struct
-  let get_config pname crunch_path =
-    let open R in
-    let read crunch_path =
-      Crunched_config.read crunch_path
-      |> Crunch.option_to_result crunch_path
-    in
-    let process = read >=> parse in
-    let+ context = process crunch_path in
-    mk_config pname context
+  (* let get_config pname crunch_path =
+   *   let open R in
+   *   let read crunch_path =
+   *     Crunched_config.read crunch_path
+   *     |> Crunch.option_to_result crunch_path
+   *   in
+   *   let process = read >=> parse in
+   *   let+ context = process crunch_path in
+   *   mk_config pname context *)
 
   let option_to_result path = function
     | Some contents -> Ok contents
@@ -134,19 +136,19 @@ module FromCrunch = struct
     mk_config pname context
 end
 
-let get_config pname filesystem_paths =
-  let open Etude.Config in
-  let open Which in
-  match get_config_path filesystem_paths with
-  | Some p ->
-    let open R in
-    let read fpath =
-      Prelude.(trap Exn.to_string readfile fpath)
-    in
-    let process = read >=> parse in
-    let+ context = process p in
-    mk_config ~which:(FromAFile p) pname context
-  | None -> FromCrunch.get_config pname ".spinuprc"
+(* let get_config pname filesystem_paths =
+ *   let open Etude.Config in
+ *   let open Which in
+ *   match get_config_path filesystem_paths with
+ *   | Some p ->
+ *     let open R in
+ *     let read fpath =
+ *       Prelude.(trap Exn.to_string readfile fpath)
+ *     in
+ *     let process = read >=> parse in
+ *     let+ context = process p in
+ *     mk_config ~which:(FromAFile p) pname context
+ *   | None -> FromCrunch.get_config pname ".spinuprc" *)
 
 let get_config' pname filesystem_paths =
   let open Etude.Config in
