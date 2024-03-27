@@ -50,7 +50,7 @@ let t_to_string' =
     sprintf "Directory already exists:\n%s" s
   | `SyntaxString s ->
     sprintf "Bad TINT syntax string:\n%s" s
-  | `TintSyntax (s1, s2, slist) ->
+  | `TintSyntax (s1, _, _) ->
     (* once I fix the error in Lib.Template.macro_expand''
        so that it isn't a string, give this branch the grep
        format as well *)
@@ -64,7 +64,12 @@ let to_string errlist =
   let open Prelude in
   String.join ~sep:":\n" (map t_to_string errlist)
 
+let to_string' errlist =
+  let open Prelude in
+  String.join ~sep:":\n" (map t_to_string' errlist)
+
 let print errlist = print_endline (to_string errlist)
+let print' errlist = print_endline (to_string' errlist)
 
 module T = struct
   type 'a trace = ('a, Global_error_intf.Errlist.t) result

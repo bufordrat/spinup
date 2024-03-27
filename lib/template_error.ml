@@ -10,6 +10,6 @@ type t' =
 
 module Smart = struct
   let syntax_string s = `SyntaxString s
-  let tint_syntax s = `TintSyntax s
+  let tint_syntax tup = `TintSyntax tup
   let template_crunch s = `TemplateCrunch s
 end
