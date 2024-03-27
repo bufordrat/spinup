@@ -167,7 +167,7 @@ let directory_actions config =
   in
   dirs @ writes @ finish_up
 
-let main_action'' pname =
+let main_action pname =
   let open R'' in
   let open E.Smart in
   let open Trace in

@@ -20,7 +20,7 @@ let print_config () =
 let main pc_arg dr_arg pname_arg =
   let open Lib.Action in
   let doit handler pname =
-    handle_result handler (main_action'' pname)
+    handle_result handler (main_action pname)
   in
   match (pc_arg, dr_arg, pname_arg) with
   | true, _, _ -> print_config ()
