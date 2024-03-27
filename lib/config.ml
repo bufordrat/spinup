@@ -58,7 +58,7 @@ module FromCrunch = struct
       let open E.Smart in
       Trace.new_error (config_crunch path)
 
-  let get_config'' pname crunch_path =
+  let get_config pname crunch_path =
     let open R in
     let read crunch_path =
       Crunched_config.read crunch_path
@@ -69,7 +69,7 @@ module FromCrunch = struct
     mk_config pname context
 end
 
-let get_config'' pname filesystem_paths =
+let get_config pname filesystem_paths =
   let open Etude.Config in
   let open Which in
   let open E.Smart in
@@ -86,7 +86,7 @@ let get_config'' pname filesystem_paths =
     let process = read >=> refer_parse'' in
     let+ context = process p in
     mk_config ~which:(FromAFile p) pname context
-  | None -> FromCrunch.get_config'' pname ".spinuprc"
+  | None -> FromCrunch.get_config pname ".spinuprc"
 
 let print_crunch path =
   let open Crunched_config in

@@ -173,6 +173,6 @@ let main_action pname =
   let open Trace in
   let already_exists = Filesystem.already_exists'' pname in
   let* () = with_error filesystem_err already_exists in
-  let* config = Config.(get_config'' pname default_paths) in
+  let* config = Config.(get_config pname default_paths) in
   let+ actions = directory_actions config in
   WithCD { dir = pname; actions; config }
