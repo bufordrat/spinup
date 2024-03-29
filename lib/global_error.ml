@@ -6,7 +6,7 @@ type t = Global_error_intf.t
 
 (* module type TRACE' = Global_error_intf.TRACE' *)
 
-let t_to_string' =
+let t_to_string =
   let open Printf in
   function
   | `ReferParsing (i, s) ->
@@ -21,21 +21,21 @@ let t_to_string' =
     sprintf "Directory already exists:\n%s" s
   | `SyntaxString s ->
     sprintf "Bad TINT syntax string:\n%s" s
-  | `TintSyntax (s1, _, _) ->
-    (* once I fix the error in Lib.Template.macro_expand''
-       so that it isn't a string, give this branch the grep
-       format as well *)
-    sprintf "TINT error:\n%s" s1
+  | `TintSyntax (s1, s2, slist) ->
+    (* this needs the grep format *)
+    let open Prelude.String in
+    let joined = join ~sep:", " slist in
+    sprintf "TINT error:\n%s %s \n%s" s1 s2 joined
   | `TemplateCrunch s ->
     sprintf "Template crunch filepath not found:\n%s" s
   | `TemplateErr -> "Template error"
   | `FilesystemErr -> "Filesystem error"
 
-let to_string' errlist =
+let to_string errlist =
   let open Prelude in
-  String.join ~sep:":\n" (map t_to_string' errlist)
+  String.join ~sep:":\n" (map t_to_string errlist)
 
-let print' errlist = print_endline (to_string' errlist)
+let print' errlist = print_endline (to_string errlist)
 
 module T = struct
   type 'a trace = ('a, Global_error_intf.Errlist.t) result
