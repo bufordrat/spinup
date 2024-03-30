@@ -3,23 +3,12 @@ module Engine : sig
     ?syntax:string ->
     context:(string * string) list ->
     string ->
-    (string, string) result
+    (string, Global_error_intf.t) result
 
   val expand_crunched :
     template:string ->
     context:(string * string) list ->
-    (string, string) result
-
-  val expand_string' :
-    ?syntax:string ->
-    context:(string * string) list ->
-    string ->
-    (string, Template_error.t) result
-
-  val expand_crunched' :
-    template:string ->
-    context:(string * string) list ->
-    (string, Template_error.t) result
+    (string, Global_error_intf.t) result
 end
 
 module Processed : sig
@@ -42,7 +31,6 @@ module Unprocessed : sig
       umessage : string
     }
 
-  val expand_filenames : t -> (t, string) result
-  val process : t -> (Processed.t, string) result
-  val process' : t -> (Processed.t, Template_error.t) result
+  val expand_filenames : t -> (t, Global_error_intf.t) result
+  val process : t -> (Processed.t, Global_error_intf.t) result
 end

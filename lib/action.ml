@@ -154,7 +154,7 @@ let directory_actions config =
   let files = Files.files config in
   let template_err = E.Smart.template_err in
   let+ processed =
-    Trace.with_error template_err (traverse process'' files)
+    Trace.with_error template_err (traverse process files)
   in
   let writes = List.map write processed in
   let finish_up =

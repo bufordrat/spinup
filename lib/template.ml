@@ -1,39 +1,16 @@
 module E = Template_error
 module Ty = Tint.Types
-module R = Etude.Result.Make (String)
-module R' = Etude.Result.Make (E)
 module R'' = Etude.Result.Make (Global_error)
 
 module Engine = struct
   let spinup_syntax = "#[,]"
   let map_error = Stdlib.Result.map_error
 
-  let context_to_state ?(syntax = spinup_syntax) context =
-    let open R in
-    let* syntax = Ty.Syntax.of_string syntax in
-    Tint.Eval.(init ~syntax prims (Forms.forms context))
-
-  let string_to_syntax s =
-    let open E.Smart in
-    let open Ty.Syntax in
-    map_error syntax_string (of_string s)
-
   let string_to_syntax'' s =
     let open E.Smart in
     let open Ty.Syntax in
     let new_error str = [ syntax_string str ] in
     map_error new_error (of_string s)
-
-  let context_to_state' ?(syntax = spinup_syntax) context =
-    (* note: when TINT updates so that init doesn't return a
-       result, this code will need to be modified *)
-    let open R' in
-    let open E.Smart in
-    let* syntax = string_to_syntax syntax in
-    let string_version =
-      Tint.Eval.(init ~syntax prims (Forms.forms context))
-    in
-    map_error syntax_string string_version
 
   let context_to_state'' ?(syntax = spinup_syntax) context =
     (* note: when TINT updates so that init doesn't return a
@@ -58,15 +35,9 @@ module Engine = struct
     in
     processed_string
 
-  let expand_string'' ?(syntax = spinup_syntax) ~context str
+  let expand_string ?(syntax = spinup_syntax) ~context str
       =
     macro_expand'' ~syntax ~context str
-
-  let option_to_result' path =
-    let open E.Smart in
-    function
-    | Some contents -> Ok contents
-    | None -> Error (template_crunch path)
 
   let option_to_result'' path =
     let open E.Smart in
@@ -74,13 +45,13 @@ module Engine = struct
     | Some contents -> Ok contents
     | None -> Error [ template_crunch path ]
 
-  let expand_crunched'' ~template ~context =
+  let expand_crunched ~template ~context =
     let open R'' in
     let* raw_contents =
       Crunched_templates.read template
       |> option_to_result'' template
     in
-    expand_string'' ~context raw_contents
+    expand_string ~context raw_contents
 end
 
 module Processed = struct
@@ -106,17 +77,17 @@ module Unprocessed = struct
       umessage : string
     }
 
-  let expand_filenames'' unp =
+  let expand_filenames unp =
     let open R'' in
     let open Engine in
     let context = unp.context in
     let template_filename = unp.template_filename in
     let template_path = unp.template_path in
     let+ output_filename =
-      expand_string'' ~context unp.output_filename
+      expand_string ~context unp.output_filename
     and+ output_path =
-      expand_string'' ~context unp.output_path
-    and+ umessage = expand_string'' ~context unp.umessage in
+      expand_string ~context unp.output_path
+    and+ umessage = expand_string ~context unp.umessage in
     { template_filename;
       output_filename;
       template_path;
@@ -125,10 +96,10 @@ module Unprocessed = struct
       umessage
     }
 
-  let process'' unp =
+  let process unp =
     let open R'' in
     let context = unp.context in
-    let* partial = expand_filenames'' unp in
+    let* partial = expand_filenames unp in
     let write_path =
       let open Prelude in
       match partial.output_path with
@@ -144,7 +115,7 @@ module Unprocessed = struct
         [ partial.output_path; partial.template_filename ]
     in
     let+ data =
-      Engine.expand_crunched'' ~template:template_path
+      Engine.expand_crunched ~template:template_path
         ~context
     in
     Processed.{ write_path; data; vmessage }
