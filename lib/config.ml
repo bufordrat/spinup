@@ -45,12 +45,6 @@ let refer_parse'' str =
   >>| collapse
   |> map_error refer_parsing
 
-(* TODO: make the line number message be in UNIX format for
-   line number error messages *)
-(* /etc/passwd:15:teichman:x:1158:11158::/home/teichman:/usr/bin/fish *)
-let e_to_string (i, msg) =
-  Printf.sprintf "Refer parse error!\nline %d:\n%s" i msg
-
 module FromCrunch = struct
   let option_to_result path = function
     | Some contents -> Ok contents

@@ -10,9 +10,5 @@ type t =
 
 val default_paths : string list
 val is_default : t -> bool
-val get_config : string -> string list -> (t, string) result
-
-val get_config' :
-  string -> string list -> (t, Config_error.t) result
-
+val get_config : string -> string list -> (t, Global_error_intf.t) result
 val print_crunch : string -> unit
