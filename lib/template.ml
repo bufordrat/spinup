@@ -35,8 +35,7 @@ module Engine = struct
     in
     processed_string
 
-  let expand_string ?(syntax = spinup_syntax) ~context str
-      =
+  let expand_string ?(syntax = spinup_syntax) ~context str =
     macro_expand'' ~syntax ~context str
 
   let option_to_result'' path =

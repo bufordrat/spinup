@@ -10,7 +10,10 @@ and t =
 val run : t -> unit
 val dry_run : t -> unit
 val write : Template.Processed.t -> t
-val directory_actions : Config.t -> (t list, Global_error_intf.t) result
+
+val directory_actions :
+  Config.t -> (t list, Global_error_intf.t) result
+
 val main_action : string -> (t, Global_error_intf.t) result
 
 module Files : sig

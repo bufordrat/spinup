@@ -4,8 +4,6 @@ module type TRACE = Global_error_intf.TRACE
 
 type t = Global_error_intf.t
 
-(* module type TRACE' = Global_error_intf.TRACE' *)
-
 let t_to_string =
   let open Printf in
   function

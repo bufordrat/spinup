@@ -31,6 +31,9 @@ module Unprocessed : sig
       umessage : string
     }
 
-  val expand_filenames : t -> (t, Global_error_intf.t) result
-  val process : t -> (Processed.t, Global_error_intf.t) result
+  val expand_filenames :
+    t -> (t, Global_error_intf.t) result
+
+  val process :
+    t -> (Processed.t, Global_error_intf.t) result
 end

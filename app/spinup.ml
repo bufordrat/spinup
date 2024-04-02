@@ -34,6 +34,6 @@ let main pc_arg dr_arg pname_arg =
        Try 'spinup --help' for more information."
 
 let () =
-  let open Lib.Cli in
-  Command.to_exe main Arguments.print_config
-    Arguments.dry_run Arguments.project_name
+  let open Lib.Cli.Arguments in
+  let open Lib.Cli.Command in
+  to_exe main print_config dry_run project_name
