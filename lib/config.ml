@@ -2,14 +2,16 @@ module E = Config_error
 module R = Etude.Result.Make (Global_error)
 module Trace = Global_error.T
 
-module Which = struct
-  type t = Default | FromAFile of string
-end
+(* module Which = struct *)
+(*   type t = Default | FromAFile of string *)
+(* end *)
+
+module DataSource = Action_error.DataSource
 
 type t =
   { pname : string;
     context : (string * string) list;
-    which : Which.t
+    datasource : DataSource.t
   }
 
 let default_paths =
@@ -19,12 +21,12 @@ let default_paths =
   ]
 
 let is_default = function
-  | { pname = _; context = _; which = Default } -> true
+  | { pname = _; context = _; datasource = FromCrunch } -> true
   | _ -> false
 
-let mk_config ?(which = Which.Default) pname old_context =
+let mk_config ?(datasource = DataSource.FromCrunch) pname old_context =
   let context = ("pname", pname) :: old_context in
-  { pname; context; which }
+  { pname; context; datasource }
 
 let refer_parse'' str =
   let module ReferErr = struct
@@ -65,7 +67,7 @@ end
 
 let get_config pname filesystem_paths =
   let open Etude.Config in
-  let open Which in
+  let open DataSource in
   let open E.Smart in
   match get_config_path filesystem_paths with
   | Some p ->
@@ -79,7 +81,7 @@ let get_config pname filesystem_paths =
     in
     let process = read >=> refer_parse'' in
     let+ context = process p in
-    mk_config ~which:(FromAFile p) pname context
+    mk_config ~datasource:(FromAFile p) pname context
   | None -> FromCrunch.get_config pname ".spinuprc"
 
 let print_crunch path =

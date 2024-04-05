@@ -15,7 +15,7 @@ module Opening = struct
   let say_which_config config =
     let open Config in
     let msg =
-      match config.which with
+      match config.datasource with
       | FromAFile path -> "using config file at: " ^ path
       | _ -> "using default config..."
     in
