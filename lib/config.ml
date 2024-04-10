@@ -1,11 +1,6 @@
 module E = Config_error
 module R = Etude.Result.Make (Global_error)
 module Trace = Global_error.T
-
-(* module Which = struct *)
-(*   type t = Default | FromAFile of string *)
-(* end *)
-
 module DataSource = Action_error.DataSource
 
 type t =
@@ -21,10 +16,12 @@ let default_paths =
   ]
 
 let is_default = function
-  | { pname = _; context = _; datasource = FromCrunch } -> true
+  | { pname = _; context = _; datasource = FromCrunch } ->
+    true
   | _ -> false
 
-let mk_config ?(datasource = DataSource.FromCrunch) pname old_context =
+let mk_config ?(datasource = DataSource.FromCrunch) pname
+    old_context =
   let context = ("pname", pname) :: old_context in
   { pname; context; datasource }
 
