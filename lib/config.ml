@@ -49,16 +49,15 @@ module FromCrunch = struct
     | Some contents -> Ok contents
     | None ->
       let open E.Smart in
-      Trace.new_error (config_crunch path)
+      Trace.new_error (crunch_path path)
 
-  let get_config pname crunch_path =
+  let get_config pname path =
     let open R in
-    let read crunch_path =
-      Crunched_config.read crunch_path
-      |> option_to_result crunch_path
+    let read path =
+      Crunched_config.read path |> option_to_result path
     in
     let process = read >=> refer_parse'' in
-    let+ context = process crunch_path in
+    let+ context = process path in
     mk_config pname context
 end
 

@@ -14,10 +14,9 @@ let t_to_string =
   | `ReferParsing (i, s) ->
     (* this needs the grep format *)
     sprintf "Refer parsing error, line %i:\n%s" i s
-  | `ConfigCrunch s ->
-    (* it looks like this case is (against my intention) not
-       being reached *)
-    sprintf "Config crunch filepath not found:\n%s" s
+  | `CrunchPath p ->
+    (* ey oh this case is in fact being reached *)
+    sprintf "Config crunch filepath not found:\n%s" p
   | `FileReadError s ->
     (* put this one in grep format since it involves a
        file *)
