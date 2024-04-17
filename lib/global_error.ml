@@ -51,6 +51,7 @@ let t_to_string =
       crunch_path
   | `TemplateErr -> "Template error"
   | `FilesystemErr -> "Filesystem error"
+  | `ConfigErr -> "Config error"
 
 (* note to self: make this happen: *)
 (* Error [ `TemplateErr, `Crunch, TintSyntax ("dune_project", "action.ml", 14)) ]

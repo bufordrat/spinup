@@ -18,6 +18,7 @@
     utop
     ocp-index
     crunch
+    tint
     (alcotest :with-test)
     qcheck
     merlin)
