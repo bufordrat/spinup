@@ -89,6 +89,8 @@ module T = struct
 
   let new_error e = Error [ coerce e ]
 
+  let new_list e = [ coerce e ]
+
   let with_error e = function
     | Ok _ as o -> o
     | Error lst -> Error (coerce e :: lst)
@@ -99,6 +101,8 @@ module Specialize (E : sig
 end) =
 struct
   type 'a new_error = E.error -> ('a, Errlist.t) result
+
+  type 'a new_list = E.error -> Errlist.t
 
   type 'a with_error =
     E.error ->
