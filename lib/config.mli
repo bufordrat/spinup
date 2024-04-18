@@ -1,11 +1,10 @@
-module Which : sig
-  type t = Default | FromAFile of string
-end
+module DataSource :
+module type of Action_error.DataSource
 
 type t =
   { pname : string;
     context : (string * string) list;
-    which : Which.t
+    datasource : DataSource.t
   }
 
 val default_paths : string list
