@@ -1,5 +1,7 @@
 type t =
-  [ `SyntaxString of string
+  [ (* this case can't be reached due to a glitch in TINT *)
+    `SyntaxString of
+    string
   | `TintSyntax of string * string * string list
   | `TemplateCrunch of string ]
 
