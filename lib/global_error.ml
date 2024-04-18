@@ -77,7 +77,7 @@ let to_string errlist =
   let open Prelude in
   String.join ~sep:":\n" (map t_to_string errlist)
 
-let print' errlist = print_endline (to_string errlist)
+let print errlist = print_endline (to_string errlist)
 
 module T = struct
   type 'a trace = ('a, Global_error_intf.Errlist.t) result
