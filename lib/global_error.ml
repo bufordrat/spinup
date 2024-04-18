@@ -100,9 +100,9 @@ module Specialize (E : sig
   type error
 end) =
 struct
-  type 'a new_error = E.error -> ('a, Errlist.t) result
+  type 'a new_error = E.error -> ('a, t) result
 
-  type 'a new_list = E.error -> Errlist.t
+  type 'a new_list = E.error -> t
 
   type 'a with_error =
     E.error ->
