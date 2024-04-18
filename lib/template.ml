@@ -1,5 +1,6 @@
 module E = Template_error
 module Ty = Tint.Types
+module Trace = Global_error.T
 module R = Etude.Result.Make (Global_error)
 
 module Engine = struct
@@ -28,10 +29,13 @@ module Engine = struct
       =
     let open R in
     let open E.Smart in
+    let open Trace in
+    let open Prelude in
     let* state = context_to_state ~syntax context in
-    let new_error msg = [ tint_syntax msg ] in
     let+ _, processed_string =
-      map_error new_error (Tint.Eval.eval state tint)
+      map_error
+        (new_list << tint_syntax)
+        (Tint.Eval.eval state tint)
     in
     processed_string
 
