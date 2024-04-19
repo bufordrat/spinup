@@ -25,8 +25,7 @@ module Engine = struct
     let new_error str = [ syntax_string str ] in
     map_error new_error string_version
 
-  let macro_expand ?(syntax = spinup_syntax) ~context tint
-      =
+  let macro_expand ?(syntax = spinup_syntax) ~context tint =
     let open R in
     let open E.Smart in
     let open Trace in

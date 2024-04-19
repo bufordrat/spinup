@@ -1,5 +1,4 @@
-module DataSource :
-module type of Action_error.DataSource
+module DataSource : module type of Action_error.DataSource
 
 type t =
   { pname : string;

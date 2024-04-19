@@ -1,8 +1,13 @@
-type global_error =
-  [ Config_error.t
-  | Filesystem_error.t
-  | Template_error.t
-  | Action_error.t ]
+module BottomLevel = struct
+  type t =
+    [Config_error.t | Filesystem_error.t | Template_error.t]
+end
+
+module TopLevel = struct
+  type t = [ | Action_error.t]
+end
+
+type global_error = [TopLevel.t | BottomLevel.t]
 
 module Errlist = struct
   type t = global_error list

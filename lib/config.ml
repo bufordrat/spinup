@@ -69,8 +69,8 @@ let get_config pname filesystem_paths =
   | Some p ->
     let open R in
     let trapper exn =
-      let str = Prelude.Exn.to_string exn
-      in Trace.new_list (file_read_error str)
+      let str = Prelude.Exn.to_string exn in
+      Trace.new_list (file_read_error str)
     in
     let read fpath =
       Prelude.(trap trapper readfile fpath)
