@@ -1,0 +1,11 @@
+module Errlist = Global_error_intf.Errlist
+
+module type TRACE = Global_error_intf.TRACE
+
+type t = Global_error_intf.t
+
+val t_to_string : t -> string
+
+val to_string : t list -> string
+
+
