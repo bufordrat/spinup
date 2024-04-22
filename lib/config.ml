@@ -25,7 +25,7 @@ let mk_config ?(datasource = DataSource.FromCrunch) pname
   let context = ("pname", pname) :: old_context in
   { pname; context; datasource }
 
-let refer_parse str =
+let refer_parse datasource str =
   let module ReferErr = struct
     type t = int * string
   end in
@@ -39,7 +39,9 @@ let refer_parse str =
     let each_pair (_, assocs) = assocs in
     db >>= each_pair
   in
-  let refer_parsing tup = [ E.Smart.refer_parsing tup ] in
+  let refer_parsing (x, y) =
+    [ E.Smart.refer_parsing datasource (x, y) ]
+  in
   sequence (str_to_lst str)
   >>| collapse
   |> map_error refer_parsing
@@ -53,10 +55,11 @@ module FromCrunch = struct
 
   let get_config pname path =
     let open R in
+    let open DataSource in
     let read path =
       Crunched_config.read path |> option_to_result path
     in
-    let process = read >=> refer_parse in
+    let process = read >=> refer_parse FromCrunch in
     let+ context = process path in
     mk_config pname context
 end
@@ -75,7 +78,7 @@ let get_config pname filesystem_paths =
     let read fpath =
       Prelude.(trap trapper readfile fpath)
     in
-    let process = read >=> refer_parse in
+    let process = read >=> refer_parse (FromAFile p) in
     let+ context = process p in
     mk_config ~datasource:(FromAFile p) pname context
   | None -> FromCrunch.get_config pname ".spinuprc"

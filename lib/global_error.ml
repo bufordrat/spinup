@@ -28,8 +28,12 @@ module BottomLevel = struct
 
   let t_to_string =
     let open Printf in
+    let open Action_error.DataSource in
     function
-    | `ReferParsing (i, s) ->
+    | `ReferParsing (FromCrunch, i, s) ->
+      (* this needs the grep format *)
+      sprintf "Refer parsing error, line %i:\n%s" i s
+    | `ReferParsing (FromAFile _, i, s) ->
       (* this needs the grep format *)
       sprintf "Refer parsing error, line %i:\n%s" i s
     | `CrunchPath p ->
