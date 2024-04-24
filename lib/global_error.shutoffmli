@@ -4,8 +4,12 @@ module type TRACE = Global_error_intf.TRACE
 
 type t = Global_error_intf.t
 
+module LineInfo : sig
+  type t = { line : int ;
+             filename : string ; }
+end
+
 val t_to_string : t -> string
 
 val to_string : t list -> string
-
 

@@ -4,6 +4,10 @@ module type TRACE = Global_error_intf.TRACE
 
 type t = Global_error_intf.t
 
+module LineInfo = struct
+  type t = { line : int; filename : string }
+end
+
 module BottomLevel = struct
   (* meta-note for this code *)
   (* figure out which branches will require __LINE__ and
