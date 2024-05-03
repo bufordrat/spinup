@@ -4,10 +4,6 @@ module type TRACE = Global_error_intf.TRACE
 
 type t = Global_error_intf.t
 
-module LineInfo = struct
-  type t = { line : int; filename : string }
-end
-
 module BottomLevel = struct
   (* meta-note for this code *)
   (* figure out which branches will require __LINE__ and
@@ -40,7 +36,7 @@ module BottomLevel = struct
     | `ReferParsing (FromAFile _, i, s) ->
       (* this needs the grep format *)
       sprintf "Refer parsing error, line %i:\n%s" i s
-    | `CrunchPath p ->
+    | `CrunchPath (p, _) ->
       (* ey oh this case is in fact being reached *)
       sprintf "Config crunch filepath not found:\n%s" p
     | `FileReadError s ->

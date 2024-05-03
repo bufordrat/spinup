@@ -47,17 +47,20 @@ let refer_parse datasource str =
   |> map_error refer_parsing
 
 module FromCrunch = struct
-  let option_to_result path = function
+  let option_to_result lineinfo path = function
     | Some contents -> Ok contents
     | None ->
       let open E.Smart in
-      Trace.new_error (crunch_path path)
+      Trace.new_error (crunch_path path lineinfo)
 
   let get_config pname path =
     let open R in
     let open DataSource in
     let read path =
-      Crunched_config.read path |> option_to_result path
+      (* TODO: move this down to line 88 *)
+      let lineinfo = Lineinfo.make __LINE__ __FILE__ in
+      Crunched_config.read path
+      |> option_to_result lineinfo path
     in
     let process = read >=> refer_parse FromCrunch in
     let+ context = process path in
