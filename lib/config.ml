@@ -53,12 +53,11 @@ module FromCrunch = struct
       let open E.Smart in
       Trace.new_error (crunch_path path lineinfo)
 
-  let get_config pname path =
+  let get_config lineinfo pname path =
     let open R in
     let open DataSource in
     let read path =
       (* TODO: move this down to line 88 *)
-      let lineinfo = Lineinfo.make __LINE__ __FILE__ in
       Crunched_config.read path
       |> option_to_result lineinfo path
     in
@@ -84,7 +83,9 @@ let get_config pname filesystem_paths =
     let process = read >=> refer_parse (FromAFile p) in
     let+ context = process p in
     mk_config ~datasource:(FromAFile p) pname context
-  | None -> FromCrunch.get_config pname ".spinuprc"
+  | None ->
+    let lineinfo = Lineinfo.make (__LINE__ + 1) __FILE__ in
+    FromCrunch.get_config lineinfo pname ".spinuprc"
 
 let print_crunch path =
   let open Crunched_config in
