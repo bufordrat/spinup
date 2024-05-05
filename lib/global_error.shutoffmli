@@ -36,3 +36,4 @@ val t_to_string : t -> string
 
 val to_string : t list -> string
 
+val print : t -> unit
