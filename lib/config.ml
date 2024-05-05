@@ -57,7 +57,6 @@ module FromCrunch = struct
     let open R in
     let open DataSource in
     let read path =
-      (* TODO: move this down to line 88 *)
       Crunched_config.read path
       |> option_to_result lineinfo path
     in
