@@ -1,7 +1,4 @@
-module Errlist = Global_error_intf.Errlist
-
-module type TRACE = Global_error_intf.TRACE
-
+type error = Global_error_intf.error
 type t = Global_error_intf.t
 
 module BottomLevel = struct
@@ -24,9 +21,9 @@ module BottomLevel = struct
   (* normal format: *)
   (* argv0: error message formatted however I want *)
 
-  type t = Global_error_intf.BottomLevel.t
+  type error = Global_error_intf.BottomLevel.t
 
-  let t_to_string =
+  let error_to_string =
     let open Printf in
     let open Action_error.DataSource in
     let open Lineinfo in
@@ -85,9 +82,9 @@ module BottomLevel = struct
 end
 
 module TopLevel = struct
-  type t = Global_error_intf.TopLevel.t
+  type error = Global_error_intf.TopLevel.t
 
-  let t_to_string = function
+  let error_to_string = function
     | `TemplateErr -> "Template error"
     | `FilesystemErr -> "Filesystem error"
     | `ConfigErr -> "Config error"
@@ -98,43 +95,43 @@ end
  * Error [ `TemplateErr, `FileSystem, TintSyntax ("dune_project", "action.ml", 14)) ]
  * Error [ `FilesystemErr, `DirAlreadyExists "keith_project" ] *)
 
-let t_to_string = function
-  | #BottomLevel.t as b -> BottomLevel.t_to_string b
-  | #TopLevel.t as t -> TopLevel.t_to_string t
+let error_to_string = function
+  | #BottomLevel.error as b -> BottomLevel.error_to_string b
+  | #TopLevel.error as t -> TopLevel.error_to_string t
 
 let to_string errlist =
   let open Prelude in
-  String.join ~sep:":\n" (map t_to_string errlist)
+  String.join ~sep:":\n" (map error_to_string errlist)
 
 let print errlist = print_endline (to_string errlist)
 
 module T = struct
-  type 'a trace = ('a, Global_error_intf.Errlist.t) result
+  let with_error err x =
+    let coerced = (err : [< error] :> error) in
+    match x with
+    | Ok _ -> x
+    | Error errs -> Error (coerced :: errs)
 
-  let coerce e =
-    ( e
-      : [< Global_error_intf.global_error]
-      :> Global_error_intf.global_error )
+  let new_list err =
+    let coerced = (err : [< error] :> error) in
+    [ coerced ]
 
-  let new_error e = Error [ coerce e ]
-  let new_list e = [ coerce e ]
-
-  let with_error e = function
-    | Ok _ as o -> o
-    | Error lst -> Error (coerce e :: lst)
+  let new_error err = Error (new_list err)
 end
 
 module Specialize (E : sig
-  type error
+  type t
 end) =
 struct
-  type 'a new_error = E.error -> ('a, t) result
-  type 'a new_list = E.error -> t
+  module type S = sig
+    val with_error :
+      E.t ->
+      ('a, error list) result ->
+      ('a, error list) result
 
-  type 'a with_error =
-    E.error ->
-    ('a, Errlist.t) result ->
-    ('a, Errlist.t) result
+    val new_list : E.t -> error list
+    val new_error : E.t -> ('a, error list) result
+  end
 end
 
-let export = Fun.id
+let expose = Fun.id

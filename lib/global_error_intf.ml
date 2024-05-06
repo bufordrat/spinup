@@ -7,10 +7,10 @@ module TopLevel = struct
   type t = [ | Action_error.t]
 end
 
-type global_error = [TopLevel.t | BottomLevel.t]
+type error = [TopLevel.t | BottomLevel.t]
 
 module Errlist = struct
-  type t = global_error list
+  type t = error list
 end
 
 type t = Errlist.t
@@ -18,6 +18,6 @@ type t = Errlist.t
 module type TRACE = sig
   type 'a trace
 
-  val new_error : [< global_error] -> 'a trace
-  val with_error : [< global_error] -> 'a trace -> 'a trace
+  val new_error : [< error] -> 'a trace
+  val with_error : [< error] -> 'a trace -> 'a trace
 end
