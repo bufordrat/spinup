@@ -1,10 +1,14 @@
 type t =
-  [ `ReferParsing of Action_error.DataSource.t * int * string
+  [ `ReferCrunch of int * string * Lineinfo.t
+  | `ReferFile of int * string * string
   | `CrunchPath of string * Lineinfo.t
   | `FileReadError of string ]
 
 module Smart = struct
-  let refer_parsing d (i, s) = `ReferParsing (d, i, s)
+  let refer_crunch (i, s) lineinfo =
+    `ReferCrunch (i, s, lineinfo)
+
+  let refer_file (i, s) path = `ReferFile (i, s, path)
 
   let crunch_path path lineinfo =
     `CrunchPath (path, lineinfo)

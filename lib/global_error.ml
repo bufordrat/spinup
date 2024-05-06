@@ -25,13 +25,13 @@ module BottomLevel = struct
 
   let error_to_string =
     let open Printf in
-    let open Action_error.DataSource in
+    (* let open Action_error.DataSource in *)
     let open Lineinfo in
     function
-    | `ReferParsing (FromCrunch, i, s) ->
+    | `ReferCrunch (i, s, _) ->
       (* this needs the grep format *)
       sprintf "Refer parsing error, line %i:\n%s" i s
-    | `ReferParsing (FromAFile _, i, s) ->
+    | `ReferFile (i, s, _) ->
       (* this needs the grep format *)
       sprintf "Refer parsing error, line %i:\n%s" i s
     | `CrunchPath (p, { line; filename }) ->
@@ -40,12 +40,7 @@ module BottomLevel = struct
         "Config crunch filepath not found:\n"
       in
       let format_str =
-        sprintf
-          "Config crunch filepath not found:\n\
-           %s\n\
-           line:%d\n\
-           filename:%s\n"
-          p line filename
+        sprintf "%s\nline:%d\nfilename:%s\n" p line filename
       in
       intro_msg ^ format_str
     | `FileReadError s ->

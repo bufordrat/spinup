@@ -40,7 +40,11 @@ let refer_parse datasource str =
     db >>= each_pair
   in
   let refer_parsing (x, y) =
-    [ E.Smart.refer_parsing datasource (x, y) ]
+    let lineinfo = Lineinfo.make (__LINE__ + 2) __FILE__ in
+    let open DataSource in
+    match datasource with
+    | FromCrunch -> [ E.Smart.refer_crunch (x, y) lineinfo ]
+    | FromAFile path -> [ E.Smart.refer_file (x, y) path ]
   in
   sequence (str_to_lst str)
   >>| collapse
@@ -84,7 +88,7 @@ let get_config pname filesystem_paths =
     mk_config ~datasource:(FromAFile p) pname context
   | None ->
     let lineinfo = Lineinfo.make (__LINE__ + 1) __FILE__ in
-    FromCrunch.get_config lineinfo pname ".spinuprc"
+    FromCrunch.get_config lineinfo pname ".spinuprcXXX"
 
 let print_crunch path =
   let open Crunched_config in
