@@ -55,7 +55,7 @@ module FromCrunch = struct
     | Some contents -> Ok contents
     | None ->
       let open E.Smart in
-      Trace.new_error (crunch_path path lineinfo)
+      Trace.new_error (config_crunch_path path lineinfo)
 
   let get_config lineinfo pname path =
     let open R in

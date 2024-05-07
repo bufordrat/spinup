@@ -34,7 +34,7 @@ module BottomLevel = struct
     | `ReferFile (i, s, _) ->
       (* this needs the grep format *)
       sprintf "Refer parsing error, line %i:\n%s" i s
-    | `CrunchPath (p, { line; filename }) ->
+    | `ConfigCrunchPath (p, { line; filename }) ->
       (* ey oh this case is in fact being reached *)
       let intro_msg =
         "Config crunch filepath not found:\n"
