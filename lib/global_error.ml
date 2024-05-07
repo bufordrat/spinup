@@ -51,6 +51,8 @@ module BottomLevel = struct
       (* grep format *)
       sprintf "Directory already exists:\n%s" s
     | `SyntaxString s ->
+      (* if my calculations are correct, this error should
+         never happen *)
       sprintf "Bad TINT syntax string:\n%s" s
     | `TintSyntax (s1, s2, slist) ->
       (* some day, this may have a line number, but not
