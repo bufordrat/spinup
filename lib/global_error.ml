@@ -12,8 +12,8 @@ let grep_format ?(lines = []) fullpath line ?(col = 1) msg =
       ]
   in
   let final_colon = if lines = [] then "" else ":" in
-  let tabbed = List.map (fun s -> "    " ^ s) lines in
-  beginning ^ final_colon ^ concat "" tabbed
+  let ending = List.map (fun s -> "    " ^ s) lines in
+  beginning ^ final_colon ^ concat "" ending
 
 (* let grep_example =
  *   "/Users/teichman/tmp/functional-adventure/src/GameIO.hs:54:1: error:" *)
