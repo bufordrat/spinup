@@ -1,6 +1,23 @@
 type error = Global_error_intf.error
 type t = Global_error_intf.t
 
+let grep_format ?(lines = []) fullpath line ?(col = 1) msg =
+  let open String in
+  let beginning =
+    concat ":"
+      [ fullpath;
+        string_of_int line;
+        string_of_int col;
+        " " ^ msg
+      ]
+  in
+  let final_colon = if lines = [] then "" else ":" in
+  let tabbed = List.map (fun s -> "    " ^ s) lines in
+  beginning ^ final_colon ^ concat "" tabbed
+
+(* let grep_example =
+ *   "/Users/teichman/tmp/functional-adventure/src/GameIO.hs:54:1: error:" *)
+
 module BottomLevel = struct
   (* meta-note for this code *)
   (* figure out which branches will require __LINE__ and
