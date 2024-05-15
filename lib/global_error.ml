@@ -1,22 +1,32 @@
 type error = Global_error_intf.error
 type t = Global_error_intf.t
 
-let grep_format ?(lines = []) fullpath line ?(col = 1) msg =
+let argv0 = Prelude.argv0
+
+let grep_format ?(msgs = []) fullpath line ?column main_msg
+    =
+  let col =
+    match column with
+    | Some c -> [ string_of_int c ]
+    | None -> []
+  in
   let open String in
   let beginning =
     concat ":"
-      [ fullpath;
-        string_of_int line;
-        string_of_int col;
-        " " ^ msg
-      ]
+      ( [ fullpath; string_of_int line ]
+      @ col
+      @ [ " " ^ main_msg ] )
   in
-  let final_colon = if lines = [] then "" else ":" in
-  let ending = List.map (fun s -> "    " ^ s) lines in
-  beginning ^ final_colon ^ concat "" ending
+  let final_colon = if msgs = [] then "" else ":" in
+  let ending = List.map (fun s -> "  " ^ s) msgs in
+  beginning ^ final_colon ^ "\n" ^ concat "\n" ending
 
-(* let grep_example =
- *   "/Users/teichman/tmp/functional-adventure/src/GameIO.hs:54:1: error:" *)
+let grep_example =
+  "/Users/teichman/tmp/functional-adventure/src/GameIO.hs:54:1: \
+   error:"
+
+let format ?(msgs = []) line main_msg =
+  grep_format ~msgs argv0 line main_msg
 
 module BottomLevel = struct
   (* meta-note for this code *)
@@ -42,12 +52,20 @@ module BottomLevel = struct
 
   let error_to_string =
     let open Printf in
-    (* let open Action_error.DataSource in *)
     let open Lineinfo in
     function
-    | `ReferCrunch (i, s, _) ->
+    | `ReferCrunch (i, s, l) ->
+      let open Lineinfo in
+      let msg = "error" in
+      let msgs =
+        [ "Crunched config parse error!";
+          sprintf "source: %s:%i" l.filename l.line;
+          sprintf "refer error: %s" s;
+          sprintf "line: %i" i
+        ]
+      in
+      format ~msgs i msg
       (* this needs the grep format *)
-      sprintf "Refer parsing error, line %i:\n%s" i s
     | `ReferFile (i, s, _) ->
       (* this needs the grep format *)
       sprintf "Refer parsing error, line %i:\n%s" i s
@@ -99,9 +117,9 @@ module TopLevel = struct
   type error = Global_error_intf.TopLevel.t
 
   let error_to_string = function
-    | `TemplateErr -> "Template error"
-    | `FilesystemErr -> "Filesystem error"
-    | `ConfigErr -> "Config error"
+    | `TemplateErr -> "Template problem!"
+    | `FilesystemErr -> "Filesystem problem!"
+    | `ConfigErr -> "Config problem!"
 end
 
 (* note to self: make this happen: *)
@@ -115,7 +133,7 @@ let error_to_string = function
 
 let to_string errlist =
   let open Prelude in
-  String.join ~sep:":\n" (map error_to_string errlist)
+  String.join ~sep:"\n" (map error_to_string errlist)
 
 let print errlist = print_endline (to_string errlist)
 

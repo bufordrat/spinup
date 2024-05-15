@@ -88,7 +88,7 @@ let get_config pname filesystem_paths =
     mk_config ~datasource:(FromAFile p) pname context
   | None ->
     let lineinfo = Lineinfo.make (__LINE__ + 1) __FILE__ in
-    FromCrunch.get_config lineinfo pname ".spinuprcXXX"
+    FromCrunch.get_config lineinfo pname ".spinuprc"
 
 let print_crunch path =
   let open Crunched_config in
