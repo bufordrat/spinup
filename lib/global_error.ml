@@ -3,6 +3,11 @@ type t = Global_error_intf.t
 
 let argv0 = Prelude.argv0
 
+let normal_format ?(indent = 0) msgs =
+  let i = String.make indent ' ' in
+  let indentMsg m = i ^ m in
+  String.concat "\n" (List.map indentMsg msgs)
+
 let grep_format ?(msgs = []) ?column fullpath line =
   let col =
     match column with
@@ -13,26 +18,26 @@ let grep_format ?(msgs = []) ?column fullpath line =
   let beginning =
     concat ":" ([ fullpath; string_of_int line ] @ col)
   in
-  let ending = List.map (fun s -> "  " ^ s) msgs in
-  beginning ^ "\n" ^ concat "\n" ending
+  let ending = normal_format ~indent:2 msgs in
+  beginning ^ "\n" ^ ending
 
-let grep_format_long ?(msgs = []) fullpath line ?column
-    main_msg =
-  let col =
-    match column with
-    | Some c -> [ string_of_int c ]
-    | None -> []
-  in
-  let open String in
-  let beginning =
-    concat ":"
-      ( [ fullpath; string_of_int line ]
-      @ col
-      @ [ " " ^ main_msg ] )
-  in
-  let final_colon = if msgs = [] then "" else ":" in
-  let ending = List.map (fun s -> "  " ^ s) msgs in
-  beginning ^ final_colon ^ "\n" ^ concat "\n" ending
+(* let grep_format_long ?(msgs = []) fullpath line ?column *)
+(*     main_msg = *)
+(*   let col = *)
+(*     match column with *)
+(*     | Some c -> [ string_of_int c ] *)
+(*     | None -> [] *)
+(*   in *)
+(*   let open String in *)
+(*   let beginning = *)
+(*     concat ":" *)
+(*       ( [ fullpath; string_of_int line ] *)
+(*       @ col *)
+(*       @ [ " " ^ main_msg ] ) *)
+(*   in *)
+(*   let final_colon = if msgs = [] then "" else ":" in *)
+(*   let ending = List.map (fun s -> "  " ^ s) msgs in *)
+(*   beginning ^ final_colon ^ "\n" ^ concat "\n" ending *)
 
 let grep_example =
   "/Users/teichman/tmp/functional-adventure/src/GameIO.hs:54:1: \
@@ -71,11 +76,11 @@ module BottomLevel = struct
     let open Printf in
     let open Lineinfo in
     function
-    | `ReferCrunch (line, s, path) ->
+    | `ReferCrunch (_, s, _) ->
       let email = Contact.email in
       let msgs =
-        [ s;
-          "Crunched config parse error!";
+        [ "Crunched config parse error!";
+          s;
           "This should not have happened.";
           sprintf
             "Please send a copy of this error message to \
@@ -83,7 +88,7 @@ module BottomLevel = struct
             email
         ]
       in
-      grep_format ~msgs path line
+      normal_format msgs
     | `ReferFile (i, s, _) ->
       (* this needs the grep format *)
       sprintf "Refer parsing error, line %i:\n%s" i s
