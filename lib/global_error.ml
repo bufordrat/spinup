@@ -85,8 +85,8 @@ module BottomLevel = struct
           sprintf "  line: %i" line;
           "";
           "This should not have happened.";
-          "Please let us know about the problem so that we \
-           can fix it.";
+          "Please let the maintainer know about the \
+           problem so that they can fix it.";
           sprintf
             "You can send a copy of this error message to \
              %s."
