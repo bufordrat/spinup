@@ -79,7 +79,8 @@ module BottomLevel = struct
     | `ReferCrunch (line, s, path) ->
       let email = Contact.email in
       let msgs =
-        [ "Crunched config parse error:";
+        [ argv0 ^ " " ^ String.concat " " Prelude.argv ^ ":";
+          "  Crunched config parse error:";
           "  " ^ s;
           sprintf "  crunched filepath: %s" path;
           sprintf "  line: %i" line;
