@@ -3,8 +3,21 @@ type t = Global_error_intf.t
 
 let argv0 = Prelude.argv0
 
-let grep_format ?(msgs = []) fullpath line ?column main_msg
-    =
+let grep_format ?(msgs = []) ?column fullpath line =
+  let col =
+    match column with
+    | Some c -> [ string_of_int c ]
+    | None -> []
+  in
+  let open String in
+  let beginning =
+    concat ":" ([ fullpath; string_of_int line ] @ col)
+  in
+  let ending = List.map (fun s -> "  " ^ s) msgs in
+  beginning ^ "\n" ^ concat "\n" ending
+
+let grep_format_long ?(msgs = []) fullpath line ?column
+    main_msg =
   let col =
     match column with
     | Some c -> [ string_of_int c ]
@@ -25,8 +38,8 @@ let grep_example =
   "/Users/teichman/tmp/functional-adventure/src/GameIO.hs:54:1: \
    error:"
 
-let format ?(msgs = []) line main_msg =
-  grep_format ~msgs argv0 line main_msg
+(* let format ?(msgs = []) line =
+ *   grep_format ~msgs argv0 line *)
 
 module BottomLevel = struct
   (* meta-note for this code *)
@@ -50,22 +63,27 @@ module BottomLevel = struct
 
   type error = Global_error_intf.BottomLevel.t
 
+  let is = function
+    | #error -> true
+    | _ -> false
+
   let error_to_string =
     let open Printf in
     let open Lineinfo in
     function
-    | `ReferCrunch (i, s, l) ->
-      let open Lineinfo in
-      let msg = "error" in
+    | `ReferCrunch (line, s, path) ->
+      let email = Contact.email in
       let msgs =
-        [ "Crunched config parse error!";
-          sprintf "source: %s:%i" l.filename l.line;
-          sprintf "refer error: %s" s;
-          sprintf "line: %i" i
+        [ s;
+          "Crunched config parse error!";
+          "This should not have happened.";
+          sprintf
+            "Please send a copy of this error message to \
+             %s."
+            email
         ]
       in
-      format ~msgs i msg
-      (* this needs the grep format *)
+      grep_format ~msgs path line
     | `ReferFile (i, s, _) ->
       (* this needs the grep format *)
       sprintf "Refer parsing error, line %i:\n%s" i s
@@ -133,7 +151,8 @@ let error_to_string = function
 
 let to_string errlist =
   let open Prelude in
-  String.join ~sep:"\n" (map error_to_string errlist)
+  let filtered = List.filter BottomLevel.is errlist in
+  String.join ~sep:"\n" (map error_to_string filtered)
 
 let print errlist = print_endline (to_string errlist)
 

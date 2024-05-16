@@ -6,6 +6,7 @@ module Command = Command
 module Cli = Cli
 module Config = Config
 module Config_error = Config_error
+module Contact = Contact
 module Crunch = Crunch
 module Crunched_templates = Crunched_templates
 module Crunched_config = Crunched_config

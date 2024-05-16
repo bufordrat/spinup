@@ -1,7 +1,7 @@
 type t = [`TemplateErr | `FilesystemErr | `ConfigErr]
 
 module DataSource = struct
-  type t = FromCrunch | FromAFile of string
+  type t = FromCrunch of string | FromAFile of string
 end
 
 module Smart = struct
