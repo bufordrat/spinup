@@ -76,14 +76,19 @@ module BottomLevel = struct
     let open Printf in
     let open Lineinfo in
     function
-    | `ReferCrunch (_, s, _) ->
+    | `ReferCrunch (line, s, path) ->
       let email = Contact.email in
       let msgs =
-        [ "Crunched config parse error!";
-          s;
+        [ "Crunched config parse error:";
+          "  " ^ s;
+          sprintf "  crunched filepath: %s" path;
+          sprintf "  line: %i" line;
+          "";
           "This should not have happened.";
+          "Please let us know about the problem so that we \
+           can fix it.";
           sprintf
-            "Please send a copy of this error message to \
+            "You can send a copy of this error message to \
              %s."
             email
         ]
