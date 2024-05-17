@@ -41,8 +41,8 @@ module BottomLevel = struct
         "Please let the project maintainer know about the \
          problem so that they can fix it.";
         sprintf
-          "You can send the maintainer a copy of this \
-           error message at %s."
+          "You can send them a copy of this error message \
+           at %s."
           Contact.email
       ]
 
