@@ -1,7 +1,7 @@
 type error = Global_error_intf.error
 type t = Global_error_intf.t
 
-let argv0 = Prelude.argv0
+(* let argv0 = Prelude.argv0 *)
 
 let grep_example =
   "/Users/teichman/tmp/functional-adventure/src/GameIO.hs:54:1: \
@@ -36,16 +36,10 @@ module BottomLevel = struct
   let error_to_string =
     let open Printf in
     let open Lineinfo in
-    let open Contact in
     let open Layout.Smart in
     function
     | `ReferCrunch (line, refer_message, path) ->
-      let ending =
-        match Prelude.argv with
-        | [] -> ""
-        | _ -> " " ^ String.concat " " Prelude.argv
-      in
-      [ block 0 [ argv0 ^ ending ^ ":" ];
+      [ argv;
         block 2
           [ "Crunched config parse error!";
             refer_message;
@@ -60,7 +54,7 @@ module BottomLevel = struct
             sprintf
               "You can send a copy of this error message \
                to %s."
-              email
+              Contact.email
           ]
       ]
       |> Layout.to_string
