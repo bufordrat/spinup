@@ -39,7 +39,7 @@ module BottomLevel = struct
     let open Contact in
     let open Layout.Smart in
     function
-    | `ReferCrunch (line, s, path) ->
+    | `ReferCrunch (line, refer_message, path) ->
       let ending =
         match Prelude.argv with
         | [] -> ""
@@ -48,7 +48,7 @@ module BottomLevel = struct
       [ block 0 [ argv0 ^ ending ^ ":" ];
         block 2
           [ "Crunched config parse error!";
-            s;
+            refer_message;
             sprintf "crunched filepath: %s" path;
             sprintf "line: %i" line;
             ""
