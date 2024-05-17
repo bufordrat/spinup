@@ -49,11 +49,11 @@ module BottomLevel = struct
           ];
         block 0
           [ "This should not have happened.";
-            "Please let the maintainer know about the \
-             problem so that they can fix it.";
+            "Please let the project maintainer know about \
+             the problem so that they can fix it.";
             sprintf
-              "You can send a copy of this error message \
-               to %s."
+              "You can send the maintainer a copy of this \
+               error message at %s."
               Contact.email
           ]
       ]
