@@ -43,8 +43,6 @@ let refer_parse datasource str =
     db >>= each_pair
   in
   let refer_parsing (x, y) =
-    (* let lineinfo = Lineinfo.make (__LINE__ + 2) __FILE__
-       in *)
     let open DataSource in
     match datasource with
     | FromCrunch path ->

@@ -3,10 +3,10 @@ type t = Global_error_intf.t
 
 let argv0 = Prelude.argv0
 
-let normal_format ?(indent = 0) msgs =
+let text_block ?(indent = 0) msgs =
   let i = String.make indent ' ' in
   let indentMsg m = i ^ m in
-  String.concat "\n" (List.map indentMsg msgs)
+  List.map indentMsg msgs
 
 let grep_format ?(msgs = []) ?column fullpath line =
   let col =
@@ -18,7 +18,9 @@ let grep_format ?(msgs = []) ?column fullpath line =
   let beginning =
     concat ":" ([ fullpath; string_of_int line ] @ col)
   in
-  let ending = normal_format ~indent:2 msgs in
+  let ending =
+    String.concat "\n" (text_block ~indent:2 msgs)
+  in
   beginning ^ "\n" ^ ending
 
 (* let grep_format_long ?(msgs = []) fullpath line ?column *)
@@ -75,26 +77,34 @@ module BottomLevel = struct
   let error_to_string =
     let open Printf in
     let open Lineinfo in
+    let open Contact in
+    let open Layout.Smart in
     function
     | `ReferCrunch (line, s, path) ->
-      let email = Contact.email in
-      let msgs =
-        [ argv0 ^ " " ^ String.concat " " Prelude.argv ^ ":";
-          "  Crunched config parse error:";
-          "  " ^ s;
-          sprintf "  crunched filepath: %s" path;
-          sprintf "  line: %i" line;
-          "";
-          "This should not have happened.";
-          "Please let the maintainer know about the \
-           problem so that they can fix it.";
-          sprintf
-            "You can send a copy of this error message to \
-             %s."
-            email
-        ]
+      let ending =
+        match Prelude.argv with
+        | [] -> ""
+        | _ -> " " ^ String.concat " " Prelude.argv
       in
-      normal_format msgs
+      [ block 0 [ argv0 ^ ending ^ ":" ];
+        block 2
+          [ "Crunched config parse error!";
+            s;
+            sprintf "crunched filepath: %s" path;
+            sprintf "line: %i" line;
+            ""
+          ];
+        block 0
+          [ "This should not have happened.";
+            "Please let the maintainer know about the \
+             problem so that they can fix it.";
+            sprintf
+              "You can send a copy of this error message \
+               to %s."
+              email
+          ]
+      ]
+      |> Layout.to_string
     | `ReferFile (i, s, _) ->
       (* this needs the grep format *)
       sprintf "Refer parsing error, line %i:\n%s" i s
