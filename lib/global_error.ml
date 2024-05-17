@@ -3,50 +3,9 @@ type t = Global_error_intf.t
 
 let argv0 = Prelude.argv0
 
-let text_block ?(indent = 0) msgs =
-  let i = String.make indent ' ' in
-  let indentMsg m = i ^ m in
-  List.map indentMsg msgs
-
-let grep_format ?(msgs = []) ?column fullpath line =
-  let col =
-    match column with
-    | Some c -> [ string_of_int c ]
-    | None -> []
-  in
-  let open String in
-  let beginning =
-    concat ":" ([ fullpath; string_of_int line ] @ col)
-  in
-  let ending =
-    String.concat "\n" (text_block ~indent:2 msgs)
-  in
-  beginning ^ "\n" ^ ending
-
-(* let grep_format_long ?(msgs = []) fullpath line ?column *)
-(*     main_msg = *)
-(*   let col = *)
-(*     match column with *)
-(*     | Some c -> [ string_of_int c ] *)
-(*     | None -> [] *)
-(*   in *)
-(*   let open String in *)
-(*   let beginning = *)
-(*     concat ":" *)
-(*       ( [ fullpath; string_of_int line ] *)
-(*       @ col *)
-(*       @ [ " " ^ main_msg ] ) *)
-(*   in *)
-(*   let final_colon = if msgs = [] then "" else ":" in *)
-(*   let ending = List.map (fun s -> "  " ^ s) msgs in *)
-(*   beginning ^ final_colon ^ "\n" ^ concat "\n" ending *)
-
 let grep_example =
   "/Users/teichman/tmp/functional-adventure/src/GameIO.hs:54:1: \
    error:"
-
-(* let format ?(msgs = []) line =
- *   grep_format ~msgs argv0 line *)
 
 module BottomLevel = struct
   (* meta-note for this code *)
