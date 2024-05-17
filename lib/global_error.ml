@@ -33,6 +33,19 @@ module BottomLevel = struct
     | #error -> true
     | _ -> false
 
+  let deverror_block =
+    let open Printf in
+    let open Layout.Smart in
+    block 0
+      [ "This should not have happened.";
+        "Please let the project maintainer know about the \
+         problem so that they can fix it.";
+        sprintf
+          "You can send the maintainer a copy of this \
+           error message at %s."
+          Contact.email
+      ]
+
   let error_to_string =
     let open Printf in
     let open Lineinfo in
@@ -44,18 +57,10 @@ module BottomLevel = struct
           [ "Crunched config parse error!";
             refer_message;
             sprintf "crunched filepath: %s" path;
-            sprintf "line: %i" line;
-            ""
+            sprintf "line: %i" line
           ];
-        block 0
-          [ "This should not have happened.";
-            "Please let the project maintainer know about \
-             the problem so that they can fix it.";
-            sprintf
-              "You can send the maintainer a copy of this \
-               error message at %s."
-              Contact.email
-          ]
+        blank;
+        deverror_block
       ]
       |> Layout.to_string
     | `ReferFile (i, s, _) ->

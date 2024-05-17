@@ -1,6 +1,7 @@
 type block =
   | Argv
   | Block of int * string list
+  | Blank
   | Grep of { path : string; line : int; col : int option }
 
 type t = block list
@@ -8,6 +9,7 @@ type t = block list
 module Smart = struct
   let argv = Argv
   let block i lst = Block (i, lst)
+  let blank = Blank
   let grep ?col path line = Grep { path; line; col }
 end
 
@@ -16,6 +18,7 @@ let block_to_string = function
     let i = String.make indent ' ' in
     let indentMsg m = i ^ m in
     String.concat "\n" (List.map indentMsg msgs)
+  | Blank -> ""
   | Grep { path; line; col } ->
     let open String in
     let c =
