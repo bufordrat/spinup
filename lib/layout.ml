@@ -1,5 +1,6 @@
 type block =
   | Argv
+  | Argv0
   | Block of int * string list
   | Blank
   | Grep of { path : string; line : int; col : int option }
@@ -8,6 +9,7 @@ type t = block list
 
 module Smart = struct
   let argv = Argv
+  let argv0 = Argv0
   let block i lst = Block (i, lst)
   let blank = Blank
   let grep ?col path line = Grep { path; line; col }
@@ -34,6 +36,7 @@ let block_to_string = function
       | _ -> " " ^ String.concat " " Prelude.argv
     in
     Prelude.argv0 ^ ending ^ ":"
+  | Argv0 -> Prelude.argv0
 
 let to_string blocks =
   String.concat "\n" (List.map block_to_string blocks)

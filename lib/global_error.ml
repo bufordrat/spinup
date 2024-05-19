@@ -1,7 +1,7 @@
 type error = Global_error_intf.error
 type t = Global_error_intf.t
 
-(* let argv0 = Prelude.argv0 *)
+let exe_path = Prelude.argv0
 
 let grep_example =
   "/Users/teichman/tmp/functional-adventure/src/GameIO.hs:54:1: \
@@ -63,18 +63,25 @@ module BottomLevel = struct
         deverror_block
       ]
       |> Layout.to_string
-    | `ReferFile (i, s, _) ->
-      (* this needs the grep format *)
-      sprintf "Refer parsing error, line %i:\n%s" i s
-    | `ConfigCrunchPath (p, { line; filename }) ->
-      (* ey oh this case is in fact being reached *)
-      let intro_msg =
-        "Config crunch filepath not found:\n"
-      in
-      let format_str =
-        sprintf "%s\nline:%d\nfilename:%s\n" p line filename
-      in
-      intro_msg ^ format_str
+    | `ReferFile (line, refer_message, path) ->
+      [ grep path line;
+        block 2 [ "Config parse error!"; refer_message ]
+      ]
+      |> Layout.to_string
+    | `ConfigCrunchPath (path, { line; filename }) ->
+      [ argv;
+        block 2
+          [ "Crunched config filepath error!";
+            sprintf
+              "Attempted to read '%s' out of the crunch."
+              path;
+            sprintf "source file: %s" filename;
+            sprintf "source line: %i" line
+          ];
+        blank;
+        deverror_block
+      ]
+      |> Layout.to_string
     | `FileReadError s ->
       (* put this one in grep format since it involves a
          file *)
