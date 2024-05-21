@@ -180,5 +180,8 @@ module Main = struct
     in
     let+ actions = directory_actions config in
     WithCD { dir = pname; actions; config }
+end
 
+module PrintConfig = struct
+  let print_config = R.pure (Print "")
 end

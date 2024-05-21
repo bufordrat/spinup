@@ -20,13 +20,14 @@ let print_config () =
 
 let main pc_arg dr_arg pname_arg =
   let open Lib.Action.Main in
-  let doit handler pname =
-    handle_result handler (main_action pname)
+  let open Lib.Action.PrintConfig in
+  let doit handler action =
+    handle_result handler action
   in
   match (pc_arg, dr_arg, pname_arg) with
-  | true, _, _ -> print_config ()
-  | _, true, Some pname -> doit dry_run pname
-  | _, _, Some pname -> doit run pname
+  | true, _, _ -> doit run print_config
+  | _, true, Some pname -> doit dry_run (main_action pname)
+  | _, _, Some pname -> doit run (main_action pname)
   | _, _, None ->
     let open Prelude.Message in
     message ~myself:"" ~exit:1

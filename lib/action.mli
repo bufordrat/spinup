@@ -21,3 +21,7 @@ module Main : sig
     val files : Config.t -> Template.Unprocessed.t list
   end
 end
+
+module PrintConfig : sig
+  val print_config : (t, Global_error_intf.t) result
+end
