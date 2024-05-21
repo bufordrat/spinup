@@ -19,7 +19,7 @@ let print_config () =
     exit 1
 
 let main pc_arg dr_arg pname_arg =
-  let open Lib.Action in
+  let open Lib.Action.Main in
   let doit handler pname =
     handle_result handler (main_action pname)
   in
