@@ -9,7 +9,8 @@ let handle_result handler =
 let print_config () =
   let open Lib.Crunched_config in
   let msg =
-    Lib.Filesystem.wrap_in_argv0 "internal crunch error"
+    (* Lib.Filesystem.wrap_in_argv0 "internal crunch error" *)
+    "delete this"
   in
   match read ".spinuprc" with
   | Some conf -> print_endline conf

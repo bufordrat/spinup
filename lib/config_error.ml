@@ -11,5 +11,5 @@ module Smart = struct
   let config_crunch_path path lineinfo =
     `ConfigCrunchPath (path, lineinfo)
 
-  let file_read_error path = `FileReadError path
+  let file_read_error msg_from_stdlib = `FileReadError msg_from_stdlib
 end

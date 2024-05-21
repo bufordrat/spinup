@@ -11,10 +11,6 @@ let dir_or_file path =
   then ("/", "directory")
   else ("", "file")
 
-let wrap_in_argv0 msg =
-  let executable = Filename.basename Prelude.argv0 in
-  executable ^ ": " ^ msg
-
 let already_exists name =
   let open Prelude in
   let open E.Smart in
@@ -30,6 +26,6 @@ let already_exists name =
   in
   if Sys.file_exists name
   then
-    let msg = dir_or_file name |> prose |> wrap_in_argv0 in
+    let msg = dir_or_file name |> prose in
     Trace.new_error (dir_already_exists msg)
   else Ok ()
