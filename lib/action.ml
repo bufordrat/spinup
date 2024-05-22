@@ -183,5 +183,11 @@ module Main = struct
 end
 
 module PrintConfig = struct
-  let print_config = R.pure (Print "")
+  let print_config pname =
+    let open Config.FromCrunch in
+    (* let open Crunched_config in
+     * let open Trace in
+     * let open R in *)
+    let lineinfo = Lineinfo.make (__LINE__ + 1) __FILE__ in
+    get_config lineinfo pname Config.crunch_path
 end

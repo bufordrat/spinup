@@ -95,8 +95,9 @@ let get_config pname filesystem_paths =
     let lineinfo = Lineinfo.make (__LINE__ + 1) __FILE__ in
     FromCrunch.get_config lineinfo pname crunch_path
 
-let print_crunch path =
-  let open Crunched_config in
-  match read path with
-  | Some conf -> print_endline conf
-  | None -> ()
+
+(* let print_crunch path =
+ *   let open Crunched_config in
+ *   match read path with
+ *   | Some conf -> print_endline conf
+ *   | None -> () *)

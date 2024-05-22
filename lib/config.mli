@@ -12,4 +12,10 @@ val is_default : t -> bool
 val get_config :
   string -> string list -> (t, Global_error_intf.t) result
 
-val print_crunch : string -> unit
+module FromCrunch : sig
+  val get_config :
+    Lineinfo.t -> string -> string -> (t, Global_error.t) result
+end
+(* val print_crunch : string -> unit *)
+
+val crunch_path : string

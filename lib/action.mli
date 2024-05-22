@@ -23,5 +23,5 @@ module Main : sig
 end
 
 module PrintConfig : sig
-  val print_config : (t, Global_error_intf.t) result
+  val print_config : string -> (Config.t, Global_error.t) result
 end

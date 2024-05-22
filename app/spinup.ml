@@ -20,12 +20,13 @@ let print_config () =
 
 let main pc_arg dr_arg pname_arg =
   let open Lib.Action.Main in
-  let open Lib.Action.PrintConfig in
+  (* let open Lib.Action.PrintConfig in *)
   let doit handler action =
     handle_result handler action
   in
   match (pc_arg, dr_arg, pname_arg) with
-  | true, _, _ -> doit run print_config
+  | true, _, _ -> print_config ()
+     (* doit run print_config *)
   | _, true, Some pname -> doit dry_run (main_action pname)
   | _, _, Some pname -> doit run (main_action pname)
   | _, _, None ->
