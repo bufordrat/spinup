@@ -13,9 +13,11 @@ val get_config :
   string -> string list -> (t, Global_error_intf.t) result
 
 module FromCrunch : sig
+  val get_raw_config :
+    string -> (string, Global_error.t) result
+
   val get_config :
     string -> string -> (t, Global_error.t) result
 end
-(* val print_crunch : string -> unit *)
 
 val crunch_path : string

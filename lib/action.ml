@@ -185,7 +185,11 @@ module Main = struct
 end
 
 module PrintConfig = struct
-  let print_config pname =
-    let open Config.FromCrunch in
-    get_config pname Config.crunch_path
+  let print_config () =
+    let open R in
+    let open Config in
+    let+ config_string =
+      FromCrunch.get_raw_config crunch_path
+    in
+    Print config_string
 end

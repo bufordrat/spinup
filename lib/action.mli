@@ -24,6 +24,5 @@ module Main : sig
 end
 
 module PrintConfig : sig
-  val print_config :
-    string -> (Config.t, Global_error.t) result
+  val print_config : unit -> (t, Global_error.t) result
 end
