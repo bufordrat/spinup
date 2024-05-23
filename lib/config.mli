@@ -12,7 +12,7 @@ val is_default : t -> bool
 val get_config :
   string -> string list -> (t, Global_error_intf.t) result
 
-module FromCrunch : sig
+module Crunch : sig
   val get_raw_config :
     string -> (string, Global_error.t) result
 

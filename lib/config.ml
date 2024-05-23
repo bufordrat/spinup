@@ -55,7 +55,7 @@ let refer_parse datasource str =
   >>| collapse
   |> map_error refer_parsing
 
-module FromCrunch = struct
+module Crunch = struct
   let option_to_result path = function
     | Some contents -> Ok contents
     | None ->
@@ -95,4 +95,4 @@ let get_config pname filesystem_paths =
     let process = read >=> refer_parse (FromAFile p) in
     let+ context = process p in
     mk_config ~datasource:(FromAFile p) pname context
-  | None -> FromCrunch.get_config pname crunch_path
+  | None -> Crunch.get_config pname crunch_path

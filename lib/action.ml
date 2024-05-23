@@ -189,7 +189,7 @@ module PrintConfig = struct
     let open R in
     let open Config in
     let+ config_string =
-      FromCrunch.get_raw_config crunch_path
+      Crunch.get_raw_config crunch_path
     in
     Print config_string
 end
