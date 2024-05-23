@@ -1,4 +1,4 @@
-type t = [`TemplateErr | `FilesystemErr | `ConfigErr ]
+type t = [`TemplateErr | `FilesystemErr | `ConfigErr]
 
 module DataSource = struct
   type t = FromCrunch of string | FromAFile of string

@@ -83,11 +83,10 @@ module BottomLevel = struct
       ]
       |> Layout.to_string
     | `FileReadError msg_from_stdlib ->
-       [
-         block 0 [msg_from_stdlib] ;
-         block 2 [ "Filesystem error reading config file!" ];
-       ]
-       |> Layout.to_string
+      [ block 0 [ msg_from_stdlib ];
+        block 2 [ "Filesystem error reading config file!" ]
+      ]
+      |> Layout.to_string
     | `DirAlreadyExists s ->
       (* grep format *)
       sprintf "Directory already exists:\n%s" s

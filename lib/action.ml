@@ -25,9 +25,9 @@ module Main = struct
     let mk_projectdir name =
       Run
         Command.
-      { args = [ "mkdir"; name ];
-        cmessage = "making " ^ name ^ "/ directory..."
-      }
+          { args = [ "mkdir"; name ];
+            cmessage = "making " ^ name ^ "/ directory..."
+          }
   end
 
   let rec run = function
@@ -35,34 +35,36 @@ module Main = struct
     | Run cmd -> Command.run cmd
     | Print msg -> print_endline msg
     | WithCD d ->
-       let handler _ = List.iter run d.actions in
-       run (Opening.say_which_config d.config) ;
-       run (Opening.mk_projectdir d.dir) ;
-       Prelude.(withcd handler d.dir)
+      let handler _ = List.iter run d.actions in
+      run (Opening.say_which_config d.config) ;
+      run (Opening.mk_projectdir d.dir) ;
+      Prelude.(withcd handler d.dir)
 
   let rec dry_run = function
     | Write tmpl ->
-       let output = "    WRITE    " ^ tmpl.write_path in
-       print_endline output
+      let output = "    WRITE    " ^ tmpl.write_path in
+      print_endline output
     | Print msg ->
-       let open Prelude.String in
-       let trimmed =
-         if length msg <= 200
-         then msg
-         else (trim whitespace) (take 41 msg) ^ "... etc."
-       in
-       let output = "    PRINT    " ^ trimmed in
-       print_endline output
+      let open Prelude.String in
+      let trimmed =
+        if length msg <= 200
+        then msg
+        else (trim whitespace) (take 41 msg) ^ "... etc."
+      in
+      let output = "    PRINT    " ^ trimmed in
+      print_endline output
     | Run cmd ->
-       let open Prelude.String in
-       let output = "      RUN    " ^ join ~sep:" " cmd.args in
-       print_endline output
+      let open Prelude.String in
+      let output =
+        "      RUN    " ^ join ~sep:" " cmd.args
+      in
+      print_endline output
     | WithCD d ->
-       let msg = "      RUN    cd " ^ d.dir in
-       dry_run (Opening.say_which_config d.config) ;
-       dry_run (Opening.mk_projectdir d.dir) ;
-       print_endline msg ;
-       List.iter dry_run d.actions
+      let msg = "      RUN    cd " ^ d.dir in
+      dry_run (Opening.say_which_config d.config) ;
+      dry_run (Opening.mk_projectdir d.dir) ;
+      print_endline msg ;
+      List.iter dry_run d.actions
 
   let write v = Write v
 
@@ -75,9 +77,9 @@ module Main = struct
     let dir_to_action dir =
       Run
         Command.
-      { args = [ "mkdir"; "-p"; dir ];
-        cmessage = "making " ^ dir ^ "/ directory..."
-      }
+          { args = [ "mkdir"; "-p"; dir ];
+            cmessage = "making " ^ dir ^ "/ directory..."
+          }
 
     let dirs () =
       let ds = dirnames Crunched_templates.file_list in
@@ -114,20 +116,20 @@ module Main = struct
     let do_a_build =
       Run
         Command.
-      { args = [ "dune"; "build" ];
-        cmessage =
-          "doing initial `dune build` to generate .opam \
-           file..."
-      }
+          { args = [ "dune"; "build" ];
+            cmessage =
+              "doing initial `dune build` to generate \
+               .opam file..."
+          }
 
     let do_a_clean =
       Run
         Command.
-      { args = [ "dune"; "clean" ];
-        cmessage =
-          "doing a `dune clean` to remove compiler \
-           detritus..."
-      }
+          { args = [ "dune"; "clean" ];
+            cmessage =
+              "doing a `dune clean` to remove compiler \
+               detritus..."
+          }
 
     let done_msg = Print "DONE!"
 
@@ -136,13 +138,13 @@ module Main = struct
         let open Config in
         Prelude.sprintf
           "\n\
-           to install project dependencies into the current \
-           opam switch, run this command inside the %s/ \
-           directory:\n\n\
-           \ $ make deps\n\n\
+           to install project dependencies into the \
+           current opam switch, run this command inside \
+           the %s/ directory:\n\n\
+          \ $ make deps\n\n\
            to create a sandboxed opam switch, run this \
            command inside the %s/ directory:\n\n\
-           \ $ make sandbox\n"
+          \ $ make sandbox\n"
           config.pname config.pname
       in
       Print msg
@@ -160,11 +162,11 @@ module Main = struct
     let writes = List.map write processed in
     let finish_up =
       Conclude.
-      [ do_a_build;
-        do_a_clean;
-        done_msg;
-        sandbox_msg config
-      ]
+        [ do_a_build;
+          do_a_clean;
+          done_msg;
+          sandbox_msg config
+        ]
     in
     dirs @ writes @ finish_up
 
@@ -185,9 +187,5 @@ end
 module PrintConfig = struct
   let print_config pname =
     let open Config.FromCrunch in
-    (* let open Crunched_config in
-     * let open Trace in
-     * let open R in *)
-    let lineinfo = Lineinfo.make (__LINE__ + 1) __FILE__ in
-    get_config lineinfo pname Config.crunch_path
+    get_config pname Config.crunch_path
 end

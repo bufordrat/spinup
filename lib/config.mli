@@ -14,7 +14,7 @@ val get_config :
 
 module FromCrunch : sig
   val get_config :
-    Lineinfo.t -> string -> string -> (t, Global_error.t) result
+    string -> string -> (t, Global_error.t) result
 end
 (* val print_crunch : string -> unit *)
 

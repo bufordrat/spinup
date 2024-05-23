@@ -15,7 +15,9 @@ let default_paths =
     "/etc/spinuprc"
   ]
 
-let crunch_path = ".spinuprc"
+let crunch_lineinfo, crunch_path =
+  let lineinfo = Lineinfo.make (__LINE__ + 1) __FILE__ in
+  (lineinfo, ".spinuprc")
 
 let is_default = function
   | { pname = _; context = _; datasource = FromCrunch _ } ->
@@ -54,23 +56,25 @@ let refer_parse datasource str =
   |> map_error refer_parsing
 
 module FromCrunch = struct
-  let option_to_result lineinfo path = function
+  let option_to_result path = function
     | Some contents -> Ok contents
     | None ->
       let open E.Smart in
-      Trace.new_error (config_crunch_path path lineinfo)
+      let err = config_crunch_path path crunch_lineinfo in
+      Trace.new_error err
 
-  let get_config lineinfo pname path =
+  let get_raw_config path =
+    Crunched_config.read path |> option_to_result path
+
+  let get_alist_config path =
     let open R in
-    let open DataSource in
-    let read path =
-      Crunched_config.read path
-      |> option_to_result lineinfo path
-    in
-    let process =
-      read >=> refer_parse (FromCrunch crunch_path)
-    in
-    let+ context = process path in
+    let parse = refer_parse (FromCrunch crunch_path) in
+    let process = get_raw_config >=> parse in
+    process path
+
+  let get_config pname path =
+    let open R in
+    let+ context = get_alist_config path in
     mk_config pname context
 end
 
@@ -92,9 +96,9 @@ let get_config pname filesystem_paths =
     let+ context = process p in
     mk_config ~datasource:(FromAFile p) pname context
   | None ->
-    let lineinfo = Lineinfo.make (__LINE__ + 1) __FILE__ in
-    FromCrunch.get_config lineinfo pname crunch_path
-
+    (* let lineinfo = Lineinfo.make (__LINE__ + 1) __FILE__
+       in *)
+    FromCrunch.get_config pname crunch_path
 
 (* let print_crunch path =
  *   let open Crunched_config in
