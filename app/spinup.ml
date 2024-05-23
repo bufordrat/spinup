@@ -6,26 +6,25 @@ let handle_result handler =
     print e ;
     exit 1
 
-let print_config () =
-  let open Lib.Crunched_config in
-  let msg =
-    (* Lib.Filesystem.wrap_in_argv0 "internal crunch
-       error" *)
-    "delete this"
-  in
-  match read ".spinuprc" with
-  | Some conf -> print_endline conf
-  | None ->
-    print_endline msg ;
-    exit 1
+(* let print_config () = *)
+(*   let open Lib.Crunched_config in *)
+(*   let msg = *)
+(* (\* Lib.Filesystem.wrap_in_argv0 "internal crunch *) (*
+   error" *\) *)
+(*     "delete this" *)
+(*   in *)
+(*   match read ".spinuprc" with *)
+(*   | Some conf -> print_endline conf *)
+(*   | None -> *)
+(*     print_endline msg ; *)
+(*     exit 1 *)
 
 let main pc_arg dr_arg pname_arg =
   let open Lib.Action.Main in
-  (* let open Lib.Action.PrintConfig in *)
+  let open Lib.Action.PrintConfig in
   let doit handler action = handle_result handler action in
   match (pc_arg, dr_arg, pname_arg) with
-  | true, _, _ ->
-    print_config () (* doit run print_config *)
+  | true, _, _ -> doit run print_config
   | _, true, Some pname -> doit dry_run (main_action pname)
   | _, _, Some pname -> doit run (main_action pname)
   | _, _, None ->

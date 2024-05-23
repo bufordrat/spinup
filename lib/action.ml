@@ -185,7 +185,7 @@ module Main = struct
 end
 
 module PrintConfig = struct
-  let print_config () =
+  let print_config =
     let open R in
     let open Config in
     let+ config_string =
