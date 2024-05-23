@@ -87,9 +87,22 @@ module BottomLevel = struct
         block 2 [ "Filesystem error reading config file!" ]
       ]
       |> Layout.to_string
-    | `DirAlreadyExists s ->
+    | `AlreadyExists (cwd, dir_or_file, path) ->
+      let open Filesystem_error in
+      let dof =
+        match dir_or_file with
+        | Dir -> "Directory"
+        | File -> "File"
+      in
+      [ argv;
+        block 2
+          [ sprintf "%s '%s' already exists in %s." dof path
+              cwd
+          ]
+      ]
+      |> Layout.to_string
       (* grep format *)
-      sprintf "Directory already exists:\n%s" s
+      (* sprintf "Directory already exists:\n%s" s *)
     | `ConstructSyntax (_, s) -> s
     | `BadSyntaxString s ->
       (* if my calculations are correct, this error should
