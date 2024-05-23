@@ -1,12 +1,12 @@
 type t =
-  [ (* this case can't be reached due to a glitch in TINT *)
-    `SyntaxString of
-    string
+  [ `ConstructSyntax of Lineinfo.t * string
+  | `BadSyntaxString of string
   | `TintSyntax of string * string * string list
   | `TemplateCrunch of string ]
 
 module Smart = struct
-  let syntax_string s = `SyntaxString s
+  let construct_syntax li s = `ConstructSyntax (li, s)
+  let bad_syntax_string s = `BadSyntaxString s
   let tint_syntax tup = `TintSyntax tup
   let template_crunch s = `TemplateCrunch s
 end

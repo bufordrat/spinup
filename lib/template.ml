@@ -4,26 +4,33 @@ module Trace = Global_error.T
 module R = Etude.Result.Make (Global_error)
 
 module Engine = struct
-  let spinup_syntax = "#[,]"
+  let li, spinup_syntax =
+    let lineinfo = Lineinfo.make (__LINE__ + 1) __FILE__ in
+    (lineinfo, "#[,]")
+
   let map_error = Stdlib.Result.map_error
 
   let string_to_syntax s =
     let open E.Smart in
+    let open Trace in
+    let open Prelude in
     let open Ty.Syntax in
-    let new_error str = [ syntax_string str ] in
-    map_error new_error (of_string s)
+    map_error
+      (new_list << construct_syntax li)
+      (of_string s)
 
   let context_to_state ?(syntax = spinup_syntax) context =
     (* note: when TINT updates so that init doesn't return a
        result, this code will need to be modified *)
     let open R in
     let open E.Smart in
+    let open Trace in
+    let open Prelude in
     let* syntax = string_to_syntax syntax in
     let string_version =
       Tint.Eval.(init ~syntax prims (Forms.forms context))
     in
-    let new_error str = [ syntax_string str ] in
-    map_error new_error string_version
+    map_error (new_list << bad_syntax_string) string_version
 
   let macro_expand ?(syntax = spinup_syntax) ~context tint =
     let open R in

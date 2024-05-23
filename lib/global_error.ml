@@ -90,7 +90,8 @@ module BottomLevel = struct
     | `DirAlreadyExists s ->
       (* grep format *)
       sprintf "Directory already exists:\n%s" s
-    | `SyntaxString s ->
+    | `ConstructSyntax (_, s) -> s
+    | `BadSyntaxString s ->
       (* if my calculations are correct, this error should
          never happen *)
       sprintf "Bad TINT syntax string:\n%s" s
