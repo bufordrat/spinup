@@ -20,8 +20,6 @@ module Engine = struct
       (of_string s)
 
   let context_to_state ?(syntax = spinup_syntax) context =
-    (* note: when TINT updates so that init doesn't return a
-       result, this code will need to be modified *)
     let open R in
     let open E.Smart in
     let open Trace in
