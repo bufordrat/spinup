@@ -26,11 +26,14 @@ module Engine = struct
     let open E.Smart in
     let open Trace in
     let open Prelude in
+    let lineinfo = Lineinfo.make (__LINE__ + 1) __FILE__ in
     let* syntax = string_to_syntax syntax in
     let string_version =
       Tint.Eval.(init ~syntax prims (Forms.forms context))
     in
-    map_error (new_list << bad_syntax_string) string_version
+    map_error
+      (new_list << bad_syntax_string lineinfo)
+      string_version
 
   let macro_expand ?(syntax = spinup_syntax) ~context tint =
     let open R in
