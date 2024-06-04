@@ -1,12 +1,6 @@
 type error = Global_error_intf.error
 type t = Global_error_intf.t
 
-let exe_path = Prelude.argv0
-
-let grep_example =
-  "/Users/teichman/tmp/functional-adventure/src/GameIO.hs:54:1: \
-   error:"
-
 module BottomLevel = struct
   (* meta-note for this code *)
   (* figure out which branches will require __LINE__ and
@@ -76,7 +70,7 @@ module BottomLevel = struct
               "Attempted to read '%s' out of the crunch."
               path;
             sprintf "source file: %s" filename;
-            sprintf "source line: %i" line
+            sprintf "line: %i" line
           ];
         blank;
         deverror_block
@@ -101,13 +95,30 @@ module BottomLevel = struct
           ]
       ]
       |> Layout.to_string
-      (* grep format *)
-      (* sprintf "Directory already exists:\n%s" s *)
-    | `ConstructSyntax (_, s) -> s
-    | `BadSyntaxString s ->
-      (* if my calculations are correct, this error should
-         never happen *)
-      sprintf "Bad TINT syntax string:\n%s" s
+    | `ConstructSyntax ({ line; filename }, tint_message) ->
+      [ argv;
+        block 2
+          [ "Error constructing TINT syntax string!";
+            tint_message;
+            sprintf "source file: %s" filename;
+            sprintf "line: %i" line
+          ];
+        blank;
+        deverror_block
+      ]
+      |> Layout.to_string
+    | `BadSyntaxString ({ line; filename }, tint_message) ->
+      [ argv;
+        block 2
+          [ "Ill-formed TINT syntax object!";
+            tint_message;
+            sprintf "source file: %s" filename;
+            sprintf "line: %i" line
+          ];
+        blank;
+        deverror_block
+      ]
+      |> Layout.to_string
     | `TintSyntax (s1, s2, slist) ->
       (* some day, this may have a line number, but not
          today *)
@@ -156,6 +167,10 @@ let to_string errlist =
   String.join ~sep:"\n" (map error_to_string filtered)
 
 let print errlist = print_endline (to_string errlist)
+
+let print_res = function
+  | Error errlist -> print errlist
+  | _ -> ()
 
 module T = struct
   let with_error err x =
