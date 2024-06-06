@@ -87,6 +87,10 @@ module Unprocessed = struct
       umessage : string
     }
 
+  (* here, write a function that takes a `TintSyntax error and inserts
+     the information into a new `FilenameTintSyntax error variant with
+     directory path info, then List.map << map_error that over
+     output_filename, output_path, and umessage *)
   let expand_filenames unp =
     let open R in
     let open Engine in
@@ -106,6 +110,10 @@ module Unprocessed = struct
       umessage
     }
 
+  (* here, write a function that takes a `TintSyntax error and inserts
+     the information into a `FileContentsTintSyntax error variant with
+     information on the path to the file whose contents have the
+     error, then List.map << map_error that over data. *)
   let process unp =
     let open R in
     let context = unp.context in
