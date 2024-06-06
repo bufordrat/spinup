@@ -33,7 +33,7 @@ module Engine = struct
       (new_list << bad_syntax_string lineinfo)
       string_version
 
-  let macro_expand ?(syntax = spinup_syntax) ~context tint =
+  let macro_expand ~path ?(syntax = spinup_syntax) ~context tint =
     let open R in
     let open E.Smart in
     let open Trace in
@@ -41,13 +41,13 @@ module Engine = struct
     let* state = context_to_state ~syntax context in
     let+ _, processed_string =
       map_error
-        (new_list << tint_syntax)
+        (new_list << tint_syntax path)
         (Tint.Eval.eval state tint)
     in
     processed_string
 
-  let expand_string ?(syntax = spinup_syntax) ~context str =
-    macro_expand ~syntax ~context str
+  let expand_string ~path ?(syntax = spinup_syntax) ~context str =
+    macro_expand ~path ~syntax ~context str
 
   let option_to_result path =
     let open E.Smart in
@@ -55,13 +55,13 @@ module Engine = struct
     | Some contents -> Ok contents
     | None -> Error [ template_crunch path ]
 
-  let expand_crunched ~template ~context =
+  let expand_crunched ~path ~context =
     let open R in
     let* raw_contents =
-      Crunched_templates.read template
-      |> option_to_result template
+      Crunched_templates.read path
+      |> option_to_result path
     in
-    expand_string ~context raw_contents
+    expand_string ~path ~context raw_contents
 end
 
 module Processed = struct
@@ -87,10 +87,6 @@ module Unprocessed = struct
       umessage : string
     }
 
-  (* here, write a function that takes a `TintSyntax error and inserts
-     the information into a new `FilenameTintSyntax error variant with
-     directory path info, then List.map << map_error that over
-     output_filename, output_path, and umessage *)
   let expand_filenames unp =
     let open R in
     let open Engine in
@@ -98,10 +94,10 @@ module Unprocessed = struct
     let template_filename = unp.template_filename in
     let template_path = unp.template_path in
     let+ output_filename =
-      expand_string ~context unp.output_filename
+      expand_string ~path:template_path ~context unp.output_filename
     and+ output_path =
-      expand_string ~context unp.output_path
-    and+ umessage = expand_string ~context unp.umessage in
+      expand_string ~path:template_path ~context unp.output_path
+    and+ umessage = expand_string ~path:template_path ~context unp.umessage in
     { template_filename;
       output_filename;
       template_path;
@@ -133,8 +129,7 @@ module Unprocessed = struct
         [ partial.output_path; partial.template_filename ]
     in
     let+ data =
-      Engine.expand_crunched ~template:template_path
-        ~context
+      Engine.expand_crunched ~path:template_path ~context
     in
     Processed.{ write_path; data; vmessage }
 end

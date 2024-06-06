@@ -1,12 +1,13 @@
 module Engine : sig
   val expand_string :
+    path:string ->
     ?syntax:string ->
     context:(string * string) list ->
     string ->
     (string, Global_error_intf.t) result
 
   val expand_crunched :
-    template:string ->
+    path:string ->
     context:(string * string) list ->
     (string, Global_error_intf.t) result
 end
