@@ -119,8 +119,9 @@ module BottomLevel = struct
         deverror_block
       ]
       |> Layout.to_string
-    | `TintSyntax { Template_error.path = path ;
-                    tint_info = (s1, s2, slist) } ->
+    | `TintSyntax
+        { Template_error.path; tint_info = s1, s2, slist }
+      ->
       (* some day, this may have a line number, but not
          today *)
       (* this probably also needs __FILE__ and __LINE__ for

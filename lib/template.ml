@@ -33,7 +33,8 @@ module Engine = struct
       (new_list << bad_syntax_string lineinfo)
       string_version
 
-  let macro_expand ~path ?(syntax = spinup_syntax) ~context tint =
+  let macro_expand ~path ?(syntax = spinup_syntax) ~context
+      tint =
     let open R in
     let open E.Smart in
     let open Trace in
@@ -46,7 +47,8 @@ module Engine = struct
     in
     processed_string
 
-  let expand_string ~path ?(syntax = spinup_syntax) ~context str =
+  let expand_string ~path ?(syntax = spinup_syntax) ~context
+      str =
     macro_expand ~path ~syntax ~context str
 
   let option_to_result path =
@@ -58,8 +60,7 @@ module Engine = struct
   let expand_crunched ~path ~context =
     let open R in
     let* raw_contents =
-      Crunched_templates.read path
-      |> option_to_result path
+      Crunched_templates.read path |> option_to_result path
     in
     expand_string ~path ~context raw_contents
 end
@@ -94,10 +95,15 @@ module Unprocessed = struct
     let template_filename = unp.template_filename in
     let template_path = unp.template_path in
     let+ output_filename =
-      expand_string ~path:template_path ~context unp.output_filename
+      expand_string ~path:template_path ~context
+        unp.output_filename
     and+ output_path =
-      expand_string ~path:template_path ~context unp.output_path
-    and+ umessage = expand_string ~path:template_path ~context unp.umessage in
+      expand_string ~path:template_path ~context
+        unp.output_path
+    and+ umessage =
+      expand_string ~path:template_path ~context
+        unp.umessage
+    in
     { template_filename;
       output_filename;
       template_path;
@@ -106,10 +112,11 @@ module Unprocessed = struct
       umessage
     }
 
-  (* here, write a function that takes a `TintSyntax error and inserts
-     the information into a `FileContentsTintSyntax error variant with
-     information on the path to the file whose contents have the
-     error, then List.map << map_error that over data. *)
+  (* here, write a function that takes a `TintSyntax error
+     and inserts the information into a
+     `FileContentsTintSyntax error variant with information
+     on the path to the file whose contents have the error,
+     then List.map << map_error that over data. *)
   let process unp =
     let open R in
     let context = unp.context in
