@@ -119,20 +119,21 @@ module BottomLevel = struct
         deverror_block
       ]
       |> Layout.to_string
-    | `TintSyntax
-        { Template_error.path; tint_info = s1, s2, slist }
-      ->
-      (* some day, this may have a line number, but not
-         today *)
-      (* this probably also needs __FILE__ and __LINE__ for
-         when crunching is involved *)
-      (* this needs the grep format; use line 1 since it
-         doesn't have a line number *)
-      (* this should also be named something other than
-         "syntax" *)
-      let open Prelude.String in
-      let joined = join ~sep:", " slist in
-      sprintf "TINT error:\n%s %s \n%s" s1 s2 joined
+    | `TintSyntax { Template_error.path; tint_info = func, msg, args } ->
+       let tint_exp =
+         "#[" ^ func ^ "," ^ String.concat "," args ^ "]"
+       in
+       [ argv;
+         block 2
+           [ "TINT error!";
+             sprintf "path: %s" path;
+             sprintf "expression: %s" tint_exp;
+             msg;
+           ];
+         blank;
+         deverror_block
+       ]
+       |> Layout.to_string
     | `TemplateCrunch crunch_path ->
       (* do this: *)
       (* use __FILE__ for the source filename *)
