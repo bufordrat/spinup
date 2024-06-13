@@ -2,25 +2,6 @@ type error = Global_error_intf.error
 type t = Global_error_intf.t
 
 module BottomLevel = struct
-  (* meta-note for this code *)
-  (* figure out which branches will require __LINE__ and
-     __FILE__, then add that to the relevant PV variants *)
-
-  (* dune_project:1:expr-name, problem-with-it This is a
-     crunch! * Template Error! *)
-
-  (* /full/path/to/thing.ml:1:error-message *)
-
-  (* grep format: *)
-  (* thing.ml:1:error-message *)
-  (* directory-name:1:error-message *)
-
-  (* grep format with nonexistent file: *)
-  (* -:error-message *)
-
-  (* normal format: *)
-  (* argv0: error message formatted however I want *)
-
   type error = Global_error_intf.BottomLevel.t
 
   let is = function
@@ -119,31 +100,36 @@ module BottomLevel = struct
         deverror_block
       ]
       |> Layout.to_string
-    | `TintSyntax { Template_error.path; tint_info = func, msg, args } ->
-       let tint_exp =
-         "#[" ^ func ^ "," ^ String.concat "," args ^ "]"
-       in
-       [ argv;
-         block 2
-           [ "TINT error!";
-             sprintf "path: %s" path;
-             sprintf "expression: %s" tint_exp;
-             msg;
-           ];
-         blank;
-         deverror_block
-       ]
-       |> Layout.to_string
-    | `TemplateCrunch crunch_path ->
-      (* do this: *)
-      (* use __FILE__ for the source filename *)
-      (* use __LINE__ for the source line number *)
-      (* | `TemplateCrunch (crunch_path, source_filename,
-         linenumber) -> *)
-      (* roll my own false assert w/ line number of bad code
-         etc. and call it dry rot *)
-      sprintf "Template crunch filepath not found:\n%s"
-        crunch_path
+    | `TintSyntax
+        { Template_error.path; tint_info = func, msg, args }
+      ->
+      let tint_exp =
+        "#[" ^ func ^ "," ^ String.concat "," args ^ "]"
+      in
+      [ argv;
+        block 2
+          [ "TINT error!";
+            sprintf "path: %s" path;
+            sprintf "expression: %s" tint_exp;
+            msg
+          ];
+        blank;
+        deverror_block
+      ]
+      |> Layout.to_string
+    | `TemplateCrunch path ->
+      (* this case can't be reached, most likely *)
+      [ argv;
+        block 2
+          [ "Template crunch filepath error!";
+            sprintf
+              "Attempted to read '%s' out of the crunch."
+              path
+          ];
+        blank;
+        deverror_block
+      ]
+      |> Layout.to_string
 end
 
 module TopLevel = struct
@@ -154,11 +140,6 @@ module TopLevel = struct
     | `FilesystemErr -> "Filesystem problem!"
     | `ConfigErr -> "Config problem!"
 end
-
-(* note to self: make this happen: *)
-(* Error [ `TemplateErr, `Crunch, TintSyntax ("dune_project", "action.ml", 14)) ]
- * Error [ `TemplateErr, `FileSystem, TintSyntax ("dune_project", "action.ml", 14)) ]
- * Error [ `FilesystemErr, `DirAlreadyExists "keith_project" ] *)
 
 let error_to_string = function
   | #BottomLevel.error as b -> BottomLevel.error_to_string b
