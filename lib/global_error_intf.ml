@@ -7,7 +7,8 @@ module TopLevel = struct
   type t = [ | Action_error.t]
 end
 
-type error = [TopLevel.t | BottomLevel.t]
+type error =
+  [TopLevel.t | BottomLevel.t | `ErrorParse of string]
 
 module Errlist = struct
   type t = error list

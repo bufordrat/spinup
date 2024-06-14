@@ -21,7 +21,7 @@ module BottomLevel = struct
           Contact.email
       ]
 
-  let error_to_string =
+  let error_to_layout =
     let open Printf in
     let open Lineinfo in
     let open Layout.Smart in
@@ -37,12 +37,10 @@ module BottomLevel = struct
         blank;
         deverror_block
       ]
-      |> Layout.to_string
     | `ReferFile (line, refer_message, path) ->
       [ grep path line;
         block 2 [ "Config parse error!"; refer_message ]
       ]
-      |> Layout.to_string
     | `ConfigCrunchPath (path, { line; filename }) ->
       [ argv;
         block 2
@@ -56,12 +54,10 @@ module BottomLevel = struct
         blank;
         deverror_block
       ]
-      |> Layout.to_string
     | `FileReadError msg_from_stdlib ->
       [ block 0 [ msg_from_stdlib ];
         block 2 [ "Filesystem error reading config file!" ]
       ]
-      |> Layout.to_string
     | `AlreadyExists (cwd, dir_or_file, path) ->
       let open Filesystem_error in
       let dof =
@@ -75,7 +71,6 @@ module BottomLevel = struct
               cwd
           ]
       ]
-      |> Layout.to_string
     | `ConstructSyntax ({ line; filename }, tint_message) ->
       [ argv;
         block 2
@@ -87,7 +82,6 @@ module BottomLevel = struct
         blank;
         deverror_block
       ]
-      |> Layout.to_string
     | `BadSyntaxString ({ line; filename }, tint_message) ->
       [ argv;
         block 2
@@ -99,7 +93,6 @@ module BottomLevel = struct
         blank;
         deverror_block
       ]
-      |> Layout.to_string
     | `TintSyntax
         { Template_error.path; tint_info = func, msg, args }
       ->
@@ -116,7 +109,6 @@ module BottomLevel = struct
         blank;
         deverror_block
       ]
-      |> Layout.to_string
     | `TemplateCrunch path ->
       (* this case can't be reached, most likely *)
       [ argv;
@@ -129,7 +121,9 @@ module BottomLevel = struct
         blank;
         deverror_block
       ]
-      |> Layout.to_string
+
+  let error_to_string err =
+    err |> error_to_layout |> Layout.to_string
 end
 
 module TopLevel = struct
@@ -144,6 +138,7 @@ end
 let error_to_string = function
   | #BottomLevel.error as b -> BottomLevel.error_to_string b
   | #TopLevel.error as t -> TopLevel.error_to_string t
+  | `ErrorParse _ -> assert false
 
 let to_string errlist =
   let open Prelude in
