@@ -12,8 +12,8 @@ let main pc_arg dr_arg pname_arg =
   let doit handler action = handle_result handler action in
   match (pc_arg, dr_arg, pname_arg) with
   | true, _, _ -> doit run print_config
-  | _, true, Some pname -> doit dry_run (main_action pname)
-  | _, _, Some pname -> doit run (main_action pname)
+  | _, true, Some pname -> doit dry_run (action pname)
+  | _, _, Some pname -> doit run (action pname)
   | _, _, None ->
     let open Prelude.Message in
     message ~myself:"" ~exit:1

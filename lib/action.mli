@@ -15,8 +15,7 @@ module Main : sig
   val directory_actions :
     Config.t -> (t list, Global_error_intf.t) result
 
-  val main_action :
-    string -> (t, Global_error_intf.t) result
+  val action : string -> (t, Global_error_intf.t) result
 
   module Files : sig
     val files : Config.t -> Template.Unprocessed.t list
