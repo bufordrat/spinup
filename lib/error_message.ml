@@ -1,9 +1,6 @@
-(* look up the actual warning *)
-(* [@@@ warning "-12"] *)
-
 module Message = struct
   type t =
-    | ExampleError
+    | ExampleError of string
     | ParseError of
         string
         * Global_error.error option
@@ -100,10 +97,15 @@ let is_already_exists = function
   | `AlreadyExists _ -> true
   | _ -> false
 
-let parser1 =
-  let open Parser in
-  let+ _ = satisfy is_template_err
-  and+ tintything = satisfy is_tint_syntax in
-  match tintything with
-  | `TintSyntax { path; _ } -> path
-  | _ -> assert false
+module Blah = struct
+  (* look up the actual warning *)
+  (* [@@@ warning "-12"] *)
+  let parser1 =
+    let open Parser in
+    let open Message in
+    let+ _ = satisfy is_template_err
+    and+ (`TintSyntax { path; _ }) =
+      satisfy is_tint_syntax
+    in
+    ExampleError path
+end
