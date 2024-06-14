@@ -1,11 +1,21 @@
-module R = Etude.Result.Make (Global_error)
 module Trace = Global_error.T
 
+module Message = struct
+  type t =
+    | ExampleError
+    | ParseError of
+        string * Global_error.error option * Global_error.t
+end
+
 module Parser = struct
+  module R = Etude.Result.Make (Message)
+
   module ParserMonad = struct
+    type message = Message.t
+
     type 'a t =
       Global_error.t ->
-      ('a * Global_error.t, Global_error.t) result
+      ('a * Global_error.t, message) result
 
     let pure a input = Ok (a, input)
 
@@ -22,11 +32,11 @@ module Parser = struct
   let exec prsr input = R.map snd (prsr input)
 
   let satisfy pred =
-    let open Trace in
+    let open Message in
     function
     | tok :: toks ->
       if pred tok
       then Ok (tok, toks)
-      else new_error (`ErrorParse "satisfy")
-    | [] -> new_error (`ErrorParse "end of input")
+      else Error (ParseError ("satisfy", Some tok, toks))
+    | [] -> Error (ParseError ("end of input", None, []))
 end

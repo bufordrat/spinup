@@ -138,7 +138,6 @@ end
 let error_to_string = function
   | #BottomLevel.error as b -> BottomLevel.error_to_string b
   | #TopLevel.error as t -> TopLevel.error_to_string t
-  | `ErrorParse _ -> assert false
 
 let to_string errlist =
   let open Prelude in
