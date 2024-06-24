@@ -98,8 +98,8 @@ let is_already_exists = function
   | _ -> false
 
 module Blah = struct
-  (* look up the actual warning *)
-  (* [@@@ warning "-12"] *)
+  [@@@warning "-8"]
+
   let parser1 =
     let open Parser in
     let open Message in
