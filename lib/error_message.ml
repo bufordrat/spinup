@@ -97,7 +97,23 @@ let is_already_exists = function
   | `AlreadyExists _ -> true
   | _ -> false
 
-module Blah = struct
+type application_layer = Config | Template | Filesystem
+
+type t =
+  | ReferError of
+      Action_error.DataSource.t * int * string * string
+  | CrunchedConfigPath of
+      Lineinfo.t * application_layer * string
+  | BadFilePath of application_layer * string
+  | FileReadError of application_layer * string
+  | AlreadyExists of
+      string * Filesystem_error.dir_or_file * string
+  | TintSyntaxRecord of Lineinfo.t * string
+  | TintSyntaxString of Lineinfo.t * string
+  | TintSyntaxError of Template_error.tint_syntax
+  | TemplateCrunch of string
+
+module Parsers = struct
   [@@@warning "-8"]
 
   let parser1 =
