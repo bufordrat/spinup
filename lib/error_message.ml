@@ -81,22 +81,6 @@ let example2 =
         "keith" )
   ]
 
-let is_template_err = function
-  | `TemplateErr -> true
-  | _ -> false
-
-let is_tint_syntax = function
-  | `TintSyntax _ -> true
-  | _ -> false
-
-let is_filesystem_err = function
-  | `FilesystemErr -> true
-  | _ -> false
-
-let is_already_exists = function
-  | `AlreadyExists _ -> true
-  | _ -> false
-
 type application_layer = Config | Template | Filesystem
 
 type t =
@@ -120,12 +104,12 @@ type t =
 module Parsers = struct
   [@@@warning "-8"]
 
-  let parser1 =
-    let open Parser in
-    let open Message in
-    let+ _ = satisfy is_template_err
-    and+ (`TintSyntax { path; _ }) =
-      satisfy is_tint_syntax
-    in
-    ExampleError path
+  (* let parser1 = *)
+  (*   let open Parser in *)
+  (*   let open Message in *)
+  (*   let+ _ = satisfy is_template_err *)
+  (*   and+ (`TintSyntax { path; _ }) = *)
+  (*     satisfy is_tint_syntax *)
+  (*   in *)
+  (*   ExampleError path *)
 end
