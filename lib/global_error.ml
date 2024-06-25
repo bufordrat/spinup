@@ -48,7 +48,7 @@ module BottomLevel = struct
       [ grep path line;
         block 2 [ "Config parse error!"; refer_message ]
       ]
-    | `ConfigCrunchPath (path, { line; filename }) ->
+    | `BadCrunchPath (path, { line; filename }) ->
       [ argv;
         block 2
           [ "Crunched config filepath error!";
