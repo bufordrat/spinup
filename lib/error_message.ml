@@ -115,6 +115,7 @@ type t =
       * application_layer
       * Template_error.tint_syntax
   | TemplateCrunch of string
+  | ErrorParseError of string * Global_error.t
 
 module Parsers = struct
   [@@@warning "-8"]

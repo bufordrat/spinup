@@ -1,19 +1,10 @@
-module BottomLevel = struct
-  type t =
-    [Config_error.t | Filesystem_error.t | Template_error.t]
-end
+type error =
+  [ Config_error.t
+  | Filesystem_error.t
+  | Template_error.t
+  | Action_error.t ]
 
-module TopLevel = struct
-  type t = [ | Action_error.t]
-end
-
-type error = [TopLevel.t | BottomLevel.t]
-
-module Errlist = struct
-  type t = error list
-end
-
-type t = Errlist.t
+type t = error list
 
 module type TRACE = sig
   type 'a trace
