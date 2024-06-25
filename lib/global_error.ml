@@ -1,6 +1,13 @@
 type error = Global_error_intf.error
 type t = Global_error_intf.t
 
+module Smart = struct
+  include Action_error.Smart
+  include Config_error.Smart
+  include Filesystem_error.Smart
+  include Template_error.Smart
+end
+
 module BottomLevel = struct
   type error = Global_error_intf.BottomLevel.t
 
