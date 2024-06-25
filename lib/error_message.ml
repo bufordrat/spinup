@@ -1,10 +1,24 @@
 module Message = struct
+  type application_layer = Config | Template | Filesystem
+
   type t =
-    | ExampleError of string
-    | ParseError of
-        string
-        * Global_error.error option
-        * Global_error.error list
+    | ReferError of
+        Action_error.DataSource.t * int * string * string
+    | CrunchedConfigPath of
+        Lineinfo.t * application_layer * string
+    | BadFilePath of application_layer * string
+    | FileReadError of application_layer * string
+    | AlreadyExists of
+        string * Filesystem_error.dir_or_file * string
+    | TintSyntaxRecord of Lineinfo.t * string
+    | TintSyntaxString of Lineinfo.t * string
+    | TintSyntaxError of
+        Action_error.DataSource.t
+        * application_layer
+        * Template_error.tint_syntax
+    | TemplateCrunch of string
+    | ErrorMessageParse of
+        string * Global_error.error option * Global_error.t
 end
 
 module R = Etude.Result.Make (Message)
@@ -36,7 +50,7 @@ module Parser = struct
 
     let empty _ =
       let open Message in
-      Error (ParseError ("fail parser", None, []))
+      Error (ErrorMessageParse ("fail parser", None, []))
 
     let append prsr1 prsr2 input =
       match prsr1 input with
@@ -56,8 +70,10 @@ module Parser = struct
     | tok :: toks ->
       if pred tok
       then Ok (tok, toks)
-      else Error (ParseError ("satisfy", Some tok, toks))
-    | [] -> Error (ParseError ("end of input", None, []))
+      else
+        Error (ErrorMessageParse ("satisfy", Some tok, toks))
+    | [] ->
+      Error (ErrorMessageParse ("end of input", None, []))
 
   let optional prsr = prsr <|> pure ()
 end
@@ -81,28 +97,15 @@ let example2 =
         "keith" )
   ]
 
-type application_layer = Config | Template | Filesystem
-
-type t =
-  | ReferError of
-      Action_error.DataSource.t * int * string * string
-  | CrunchedConfigPath of
-      Lineinfo.t * application_layer * string
-  | BadFilePath of application_layer * string
-  | FileReadError of application_layer * string
-  | AlreadyExists of
-      string * Filesystem_error.dir_or_file * string
-  | TintSyntaxRecord of Lineinfo.t * string
-  | TintSyntaxString of Lineinfo.t * string
-  | TintSyntaxError of
-      Action_error.DataSource.t
-      * application_layer
-      * Template_error.tint_syntax
-  | TemplateCrunch of string
-  | ErrorParseError of string * Global_error.t
-
 module Parsers = struct
   [@@@warning "-8"]
+
+  let application_layer_parser =
+    let open Parser in
+    let open Global_error.Smart in
+    satisfy is_template_err
+    <|> satisfy is_filesystem_err
+    <|> satisfy is_config_err
 
   (* let parser1 = *)
   (*   let open Parser in *)
