@@ -60,7 +60,7 @@ module Crunch = struct
     | Some contents -> Ok contents
     | None ->
       let open E.Smart in
-      let err = config_crunch_path path crunch_lineinfo in
+      let err = bad_crunch_path path crunch_lineinfo in
       Trace.new_error err
 
   let get_raw_config path =
