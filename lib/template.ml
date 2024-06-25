@@ -16,7 +16,7 @@ module Engine = struct
     let open Prelude in
     let open Ty.Syntax in
     map_error
-      (new_list << construct_syntax li)
+      (new_list << bad_syntax_record li)
       (of_string s)
 
   let context_to_state ?(syntax = spinup_syntax) context =

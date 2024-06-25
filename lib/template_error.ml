@@ -4,13 +4,13 @@ type tint_syntax =
   }
 
 type t =
-  [ `ConstructSyntax of Lineinfo.t * string
+  [ `BadSyntaxRecord of Lineinfo.t * string
   | `BadSyntaxString of Lineinfo.t * string
   | `TintSyntax of tint_syntax
   | `TemplateCrunch of string ]
 
 module Smart = struct
-  let construct_syntax li s = `ConstructSyntax (li, s)
+  let bad_syntax_record li s = `BadSyntaxRecord (li, s)
   let bad_syntax_string li s = `BadSyntaxString (li, s)
 
   let tint_syntax path tint_info =

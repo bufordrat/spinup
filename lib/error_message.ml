@@ -110,7 +110,10 @@ type t =
       string * Filesystem_error.dir_or_file * string
   | TintSyntaxRecord of Lineinfo.t * string
   | TintSyntaxString of Lineinfo.t * string
-  | TintSyntaxError of Template_error.tint_syntax
+  | TintSyntaxError of
+      Action_error.DataSource.t
+      * application_layer
+      * Template_error.tint_syntax
   | TemplateCrunch of string
 
 module Parsers = struct

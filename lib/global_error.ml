@@ -78,7 +78,7 @@ module BottomLevel = struct
               cwd
           ]
       ]
-    | `ConstructSyntax ({ line; filename }, tint_message) ->
+    | `BadSyntaxRecord ({ line; filename }, tint_message) ->
       [ argv;
         block 2
           [ "Error constructing TINT syntax string!";
