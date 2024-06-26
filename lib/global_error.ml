@@ -25,8 +25,9 @@ let error_to_layout =
   let open Printf in
   let open Lineinfo in
   let open Layout.Smart in
+  let open Action_error.DataSource in
   function
-  | `ReferCrunch (line, refer_message, path) ->
+  | `ReferError (FromCrunch path, line, refer_message) ->
     [ argv;
       block 2
         [ "Crunched config parse error!";
@@ -37,7 +38,7 @@ let error_to_layout =
       blank;
       deverror_block
     ]
-  | `ReferFile (line, refer_message, path) ->
+  | `ReferError (FromAFile path, line, refer_message) ->
     [ grep path line;
       block 2 [ "Config parse error!"; refer_message ]
     ]

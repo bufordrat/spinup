@@ -1,20 +1,13 @@
 type t =
-  [ `ReferCrunch of int * string * string
-  | `ReferFile of int * string * string
+  [ `ReferError of Action_error.DataSource.t * int * string
   | `BadCrunchPath of string * Lineinfo.t
   | `FileReadError of string ]
 
 module Smart = struct
-  let refer_crunch (i, s) path = `ReferCrunch (i, s, path)
+  let refer_error d (i, s) = `ReferError (d, i, s)
 
-  let is_refer_crunch = function
-    | `ReferCrunch _ -> true
-    | _ -> false
-
-  let refer_file (i, s) path = `ReferFile (i, s, path)
-
-  let is_refer_file = function
-    | `ReferFile _ -> true
+  let is_refer_error = function
+    | `ReferError _ -> true
     | _ -> false
 
   let bad_crunch_path path lineinfo =

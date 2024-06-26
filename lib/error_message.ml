@@ -3,7 +3,10 @@ module Message = struct
 
   type t =
     | ReferError of
-        Action_error.DataSource.t * int * string * string
+        application_layer
+        * Action_error.DataSource.t
+        * int
+        * string
     | CrunchedConfigPath of
         Lineinfo.t * application_layer * string
     | BadFilePath of application_layer * string
@@ -100,12 +103,40 @@ let example2 =
 module Parsers = struct
   [@@@warning "-8"]
 
+  let configP =
+    let open Parser in
+    let open Message in
+    let open Global_error.Smart in
+    let+ _ = satisfy is_config_err in
+    Config
+
+  let templateP =
+    let open Parser in
+    let open Message in
+    let open Global_error.Smart in
+    let+ _ = satisfy is_template_err in
+    Template
+
+  let filesystemP =
+    let open Parser in
+    let open Message in
+    let open Global_error.Smart in
+    let+ _ = satisfy is_filesystem_err in
+    Filesystem
+
   let application_layer_parser =
     let open Parser in
+    configP <|> templateP <|> filesystemP
+
+  let refer_errorP =
+    let open Parser in
+    let open Message in
     let open Global_error.Smart in
-    satisfy is_template_err
-    <|> satisfy is_filesystem_err
-    <|> satisfy is_config_err
+    let+ layer = application_layer_parser
+    and+ (`ReferError (datasource, line, msg)) =
+      satisfy is_refer_error
+    in
+    ReferError (layer, datasource, line, msg)
 
   (* let parser1 = *)
   (*   let open Parser in *)

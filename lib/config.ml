@@ -47,9 +47,10 @@ let refer_parse datasource str =
   let refer_parsing (x, y) =
     let open DataSource in
     match datasource with
-    | FromCrunch path ->
-      [ E.Smart.refer_crunch (x, y) path ]
-    | FromAFile path -> [ E.Smart.refer_file (x, y) path ]
+    | FromCrunch _ ->
+      [ E.Smart.refer_error datasource (x, y) ]
+    | FromAFile _ ->
+      [ E.Smart.refer_error datasource (x, y) ]
   in
   sequence (str_to_lst str)
   >>| collapse

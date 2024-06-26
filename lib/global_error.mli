@@ -8,10 +8,11 @@ module Smart : sig
   val is_filesystem_err : error -> bool
   val config_err : error
   val is_config_err : error -> bool
-  val refer_crunch : int * string -> string -> error
-  val is_refer_crunch : error -> bool
-  val refer_file : int * string -> string -> error
-  val is_refer_file : error -> bool
+
+  val refer_error :
+    Action_error.DataSource.t -> int * string -> error
+
+  val is_refer_error : error -> bool
   val bad_crunch_path : string -> Lineinfo.t -> error
   val is_bad_crunch_path : error -> bool
   val file_read_error : string -> error
