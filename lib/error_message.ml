@@ -12,7 +12,10 @@ module Message = struct
     | BadFilePath of application_layer * string
     | FileReadError of application_layer * string
     | AlreadyExists of
-        string * Filesystem_error.dir_or_file * string
+        application_layer
+        * string
+        * Filesystem_error.dir_or_file
+        * string
     | TintSyntaxRecord of Lineinfo.t * string
     | TintSyntaxString of Lineinfo.t * string
     | TintSyntaxError of
@@ -22,6 +25,14 @@ module Message = struct
     | TemplateCrunch of string
     | ErrorMessageParse of
         string * Global_error.error option * Global_error.t
+
+  type error =
+    | ParseError of
+        string * Global_error.error option * Global_error.t
+end
+
+module MessageError = struct
+  type t = Message.error
 end
 
 module R = Etude.Result.Make (Message)
@@ -103,21 +114,21 @@ let example2 =
 module Parsers = struct
   [@@@warning "-8"]
 
-  let configP =
+  let config_parser =
     let open Parser in
     let open Message in
     let open Global_error.Smart in
     let+ _ = satisfy is_config_err in
     Config
 
-  let templateP =
+  let template_parser =
     let open Parser in
     let open Message in
     let open Global_error.Smart in
     let+ _ = satisfy is_template_err in
     Template
 
-  let filesystemP =
+  let filesystem_parser =
     let open Parser in
     let open Message in
     let open Global_error.Smart in
@@ -126,9 +137,9 @@ module Parsers = struct
 
   let application_layer_parser =
     let open Parser in
-    configP <|> templateP <|> filesystemP
+    config_parser <|> template_parser <|> filesystem_parser
 
-  let refer_errorP =
+  let refer_error_parser =
     let open Parser in
     let open Message in
     let open Global_error.Smart in
@@ -138,12 +149,31 @@ module Parsers = struct
     in
     ReferError (layer, datasource, line, msg)
 
-  (* let parser1 = *)
-  (*   let open Parser in *)
-  (*   let open Message in *)
-  (*   let+ _ = satisfy is_template_err *)
-  (*   and+ (`TintSyntax { path; _ }) = *)
-  (*     satisfy is_tint_syntax *)
-  (*   in *)
-  (*   ExampleError path *)
+  let tint_syntax_error_parser =
+    let open Parser in
+    let open Message in
+    let open Global_error.Smart in
+    let+ layer = application_layer_parser
+    and+ (`TintSyntax ({ path; _ } as ts)) =
+      satisfy is_tint_syntax
+    in
+    TintSyntaxError (FromCrunch path, layer, ts)
+
+  let already_exists_parser =
+    let open Parser in
+    let open Message in
+    let open Global_error.Smart in
+    let+ layer = application_layer_parser
+    and+ (`AlreadyExists (path, dof, pname)) =
+      satisfy is_already_exists
+    in
+    AlreadyExists (layer, path, dof, pname)
+
+  let parse =
+    let open Parser in
+    refer_error_parser
+    <|> tint_syntax_error_parser
+    <|> already_exists_parser
 end
+
+let parse = Parsers.parse
