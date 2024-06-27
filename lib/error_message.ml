@@ -64,7 +64,7 @@ module Parser = struct
 
     let empty _ =
       let open Message in
-      Error (ErrorMessageParse ("fail parser", None, []))
+      Error (ParseError ("fail parser", None, []))
 
     let append prsr1 prsr2 input =
       match prsr1 input with
@@ -72,25 +72,24 @@ module Parser = struct
       | Error _ -> prsr2 input
   end
 
-  (* include Etude.Monoid.Make (ParserAlternative) *)
+  include Etude.Monoid.Make (ParserAlternative)
 
-  (* let run prsr input = prsr input *)
-  (* let eval prsr input = R.map fst (prsr input) *)
-  (* let exec prsr input = R.map snd (prsr input) *)
+  let run prsr input = prsr input
+  let eval prsr input = R.map fst (prsr input)
+  let exec prsr input = R.map snd (prsr input)
 
-  (* let satisfy pred = *)
-  (*   let open Message in *)
-  (*   function *)
-  (*   | tok :: toks -> *)
-  (*     if pred tok *)
-  (*     then Ok (tok, toks) *)
-  (*     else *)
-  (* Error (ErrorMessageParse ("satisfy", Some tok,
-     toks)) *)
-  (* | [] -> *)
-  (* Error (ErrorMessageParse ("end of input", None, [])) *)
+  let satisfy pred =
+    let open Message in
+    function
+    | tok :: toks ->
+      if pred tok
+      then Ok (tok, toks)
+      else
+        Error (ErrorMessageParse ("satisfy", Some tok, toks))
+    | [] ->
+      Error (ErrorMessageParse ("end of input", None, []))
 
-  (* let optional prsr = prsr <|> pure () *)
+  let optional prsr = prsr <|> pure ()
 end
 
 let example1 =
@@ -138,8 +137,8 @@ let example2 =
 
 (*   let application_layer_parser = *)
 (*     let open Parser in *)
-(* config_parser <|> template_parser <|>
-   filesystem_parser *)
+(* config_parser <|> template_parser <|> *)
+(*    filesystem_parser *)
 
 (*   let refer_error_parser = *)
 (*     let open Parser in *)
