@@ -22,8 +22,6 @@ module Message = struct
         * application_layer
         * Template_error.tint_syntax
     | TemplateCrunch of string
-    | ErrorMessageParse of
-        string * Global_error.error option * Global_error.t
 
   type error =
     | ParseError of
