@@ -6,7 +6,7 @@ module R = Etude.Result.Make (Global_error)
 module Engine = struct
   let li, spinup_syntax =
     let lineinfo = Lineinfo.make (__LINE__ + 1) __FILE__ in
-    (lineinfo, "#[,]")
+    (lineinfo, "#[,]aaa")
 
   let map_error = Stdlib.Result.map_error
 
@@ -15,9 +15,7 @@ module Engine = struct
     let open Trace in
     let open Prelude in
     let open Ty.Syntax in
-    map_error
-      (new_list << bad_syntax_record li)
-      (of_string s)
+    map_error (new_list << bad_syntax li) (of_string s)
 
   let context_to_state ?(syntax = spinup_syntax) context =
     let open R in
@@ -25,12 +23,14 @@ module Engine = struct
     let open Trace in
     let open Prelude in
     let lineinfo = Lineinfo.make (__LINE__ + 1) __FILE__ in
+    (* this error handling is superfluous---covered by
+       string_to_syntax---but imposed by TINT *)
     let* syntax = string_to_syntax syntax in
     let string_version =
       Tint.Eval.(init ~syntax prims (Forms.forms context))
     in
     map_error
-      (new_list << bad_syntax_string lineinfo)
+      (new_list << bad_syntax lineinfo)
       string_version
 
   let macro_expand ~path ?(syntax = spinup_syntax) ~context

@@ -71,7 +71,7 @@ let error_to_layout =
             cwd
         ]
     ]
-  | `BadSyntaxRecord ({ line; filename }, tint_message) ->
+  | `BadSyntax ({ line; filename }, tint_message) ->
     [ argv;
       block 2
         [ "Error constructing TINT syntax string!";
@@ -82,17 +82,18 @@ let error_to_layout =
       blank;
       deverror_block
     ]
-  | `BadSyntaxString ({ line; filename }, tint_message) ->
-    [ argv;
-      block 2
-        [ "Ill-formed TINT syntax object!";
-          tint_message;
-          sprintf "source file: %s" filename;
-          sprintf "line: %i" line
-        ];
-      blank;
-      deverror_block
-    ]
+  (* | `BadSyntaxString ({ line; filename }, tint_message)
+     -> *)
+  (*   [ argv; *)
+  (*     block 2 *)
+  (*       [ "Ill-formed TINT syntax object!"; *)
+  (*         tint_message; *)
+  (*         sprintf "source file: %s" filename; *)
+  (*         sprintf "line: %i" line *)
+  (*       ]; *)
+  (*     blank; *)
+  (*     deverror_block *)
+  (*   ] *)
   | `TintSyntax
       { Template_error.path; tint_info = func, msg, args }
     ->

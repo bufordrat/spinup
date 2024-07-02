@@ -4,23 +4,25 @@ type tint_syntax =
   }
 
 type t =
-  [ `BadSyntaxRecord of Lineinfo.t * string
-  | `BadSyntaxString of Lineinfo.t * string
-  | `TintSyntax of tint_syntax
+  [ `BadSyntax of Lineinfo.t * string
+  | (* | `BadSyntaxString of Lineinfo.t * string *)
+    `TintSyntax of
+    tint_syntax
   | `TemplateCrunch of string ]
 
 module Smart = struct
-  let bad_syntax_record li s = `BadSyntaxRecord (li, s)
+  let bad_syntax li s = `BadSyntax (li, s)
 
-  let is_bad_syntax_record = function
-    | `BadSyntaxRecord _ -> true
+  let is_bad_syntax = function
+    | `BadSyntax _ -> true
     | _ -> false
 
-  let bad_syntax_string li s = `BadSyntaxString (li, s)
+  (* let bad_syntax_string li s = `BadSyntaxString (li,
+     s) *)
 
-  let is_bad_syntax_string = function
-    | `BadSyntaxString _ -> true
-    | _ -> false
+  (* let is_bad_syntax_string = function *)
+  (*   | `BadSyntaxString _ -> true *)
+  (*   | _ -> false *)
 
   let tint_syntax path tint_info =
     `TintSyntax { path; tint_info }

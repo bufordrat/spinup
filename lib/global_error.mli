@@ -25,10 +25,10 @@ module Smart : sig
     error
 
   val is_already_exists : error -> bool
-  val bad_syntax_record : Lineinfo.t -> string -> error
-  val is_bad_syntax_record : error -> bool
-  val bad_syntax_string : Lineinfo.t -> string -> error
-  val is_bad_syntax_string : error -> bool
+  val bad_syntax : Lineinfo.t -> string -> error
+  val is_bad_syntax : error -> bool
+  (* val bad_syntax_string : Lineinfo.t -> string -> error *)
+  (* val is_bad_syntax_string : error -> bool *)
 
   val tint_syntax :
     string -> string * string * string list -> error
