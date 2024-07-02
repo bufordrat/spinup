@@ -135,14 +135,14 @@ module Examples = struct
   let bad_syntax =
     let open Lineinfo in
     [ `TemplateErr;
-      `BadSyntax
+      `BadSyntaxRecord
         ( { line = 9; filename = "lib/template.ml" },
           "invalid syntax: 7 chars <> 4" )
     ]
 
   let tint_syntax =
     [ `TemplateErr;
-      `TintSyntax
+      `TintSyntaxError
         { Template_error.path = "/dune-project";
           tint_info =
             ( "nathan",
@@ -190,6 +190,46 @@ module Parsers = struct
     in
     ReferError (layer, datasource, line, msg)
 
+  let crunched_config_path_parser =
+    let open Parser in
+    let open Message in
+    let open Global_error.Smart in
+    let+ layer = config_parser
+    and+ (`BadCrunchPath (path, lineinfo)) =
+      satisfy is_bad_crunch_path
+    in
+    CrunchedConfigPath (lineinfo, layer, path)
+
+  let file_read_error_parser =
+    let open Parser in
+    let open Message in
+    let open Global_error.Smart in
+    let+ layer = application_layer_parser
+    and+ (`FileReadError system_msg) =
+      satisfy is_file_read_error
+    in
+    FileReadError (layer, system_msg)
+
+  let already_exists_parser =
+    let open Parser in
+    let open Message in
+    let open Global_error.Smart in
+    let+ layer = filesystem_parser
+    and+ (`AlreadyExists (cwd, dir_or_file, pname)) =
+      satisfy is_already_exists
+    in
+    AlreadyExists (layer, cwd, dir_or_file, pname)
+
+  let tint_syntax_record_parser =
+    let open Parser in
+    let open Message in
+    let open Global_error.Smart in
+    let+ _ = application_layer_parser
+    and+ (`BadSyntaxRecord (lineinfo, msg)) =
+      satisfy is_bad_syntax_record
+    in
+    TintSyntaxRecord (lineinfo, msg)
+
   let tint_syntax_error_parser =
     let open Parser in
     let open Message in
@@ -199,16 +239,6 @@ module Parsers = struct
       satisfy is_tint_syntax_error
     in
     TintSyntaxError (FromCrunch path, layer, ts)
-
-  let already_exists_parser =
-    let open Parser in
-    let open Message in
-    let open Global_error.Smart in
-    let+ layer = application_layer_parser
-    and+ (`AlreadyExists (path, dof, pname)) =
-      satisfy is_already_exists
-    in
-    AlreadyExists (layer, path, dof, pname)
 
   let parse =
     let open Parser in
