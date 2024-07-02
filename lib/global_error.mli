@@ -25,15 +25,13 @@ module Smart : sig
     error
 
   val is_already_exists : error -> bool
-  val bad_syntax : Lineinfo.t -> string -> error
-  val is_bad_syntax : error -> bool
-  (* val bad_syntax_string : Lineinfo.t -> string -> error *)
-  (* val is_bad_syntax_string : error -> bool *)
+  val bad_syntax_record : Lineinfo.t -> string -> error
+  val is_bad_syntax_record : error -> bool
 
-  val tint_syntax :
+  val tint_syntax_error :
     string -> string * string * string list -> error
 
-  val is_tint_syntax : error -> bool
+  val is_tint_syntax_error : error -> bool
   val template_crunch : string -> error
   val is_template_crunch : error -> bool
 end

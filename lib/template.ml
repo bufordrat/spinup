@@ -15,7 +15,9 @@ module Engine = struct
     let open Trace in
     let open Prelude in
     let open Ty.Syntax in
-    map_error (new_list << bad_syntax li) (of_string s)
+    map_error
+      (new_list << bad_syntax_record li)
+      (of_string s)
 
   let context_to_state ?(syntax = spinup_syntax) context =
     let open R in
@@ -30,7 +32,7 @@ module Engine = struct
       Tint.Eval.(init ~syntax prims (Forms.forms context))
     in
     map_error
-      (new_list << bad_syntax lineinfo)
+      (new_list << bad_syntax_record lineinfo)
       string_version
 
   let macro_expand ~path ?(syntax = spinup_syntax) ~context
@@ -42,7 +44,7 @@ module Engine = struct
     let* state = context_to_state ~syntax context in
     let+ _, processed_string =
       map_error
-        (new_list << tint_syntax path)
+        (new_list << tint_syntax_error path)
         (Tint.Eval.eval state tint)
     in
     processed_string

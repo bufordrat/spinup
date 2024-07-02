@@ -17,7 +17,6 @@ module Message = struct
         * Filesystem_error.dir_or_file
         * string
     | TintSyntaxRecord of Lineinfo.t * string
-    | TintSyntaxString of Lineinfo.t * string
     | TintSyntaxError of
         Action_error.DataSource.t
         * application_layer
@@ -141,7 +140,7 @@ module Examples = struct
           "invalid syntax: 7 chars <> 4" )
     ]
 
-  let example1 =
+  let tint_syntax =
     [ `TemplateErr;
       `TintSyntax
         { Template_error.path = "/dune-project";
@@ -196,8 +195,8 @@ module Parsers = struct
     let open Message in
     let open Global_error.Smart in
     let+ layer = application_layer_parser
-    and+ (`TintSyntax ({ path; _ } as ts)) =
-      satisfy is_tint_syntax
+    and+ (`TintSyntaxError ({ path; _ } as ts)) =
+      satisfy is_tint_syntax_error
     in
     TintSyntaxError (FromCrunch path, layer, ts)
 
