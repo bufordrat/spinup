@@ -26,10 +26,6 @@ module Message = struct
         string * Global_error.error option * Global_error.t
 end
 
-module MessageError = struct
-  type t = Message.t
-end
-
 module R = Etude.Result.Make (Message)
 
 module Parser = struct
