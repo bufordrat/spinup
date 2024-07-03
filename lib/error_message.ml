@@ -22,17 +22,15 @@ module Message = struct
         * application_layer
         * Template_error.tint_syntax
     | TemplateCrunch of string
-
-  type error =
     | ParseError of
         string * Global_error.error option * Global_error.t
 end
 
 module MessageError = struct
-  type t = Message.error
+  type t = Message.t
 end
 
-module R = Etude.Result.Make (MessageError)
+module R = Etude.Result.Make (Message)
 
 module Parser = struct
   module P = struct
@@ -40,7 +38,7 @@ module Parser = struct
 
     type 'a t =
       Global_error.t ->
-      ('a * Global_error.t, Message.error) result
+      ('a * Global_error.t, Message.t) result
   end
 
   module ParserMonad = struct
@@ -246,3 +244,8 @@ module Parsers = struct
 end
 
 let parse = Parsers.parse
+
+let parsed_to_error_message p =
+  let open R in
+  let* parsed, _ = p in
+  Error parsed
