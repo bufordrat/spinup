@@ -245,7 +245,7 @@ end
 
 let parse = Parsers.parse
 
-let parsed_to_error_message p =
+let result_to_error_message p =
   let open R in
   let* parsed, _ = p in
   Error parsed
