@@ -245,3 +245,24 @@ let result_to_error_message p =
   let open R in
   let* parsed, _ = p in
   Error parsed
+
+let message_to_layout =
+  let open Printf in
+  let open Message in
+  (* let open Lineinfo in *)
+  let open Layout in
+  let open Layout.Smart in
+  let open Action_error.DataSource in
+  function
+  | ReferError (_, FromCrunch path, line, refer_message) ->
+    [ argv;
+      block 2
+        [ "Crunched config parse error!";
+          refer_message;
+          sprintf "crunched filepath: %s" path;
+          sprintf "line: %i" line
+        ];
+      blank;
+      deverror_block
+    ]
+  | _ -> assert false

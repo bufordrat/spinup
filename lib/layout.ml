@@ -40,3 +40,16 @@ let block_to_string = function
 
 let to_string blocks =
   String.concat "\n" (List.map block_to_string blocks)
+
+let deverror_block =
+  let open Printf in
+  let open Smart in
+  block 0
+    [ "This should not have happened.";
+      "Please let the project maintainer know about the \
+       problem so that they can fix it.";
+      sprintf
+        "You can send them a copy of this error message at \
+         %s."
+        Contact.email
+    ]

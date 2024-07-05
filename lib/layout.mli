@@ -16,3 +16,4 @@ module Smart : sig
 end
 
 val to_string : block list -> string
+val deverror_block : block
