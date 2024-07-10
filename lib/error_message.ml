@@ -249,20 +249,32 @@ let result_to_error_message p =
 let message_to_layout =
   let open Printf in
   let open Message in
-  (* let open Lineinfo in *)
   let open Layout in
   let open Layout.Smart in
   let open Action_error.DataSource in
   function
   | ReferError (_, FromCrunch path, line, refer_message) ->
-    [ argv;
-      block 2
-        [ "Crunched config parse error!";
-          refer_message;
-          sprintf "crunched filepath: %s" path;
-          sprintf "line: %i" line
-        ];
-      blank;
-      deverror_block
-    ]
+     [ argv;
+       block 2
+         [ "Crunched config parse error!";
+           refer_message;
+           sprintf "crunched filepath: %s" path;
+           sprintf "line: %i" line
+         ];
+       blank;
+       deverror_block
+     ]
+  | CrunchedConfigPath ({ line; filename }, _, path) ->
+     [ argv;
+       block 2
+         [ "Crunched config filepath error!";
+           sprintf
+             "Attempted to read '%s' out of the crunch." path;
+           sprintf "source file: %s" filename;
+           sprintf "line: %i" line
+         ];
+       blank;
+       deverror_block
+     ]
+  (* | BadFilePath  *)
   | _ -> assert false
