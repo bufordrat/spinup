@@ -9,7 +9,7 @@ module Message = struct
         * string
     | CrunchedConfigPath of
         Lineinfo.t * application_layer * string
-    | BadFilePath of application_layer * string
+    (* | BadFilePath of application_layer * string *)
     | FileReadError of application_layer * string
     | AlreadyExists of
         application_layer
@@ -254,27 +254,92 @@ let message_to_layout =
   let open Action_error.DataSource in
   function
   | ReferError (_, FromCrunch path, line, refer_message) ->
-     [ argv;
-       block 2
-         [ "Crunched config parse error!";
-           refer_message;
-           sprintf "crunched filepath: %s" path;
-           sprintf "line: %i" line
-         ];
-       blank;
-       deverror_block
-     ]
+    [ argv;
+      block 2
+        [ "Crunched config parse error!";
+          refer_message;
+          sprintf "crunched filepath: %s" path;
+          sprintf "line: %i" line
+        ];
+      blank;
+      deverror_block
+    ]
+  | ReferError (_, FromAFile path, line, refer_message) ->
+    [ grep path line;
+      block 2 [ "Config parse error!"; refer_message ]
+    ]
   | CrunchedConfigPath ({ line; filename }, _, path) ->
-     [ argv;
-       block 2
-         [ "Crunched config filepath error!";
-           sprintf
-             "Attempted to read '%s' out of the crunch." path;
-           sprintf "source file: %s" filename;
-           sprintf "line: %i" line
-         ];
-       blank;
-       deverror_block
-     ]
-  (* | BadFilePath  *)
-  | _ -> assert false
+    [ argv;
+      block 2
+        [ "Crunched config filepath error!";
+          sprintf
+            "Attempted to read '%s' out of the crunch." path;
+          sprintf "source file: %s" filename;
+          sprintf "line: %i" line
+        ];
+      blank;
+      deverror_block
+    ]
+  | FileReadError (_, msg_from_stdlib) ->
+    [ block 0 [ msg_from_stdlib ];
+      block 2 [ "Filesystem error reading config file!" ]
+    ]
+  | AlreadyExists (_, cwd, dir_or_file, path) ->
+    let open Filesystem_error in
+    let dof =
+      match dir_or_file with
+      | Dir -> "Directory"
+      | File -> "File"
+    in
+    [ argv;
+      block 2
+        [ sprintf "%s '%s' already exists in %s." dof path
+            cwd
+        ]
+    ]
+  | TintSyntaxRecord ({ line; filename }, tint_message) ->
+    [ argv;
+      block 2
+        [ "Error constructing TINT syntax string!";
+          tint_message;
+          sprintf "source file: %s" filename;
+          sprintf "line: %i" line
+        ];
+      blank;
+      deverror_block
+    ]
+  | TintSyntaxError
+      ( _,
+        _,
+        { Template_error.path; tint_info = func, msg, args }
+      ) ->
+    let tint_exp =
+      "#[" ^ func ^ "," ^ String.concat "," args ^ "]"
+    in
+    [ argv;
+      block 2
+        [ "TINT error!";
+          sprintf "path: %s" path;
+          sprintf "expression: %s" tint_exp;
+          msg
+        ];
+      blank;
+      deverror_block
+    ]
+  | TemplateCrunch path ->
+    [ argv;
+      block 2
+        [ "Template crunch filepath error!";
+          sprintf
+            "Attempted to read '%s' out of the crunch." path
+        ];
+      blank;
+      deverror_block
+    ]
+  | ParseError (msg, _, _) ->
+    [ block 0 [ sprintf "parse error: %s" msg ] ]
+
+(* let global_err_to_layout err = *)
+(*   Parser.run Parsers.parse err *)
+(*   |> result_to_error_message *)
+(*   |> message_to_layout *)
