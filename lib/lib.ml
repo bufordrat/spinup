@@ -1,6 +1,3 @@
-module Filesystem = Filesystem
-module Template = Template
-module Template_error = Template_error
 module Action = Action
 module Command = Command
 module Cli = Cli
@@ -9,5 +6,9 @@ module Config_error = Config_error
 module Contact = Contact
 module Crunched_templates = Crunched_templates
 module Crunched_config = Crunched_config
+module Filesystem = Filesystem
 module Global_error = Global_error
 module Error_message = Error_message
+module Layout = Layout
+module Template = Template
+module Template_error = Template_error

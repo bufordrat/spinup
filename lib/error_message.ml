@@ -9,7 +9,6 @@ module Message = struct
         * string
     | CrunchedConfigPath of
         Lineinfo.t * application_layer * string
-    (* | BadFilePath of application_layer * string *)
     | FileReadError of application_layer * string
     | AlreadyExists of
         application_layer
@@ -79,6 +78,13 @@ module Parser = struct
     | [] -> Error (ParseError ("end of input", None, []))
 
   let optional prsr = prsr <|> pure ()
+
+  let eof input =
+    let open Message in
+    match input with
+    | [] -> Ok ((), [])
+    | tok :: toks ->
+      Error (ParseError ("eof", Some tok, toks))
 end
 
 module Examples = struct
@@ -232,19 +238,23 @@ module Parsers = struct
     in
     TintSyntaxError (FromCrunch path, layer, ts)
 
-  let parse =
+  let global_error_parser =
     let open Parser in
-    refer_error_parser
-    <|> tint_syntax_error_parser
-    <|> already_exists_parser
+    let+ result =
+      refer_error_parser
+      <|> crunched_config_path_parser
+      <|> file_read_error_parser
+      <|> already_exists_parser
+      <|> tint_syntax_record_parser
+      <|> tint_syntax_error_parser
+    and+ _ = eof in
+    result
 end
 
-let parse = Parsers.parse
-
 let result_to_error_message p =
-  let open R in
-  let* parsed, _ = p in
-  Error parsed
+  match p with
+  | Ok (err, _) -> err
+  | Error err -> err
 
 let message_to_layout =
   let open Printf in
@@ -339,7 +349,16 @@ let message_to_layout =
   | ParseError (msg, _, _) ->
     [ block 0 [ sprintf "parse error: %s" msg ] ]
 
-(* let global_err_to_layout err = *)
-(*   Parser.run Parsers.parse err *)
-(*   |> result_to_error_message *)
-(*   |> message_to_layout *)
+let global_err_to_layout err =
+  let open Parser in
+  let open Parsers in
+  err
+  |> run global_error_parser
+  |> result_to_error_message
+  |> message_to_layout
+
+let print err =
+  err
+  |> global_err_to_layout
+  |> Layout.to_string
+  |> print_endline

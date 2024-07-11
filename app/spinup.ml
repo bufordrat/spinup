@@ -1,5 +1,5 @@
 let handle_result handler =
-  let open Lib.Global_error in
+  let open Lib.Error_message in
   function
   | Ok actions -> handler actions
   | Error e ->

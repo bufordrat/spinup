@@ -57,8 +57,3 @@ module Specialize : functor
     val new_error : E.t -> ('a, t) result
   end
 end
-
-val error_to_string : error -> string
-val to_string : t -> string
-val print : t -> unit
-val print_res : ('a, t) result -> unit
