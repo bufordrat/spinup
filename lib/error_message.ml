@@ -29,8 +29,6 @@ module R = Etude.Result.Make (Message)
 
 module Parser = struct
   module P = struct
-    type message = Message.t
-
     type 'a t =
       Global_error.t ->
       ('a * Global_error.t, Message.t) result
@@ -64,9 +62,7 @@ module Parser = struct
 
   include Etude.Monoid.Make (ParserAlternative)
 
-  let run prsr input = prsr input
   let eval prsr input = R.map fst (prsr input)
-  let exec prsr input = R.map snd (prsr input)
 
   let satisfy pred =
     let open Message in
@@ -77,77 +73,12 @@ module Parser = struct
       else Error (ParseError ("satisfy", Some tok, toks))
     | [] -> Error (ParseError ("end of input", None, []))
 
-  let optional prsr = prsr <|> pure ()
-
   let eof input =
     let open Message in
     match input with
     | [] -> Ok ((), [])
     | tok :: toks ->
       Error (ParseError ("eof", Some tok, toks))
-end
-
-module Examples = struct
-  let refer_error_crunch =
-    let open Action_error.DataSource in
-    [ `ConfigErr;
-      `ReferError
-        ( FromCrunch ".spinuprc",
-          1,
-          "continuation line at beginning of record: \" \
-           %dune_version 3.13\"" )
-    ]
-
-  let refer_error_file =
-    let open Action_error.DataSource in
-    [ `ConfigErr;
-      `ReferError
-        ( FromAFile "/home/teichman/.spinuprc",
-          1,
-          "continuation line at beginning of record: \" \
-           %dune_version 3.13\"" )
-    ]
-
-  let bad_crunch_path =
-    let open Lineinfo in
-    [ `ConfigErr;
-      `BadCrunchPath
-        ( ".spinuprcXXX",
-          { line = 20; filename = "lib/config.ml" } )
-    ]
-
-  let file_read_error =
-    [ `ConfigErr;
-      `FileReadError
-        "/home/teichman/.spinuprc: Permission denied"
-    ]
-
-  let already_exists =
-    [ `FilesystemErr;
-      `AlreadyExists
-        ( "/home/teichman/Code/GitHub/spinup/lib",
-          Filesystem_error.Dir,
-          "keith" )
-    ]
-
-  let bad_syntax =
-    let open Lineinfo in
-    [ `TemplateErr;
-      `BadSyntaxRecord
-        ( { line = 9; filename = "lib/template.ml" },
-          "invalid syntax: 7 chars <> 4" )
-    ]
-
-  let tint_syntax =
-    [ `TemplateErr;
-      `TintSyntaxError
-        { Template_error.path = "/dune-project";
-          tint_info =
-            ( "nathan",
-              "no such function",
-              [ "cl"; "dune_version" ] )
-        }
-    ]
 end
 
 module Parsers = struct
@@ -238,6 +169,16 @@ module Parsers = struct
     in
     TintSyntaxError (FromCrunch path, layer, ts)
 
+  let template_crunch_parser =
+    let open Parser in
+    let open Message in
+    let open Global_error.Smart in
+    let+ _ = application_layer_parser
+    and+ (`TemplateCrunch path) =
+      satisfy is_template_crunch
+    in
+    TemplateCrunch path
+
   let global_error_parser =
     let open Parser in
     let+ result =
@@ -247,13 +188,14 @@ module Parsers = struct
       <|> already_exists_parser
       <|> tint_syntax_record_parser
       <|> tint_syntax_error_parser
+      <|> template_crunch_parser
     and+ _ = eof in
     result
 end
 
 let result_to_error_message p =
   match p with
-  | Ok (err, _) -> err
+  | Ok err -> err
   | Error err -> err
 
 let message_to_layout =
@@ -353,7 +295,7 @@ let global_err_to_layout err =
   let open Parser in
   let open Parsers in
   err
-  |> run global_error_parser
+  |> eval global_error_parser
   |> result_to_error_message
   |> message_to_layout
 
