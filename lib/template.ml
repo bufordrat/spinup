@@ -6,7 +6,7 @@ module R = Etude.Result.Make (Global_error)
 module Engine = struct
   let li, spinup_syntax =
     let lineinfo = Lineinfo.make (__LINE__ + 1) __FILE__ in
-    (lineinfo, "#[,]aaa")
+    (lineinfo, "#[,]")
 
   let map_error = Stdlib.Result.map_error
 
