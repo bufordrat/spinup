@@ -60,6 +60,13 @@ Run =great_project=:
   $ opam exec -- dune utop
 #+end_example
 
+Install =great_project= to current =opam= switch:
+
+#+begin_example
+  $ cd great_project
+  $ opam exec -- dune install
+#+end_example
+
 * Features
 
 =spinup= is intended to work with the least possible amount of
