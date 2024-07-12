@@ -14,8 +14,7 @@ an OCaml project.
 
 - intended to work with the least possible amount of configuration
 - opinionated about what goes in an OCaml project
-- bases its opinions about what goes in an OCaml project on what goes
-  in the author's OCaml projects
+- configurable mainly via changes to its templates
 
 For example:
 
