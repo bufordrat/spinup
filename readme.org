@@ -56,3 +56,12 @@ Once =opam= is installed, install =spinup=:
 #+begin_example
   $ spinup name_of_your_project
 #+end_example
+
+** Enjoy
+
+#+begin_example
+  $ cd name_of_your_project
+  $ opam exec -- dune build
+  $ opam exec -- dune utop
+  $ opam exec -- dune install
+#+end_example
