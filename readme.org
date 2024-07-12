@@ -49,5 +49,5 @@ Then install =spinup= using =opam=:
 * Run
 
 #+begin_example
-  $ spinup great_project
+  $ spinup name_of_your_project
 #+end_example
