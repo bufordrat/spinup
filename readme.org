@@ -3,8 +3,6 @@
 #+DESCRIPTION: Command-line tool for spinning up an OCaml/Opam/Dune project
 #+OPTIONS: toc:nil, num:nil
 
-* Description
-
 =spinup= is a command-line tool that generates starter boilerplate for
 an OCaml project.  It is:
 
