@@ -33,19 +33,19 @@ First, install =opam= through your OS's package manager.
 
 ** Install
 
-E.g. on Arch Linux:
+Arch Linux:
 
 #+begin_example
   $ sudo pacman -S opam
 #+end_example
 
-Or on macOS:
+macOS:
 
 #+begin_example
   $ brew install opam
 #+end_example
 
-Then install =spinup= using =opam=:
+Install =spinup= using =opam=:
 
 #+begin_example
   $ opam repository add dldc https://dldc.lib.uchicago.edu/opam
