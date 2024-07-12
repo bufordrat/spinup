@@ -96,6 +96,12 @@ To fire up a project-aware REPL:
 
 #+begin_example
   $ opam exec -- dune utop
+
+  OCaml version 4.14.1
+  Enter #help;; for help.
+
+  # #show Lib.message;;
+  val message : string
 #+end_example
 
 * Features
