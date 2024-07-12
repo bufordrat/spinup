@@ -2,7 +2,7 @@
  (name lib)
  (libraries prelude etude tint cmdliner))
 
-(data_only_dirs templates)
+(data_only_dirs config templates)
 
 (rule
  (deps
