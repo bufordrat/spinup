@@ -6,6 +6,7 @@ module Config_error = Config_error
 module Contact = Contact
 module Crunched_templates = Crunched_templates
 module Crunched_config = Crunched_config
+module Datasource = Datasource
 module Filesystem = Filesystem
 module Global_error = Global_error
 module Error_message = Error_message
