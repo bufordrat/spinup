@@ -30,6 +30,74 @@ Then install =spinup= using =opam=:
   $ opam install spinup
 #+end_example
 
+* Run
+
+To spin up a new project called =great_project=:
+
+#+begin_example
+  $ spinup great_project
+  using default config...
+  making great_project/ directory...
+  making app/ directory...
+  making app/ directory...
+  making lib/ directory...
+  making lib/ directory...
+  making test/cram-tests/ directory...
+  making test/ directory...
+  making test/ directory...
+  creating GNUmakefile file...
+  creating app/great_project.ml file...
+  creating app/dune file...
+  creating dune-project file...
+  creating lib/dune file...
+  creating lib/lib.ml file...
+  creating test/cram-tests/example.t file...
+  creating test/dune file...
+  creating test/test_great_project.ml file...
+  doing initial `dune build` to generate .opam file...
+  doing a `dune clean` to remove compiler detritus...
+  DONE!
+
+  to install project dependencies into the current opam switch, run this command inside the great_project/ directory:
+
+   $ make deps
+
+  to create a sandboxed opam switch, run this command inside the great_project/ directory:
+
+   $ make sandbox
+#+end_example
+
+To build your new project:
+
+#+begin_example
+  $ cd great_project/
+  $ opam exec -- dune build
+        ocamlc lib/.lib.objs/byte/lib.{cmi,cmo,cmt}
+        ocamlc lib/lib.cma
+        ocamlc app/.great_project.eobjs/byte/dune__exe__Great_project.{cmi,cmti}
+        ocamlc test/.test_great_project.eobjs/byte/dune__exe__Test_great_project.{cmi,cmti}
+      ocamlopt lib/.lib.objs/native/lib.{cmx,o}
+      ocamlopt test/.test_great_project.eobjs/native/dune__exe__Test_great_project.{cmx,o}
+      ocamlopt app/.great_project.eobjs/native/dune__exe__Great_project.{cmx,o}
+      ocamlopt lib/lib.{a,cmxa}
+      ocamlopt lib/lib.cmxs
+      ocamlopt app/great_project.exe
+      ocamlopt test/test_great_project.exe
+#+end_example
+
+To run your new project:
+
+#+begin_example
+  $ opam exec -- dune exec great_project
+  GOODBYE CRUEL WORLD (is underrated)
+#+end_example
+
+To fire up a project-aware REPL:
+
+#+begin_example
+  $ opam exec -- dune utop
+#+end_example
+
 * Features
 
 =spinup= is intended to work with the least possible amount of
