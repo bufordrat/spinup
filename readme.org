@@ -18,7 +18,7 @@ an OCaml project.  It is:
 - config file in GNU Refer format
 - all default configuration packed directly into the binary using
   =ocaml-crunch=
-- customizable templates which use TINT as a template engine
+- customizable templates which use [[https://www2.lib.uchicago.edu/keith/software/tint/lib/top/][TINT]] as a template engine
 
 * Quickstart
 
