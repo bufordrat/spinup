@@ -1,22 +1,27 @@
-type dir = { dir : string ;
-             actions : t list ;
-             config : Config.t ; }
+type dir =
+  { dir : string; actions : t list; config : Config.t }
 
 and t =
   | Write of Template.Processed.t
+  | Print of string
   | Run of Command.t
   | WithCD of dir
 
-val run : t -> unit
+module Main : sig
+  val run : t -> unit
+  val dry_run : t -> unit
+  val write : Template.Processed.t -> t
 
-val dry_run : t -> unit
+  val directory_actions :
+    Config.t -> (t list, Global_error_intf.t) result
 
-val write : Template.Processed.t -> t
+  val action : string -> (t, Global_error_intf.t) result
 
-val directory_actions : Config.t -> (t list, string) result
+  module Files : sig
+    val files : Config.t -> Template.Unprocessed.t list
+  end
+end
 
-val main_action : string -> (t, string) result
-
-module Files : sig
-  val files : Config.t -> Template.Unprocessed.t list
+module PrintConfig : sig
+  val print_config : (t, Global_error.t) result
 end
