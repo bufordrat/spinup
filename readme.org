@@ -38,14 +38,14 @@ Spin up a new project called =great_project=:
   $ spinup great_project
 #+end_example
 
-Build:
+Build =great_project=:
 
 #+begin_example
   $ cd great_project
   $ opam exec -- dune build
 #+end_example
 
-Run:
+Run =great_project=:
 
 #+begin_example
   $ cd great_project
@@ -53,7 +53,7 @@ Run:
   GOODBYE CRUEL WORLD (is underrated)
 #+end_example
 
-REPL:
+=great_project=-aware REPL:
 
 #+begin_example
   $ cd great_project
