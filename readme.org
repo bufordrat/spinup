@@ -10,9 +10,12 @@ an OCaml project.
 
 * Features
 
-=spinup= is intended to work with the least possible amount of
-configuration and is thus opinionated about what goes in an OCaml
-project.
+=spinup= is:
+
+- intended to work with the least possible amount of configuration
+- opinionated about what goes in an OCaml project
+- bases its opinions about what goes in an OCaml project on what goes
+  in the author's OCaml projects
 
 For example:
 
@@ -24,10 +27,12 @@ For example:
 - =spinup= creates boilerplate for running cram tests with =dune=
 - =spinup= uses [[https://www2.lib.uchicago.edu/keith/software/tint/lib/top/][TINT]] as a template engine
 
-* Install
+* Quickstart
 
 First, install =opam= through your OS's package manager, e.g. on Arch
-Linux:
+Linux.
+
+** Install
 
 #+begin_example
   $ sudo pacman -S opam
@@ -46,7 +51,7 @@ Then install =spinup= using =opam=:
   $ opam install spinup
 #+end_example
 
-* Run
+** Run
 
 #+begin_example
   $ spinup name_of_your_project
