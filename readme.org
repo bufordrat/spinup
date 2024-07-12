@@ -5,8 +5,8 @@
 
 * Description
 
-=spinup= is a command-line tool that generates boilerplate for an
-OCaml project.  
+=spinup= is a command-line tool that generates starter boilerplate for
+an OCaml project.
 
 * Features
 
@@ -17,6 +17,8 @@ project.
 For example:
 
 - =spinup= assumes library-executable design
+- =spinup= assumes =dune= as a build tool
+- =spinup= assumes =opam= as a package manager
 - =spinup= assumes [[https://www2.lib.uchicago.edu/keith/software/prelude/prelude/Prelude/][Prelude]] (with [[https://github.com/bufordrat/etude][Etude]]) as a standard library
 - =spinup= assumes =alcotest= as a unit-testing framework
 - =spinup= creates boilerplate for running cram tests with =dune=
@@ -46,38 +48,6 @@ Then install =spinup= using =opam=:
 
 * Run
 
-Spin up a new project called =great_project=:
-
 #+begin_example
   $ spinup great_project
 #+end_example
-
-Build =great_project=:
-
-#+begin_example
-  $ cd great_project
-  $ opam exec -- dune build
-#+end_example
-
-Run =great_project=:
-
-#+begin_example
-  $ cd great_project
-  $ opam exec -- dune exec great_project
-  GOODBYE CRUEL WORLD (is underrated)
-#+end_example
-
-=great_project=-aware REPL:
-
-#+begin_example
-  $ cd great_project
-  $ opam exec -- dune utop
-#+end_example
-
-Install =great_project= to current =opam= switch:
-
-#+begin_example
-  $ cd great_project
-  $ opam exec -- dune install
-#+end_example
-
