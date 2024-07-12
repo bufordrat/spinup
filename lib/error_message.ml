@@ -3,10 +3,7 @@ module Message = struct
 
   type t =
     | ReferError of
-        application_layer
-        * Action_error.DataSource.t
-        * int
-        * string
+        application_layer * Datasource.t * int * string
     | CrunchedConfigPath of
         Lineinfo.t * application_layer * string
     | FileReadError of application_layer * string
@@ -17,7 +14,7 @@ module Message = struct
         * string
     | TintSyntaxRecord of Lineinfo.t * string
     | TintSyntaxError of
-        Action_error.DataSource.t
+        Datasource.t
         * application_layer
         * Template_error.tint_syntax
     | TemplateCrunch of string
@@ -203,7 +200,7 @@ let message_to_layout =
   let open Message in
   let open Layout in
   let open Layout.Smart in
-  let open Action_error.DataSource in
+  let open Datasource in
   function
   | ReferError (_, FromCrunch path, line, refer_message) ->
     [ argv;

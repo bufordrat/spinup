@@ -1,12 +1,11 @@
 module E = Config_error
 module R = Etude.Result.Make (Global_error)
 module Trace = Global_error.T
-module DataSource = Action_error.DataSource
 
 type t =
   { pname : string;
     context : (string * string) list;
-    datasource : DataSource.t
+    datasource : Datasource.t
   }
 
 let default_paths =
@@ -25,7 +24,7 @@ let is_default = function
   | _ -> false
 
 let mk_config
-    ?(datasource = DataSource.FromCrunch crunch_path) pname
+    ?(datasource = Datasource.FromCrunch crunch_path) pname
     old_context =
   let context = ("pname", pname) :: old_context in
   { pname; context; datasource }
@@ -45,7 +44,7 @@ let refer_parse datasource str =
     db >>= each_pair
   in
   let refer_parsing (x, y) =
-    let open DataSource in
+    let open Datasource in
     match datasource with
     | FromCrunch _ ->
       [ E.Smart.refer_error datasource (x, y) ]
@@ -81,7 +80,7 @@ end
 
 let get_config pname filesystem_paths =
   let open Etude.Config in
-  let open DataSource in
+  let open Datasource in
   let open E.Smart in
   match get_config_path filesystem_paths with
   | Some p ->

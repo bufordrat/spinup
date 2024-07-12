@@ -1,5 +1,5 @@
 type t =
-  [ `ReferError of Action_error.DataSource.t * int * string
+  [ `ReferError of Datasource.t * int * string
   | `BadCrunchPath of string * Lineinfo.t
   | `FileReadError of string ]
 

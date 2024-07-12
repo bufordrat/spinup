@@ -1,9 +1,7 @@
-module DataSource : module type of Action_error.DataSource
-
 type t =
   { pname : string;
     context : (string * string) list;
-    datasource : DataSource.t
+    datasource : Datasource.t
   }
 
 val default_paths : string list
