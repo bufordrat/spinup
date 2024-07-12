@@ -8,6 +8,20 @@
 =spinup= is a command-line tool that generates boilerplate for an
 OCaml project.  
 
+* Features
+
+=spinup= is intended to work with the least possible amount of
+configuration and is thus opinionated about what goes in an OCaml
+project.
+
+For example:
+
+- =spinup= assumes library-executable design
+- =spinup= assumes [[https://www2.lib.uchicago.edu/keith/software/prelude/prelude/Prelude/][Prelude]] (with [[https://github.com/bufordrat/etude][Etude]]) as a standard library
+- =spinup= assumes =alcotest= as a unit-testing framework
+- =spinup= creates boilerplate for running cram tests with =dune=
+- =spinup= uses [[https://www2.lib.uchicago.edu/keith/software/tint/lib/top/][TINT]] as a template engine
+
 * Install
 
 First, install =opam= through your OS's package manager, e.g. on Arch
@@ -67,16 +81,3 @@ Install =great_project= to current =opam= switch:
   $ opam exec -- dune install
 #+end_example
 
-* Features
-
-=spinup= is intended to work with the least possible amount of
-configuration and is thus opinionated about what goes in an OCaml
-project.
-
-For example:
-
-- =spinup= assumes library-executable design
-- =spinup= assumes [[https://www2.lib.uchicago.edu/keith/software/prelude/prelude/Prelude/][Prelude]] (with [[https://github.com/bufordrat/etude][Etude]]) as a standard library
-- =spinup= assumes =alcotest= as a unit-testing framework
-- =spinup= creates boilerplate for running cram tests with =dune=
-- =spinup= uses [[https://www2.lib.uchicago.edu/keith/software/tint/lib/top/][TINT]] as a template engine
