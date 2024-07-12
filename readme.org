@@ -6,25 +6,19 @@
 * Description
 
 =spinup= is a command-line tool that generates starter boilerplate for
-an OCaml project.
-
-* Features
-
-=spinup= is:
+an OCaml project.  It is:
 
 - intended to work with the least possible amount of configuration
 - opinionated about what goes in an OCaml project
 - configurable mainly via changes to its templates
 
-In addition:
+* Features
 
-- =spinup= assumes library-executable design
-- =spinup= assumes =dune= as a build tool
-- =spinup= assumes =opam= as a package manager
-- =spinup= assumes [[https://www2.lib.uchicago.edu/keith/software/prelude/prelude/Prelude/][Prelude]] (with [[https://github.com/bufordrat/etude][Etude]]) as a standard library
-- =spinup= assumes =alcotest= as a unit-testing framework
-- =spinup= creates boilerplate for running cram tests with =dune=
-- =spinup= uses [[https://www2.lib.uchicago.edu/keith/software/tint/lib/top/][TINT]] as a template engine
+- simple syntax
+- config file in GNU Refer format
+- all default configuration packed directly into the binary using
+  =ocaml-crunch=
+- customizable templates which use TINT as a template engine
 
 * Quickstart
 
@@ -66,3 +60,16 @@ Once =opam= is installed, install =spinup=:
   $ opam exec -- dune utop
   $ opam exec -- dune install
 #+end_example
+
+* Assumptions
+
+=spinup='s defaults reflect the needs of the author's typical code
+projects:
+
+- library-executable design
+- =dune= as a build tool
+- =opam= as a package manager
+- [[https://www2.lib.uchicago.edu/keith/software/prelude/prelude/Prelude/][Prelude]] (with [[https://github.com/bufordrat/etude][Etude]]) as a standard library
+- =alcotest= as a unit-testing framework
+- cram tests powered by =dune=
+- [[https://www2.lib.uchicago.edu/keith/software/tint/lib/top/][TINT]] as a template engine
