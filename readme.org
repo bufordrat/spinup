@@ -16,7 +16,7 @@ an OCaml project.
 - opinionated about what goes in an OCaml project
 - configurable mainly via changes to its templates
 
-For example:
+In addition:
 
 - =spinup= assumes library-executable design
 - =spinup= assumes =dune= as a build tool
