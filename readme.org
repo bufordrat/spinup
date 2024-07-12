@@ -29,10 +29,11 @@ For example:
 
 * Quickstart
 
-First, install =opam= through your OS's package manager, e.g. on Arch
-Linux.
+First, install =opam= through your OS's package manager.
 
 ** Install
+
+E.g. on Arch Linux:
 
 #+begin_example
   $ sudo pacman -S opam
