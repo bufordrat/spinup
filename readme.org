@@ -45,7 +45,7 @@ macOS:
   $ brew install opam
 #+end_example
 
-Install =spinup= using =opam=:
+Once =opam= is installed, install =spinup=:
 
 #+begin_example
   $ opam repository add dldc https://dldc.lib.uchicago.edu/opam
