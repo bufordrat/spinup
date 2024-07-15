@@ -26,7 +26,8 @@ module Main = struct
       Run
         Command.
           { args = [ "mkdir"; name ];
-            cmessage = "making " ^ name ^ "/ directory..."
+            cmessage = "making " ^ name ^ "/ directory...";
+            verbosity = Loud
           }
   end
 
@@ -78,7 +79,8 @@ module Main = struct
       Run
         Command.
           { args = [ "mkdir"; "-p"; dir ];
-            cmessage = "making " ^ dir ^ "/ directory..."
+            cmessage = "making " ^ dir ^ "/ directory...";
+            verbosity = Loud
           }
 
     let dirs () =
@@ -119,7 +121,8 @@ module Main = struct
           { args = [ "dune"; "build" ];
             cmessage =
               "doing initial `dune build` to generate \
-               .opam file..."
+               .opam file...";
+            verbosity = Loud
           }
 
     let do_a_clean =
@@ -128,7 +131,8 @@ module Main = struct
           { args = [ "dune"; "clean" ];
             cmessage =
               "doing a `dune clean` to remove compiler \
-               detritus..."
+               detritus...";
+            verbosity = Loud
           }
 
     let done_msg = Print "DONE!"
