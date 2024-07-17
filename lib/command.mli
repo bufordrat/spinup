@@ -6,4 +6,5 @@ type t =
     verbosity : verbosity
   }
 
+val make : string list -> string -> verbosity -> t
 val run : t -> unit

@@ -6,6 +6,9 @@ type t =
     verbosity : verbosity
   }
 
+let make args cmessage verbosity =
+  { args; cmessage; verbosity }
+
 let run { args; cmessage; verbosity } =
   let open Prelude.Unix.Proc in
   let print msg =
