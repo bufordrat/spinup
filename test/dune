@@ -1,6 +1,6 @@
 (test
  (name test_spinup)
- (libraries lib alcotest))
+ (libraries lib alcotest prelude etude))
 
 (env
  (dev

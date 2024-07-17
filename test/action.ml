@@ -11,10 +11,3 @@ let temp_dir dirname pname =
                  cmessage = "removing directory called 'project'" ;
                  verbosity = Quiet } }
 
-(* let run { setup; test_action; teardown } = *)
-(*   let open Lib.Action in *)
-(*   run (Run setup) ; *)
-(*    = run test_action in *)
-(*   run (Run teardown) ; *)
-  
-

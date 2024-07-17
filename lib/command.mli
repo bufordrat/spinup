@@ -7,4 +7,5 @@ type t =
   }
 
 val make : string list -> string -> verbosity -> t
+val runargs : string list -> unit
 val run : t -> unit

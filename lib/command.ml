@@ -9,8 +9,15 @@ type t =
 let make args cmessage verbosity =
   { args; cmessage; verbosity }
 
-let run { args; cmessage; verbosity } =
+let runargs args =
   let open Prelude.Unix.Proc in
+  runfull
+    ~err:Prelude.(ignore << read)
+    ~reader:Prelude.(ignore << read)
+    args
+  |> ignore
+
+let run { args; cmessage; verbosity } =
   let print msg =
     match verbosity with
     | Quiet -> ()
@@ -20,8 +27,4 @@ let run { args; cmessage; verbosity } =
   | [] -> print cmessage
   | _ ->
     print cmessage ;
-    runfull
-      ~err:Prelude.(ignore << read)
-      ~reader:Prelude.(ignore << read)
-      args
-    |> ignore
+    runargs args
