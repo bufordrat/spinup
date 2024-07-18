@@ -13,7 +13,7 @@
    (ocaml (>= 4.14.0))
     dune
     camlp-streams
-    (prelude (= "~dev"))
+    prelude
     etude
     utop
     ocp-index
