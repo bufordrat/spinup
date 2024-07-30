@@ -2,6 +2,7 @@
 # GNUmakefile
 
 DISPLAY = short
+DLDCREPO = /data/web/dldc/opam
 DUNE = opam exec -- dune $1 --display $(DISPLAY)
 
 build all::
@@ -29,6 +30,13 @@ deps::
 	opam install . --deps-only --yes
 PHONY: deps
 
+publish: build
+	scp spinup.opam ocaml:opam
+	ssh ocaml gmake -C $(DLDCREPO) update NAME=spinup OPAM=/home/teichman/opam
+	ssh ocaml rm opam
+
 # Local Variables:
 # mode: makefile-gmake
 # End:
+
+
