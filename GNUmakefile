@@ -31,7 +31,7 @@ deps::
 PHONY: deps
 
 publish: build
-	scp spinup.opam ocaml:opam
+	scp spinup.opam ocaml:opamfile/opam
 	ssh ocaml gmake -C $(DLDCREPO) update NAME=spinup OPAM=/home/teichman/opam
 	ssh ocaml rm opam
 
