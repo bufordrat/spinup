@@ -32,7 +32,7 @@ PHONY: deps
 
 publish: build
 	scp spinup.opam ocaml:opamfile/opam
-	ssh ocaml gmake -C $(DLDCREPO) update NAME=spinup OPAM=/home/teichman/opam
+	ssh ocaml env MAKEFLAGS=$(MAKEFLAGS) gmake -C $(DLDCREPO) update NAME=spinup OPAM=/home/teichman/opamfile/opam
 	ssh ocaml rm opam
 
 # Local Variables:
