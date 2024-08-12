@@ -1,5 +1,3 @@
-(* TODO: don't let the user have a project name with a
-   hyphen *)
 (* TODO: check for dependencies *)
 (* TODO: check for missing templates *)
 
@@ -20,3 +18,14 @@ let already_exists name =
   | Some dof ->
     Trace.new_error (already_exists current dof name)
   | None -> Ok ()
+
+let validate_project_name pname =
+  let open Prelude.Char in
+  let open Prelude.String in
+  let open Filesystem_error.Smart in
+  let works_for_dune char =
+    Alphabetic.is char || Decimal.is char || char = '_'
+  in
+  if all works_for_dune pname
+  then Ok pname
+  else Trace.new_error (bad_filename pname)

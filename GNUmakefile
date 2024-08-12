@@ -31,9 +31,9 @@ deps::
 PHONY: deps
 
 publish: build
-	scp spinup.opam ocaml:opamfile/opam
-	ssh ocaml env MAKEFLAGS=$(MAKEFLAGS) gmake -C $(DLDCREPO) update NAME=spinup OPAM=/home/teichman/opamfile/opam
-	ssh ocaml rm opam
+	scp spinup.opam $${OPAMFILE_HOSTNAME}:$(REMOTE_OPAMFILE_PATH)/opam
+	ssh $(OPAMFILE_HOSTNAME) env MAKEFLAGS=$(MAKEFLAGS) gmake -C $(DLDCREPO) update NAME=spinup OPAM=$(REMOTE_OPAMFILE_PATH)/opam
+	ssh $(OPAMFILE_HOSTNAME) rm opam
 
 # Local Variables:
 # mode: makefile-gmake
