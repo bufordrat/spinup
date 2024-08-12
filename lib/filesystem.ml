@@ -28,4 +28,4 @@ let validate_project_name pname =
   in
   if all works_for_dune pname
   then Ok pname
-  else Trace.new_error (bad_filename pname)
+  else Trace.new_error (bad_project_name pname)

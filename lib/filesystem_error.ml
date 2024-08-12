@@ -2,7 +2,7 @@ type dir_or_file = Dir | File
 
 type t =
   [ `AlreadyExists of string * dir_or_file * string
-  | `BadFilename of string ]
+  | `BadProjectName of string ]
 
 module Smart = struct
   let already_exists cur dir_or_file path =
@@ -12,9 +12,9 @@ module Smart = struct
     | `AlreadyExists _ -> true
     | _ -> false
 
-  let bad_filename project_name = `BadFilename project_name
+  let bad_project_name pname = `BadProjectName pname
 
-  let is_bad_filename = function
-    | `BadFilename _ -> true
+  let is_bad_project_name = function
+    | `BadProjectName _ -> true
     | _ -> false
 end

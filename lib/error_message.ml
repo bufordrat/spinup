@@ -12,6 +12,7 @@ module Message = struct
         * string
         * Filesystem_error.dir_or_file
         * string
+    | BadProjectName of application_layer * string
     | TintSyntaxRecord of Lineinfo.t * string
     | TintSyntaxError of
         Datasource.t
@@ -146,6 +147,16 @@ module Parsers = struct
     in
     AlreadyExists (layer, cwd, dir_or_file, pname)
 
+  let bad_project_name_parser =
+    let open Parser in
+    let open Message in
+    let open Global_error.Smart in
+    let+ layer = filesystem_parser
+    and+ (`BadProjectName pname) =
+      satisfy is_bad_project_name
+    in
+    BadProjectName (layer, pname)
+
   let tint_syntax_record_parser =
     let open Parser in
     let open Message in
@@ -246,6 +257,7 @@ let message_to_layout =
             cwd
         ]
     ]
+  | BadProjectName _ -> assert false
   | TintSyntaxRecord ({ line; filename }, tint_message) ->
     [ argv;
       block 2
