@@ -175,7 +175,9 @@ module Main = struct
     let open E.Smart in
     let open Trace in
     let already_exists = Filesystem.already_exists pname in
+    let pname_ok = Filesystem.validate_project_name pname in
     let* () = with_error filesystem_err already_exists in
+    let* () = with_error filesystem_err pname_ok in
     let* config =
       with_error config_err
         Config.(get_config pname default_paths)

@@ -27,5 +27,5 @@ let validate_project_name pname =
     Alphabetic.is char || Decimal.is char || char = '_'
   in
   if all works_for_dune pname
-  then Ok pname
+  then Ok ()
   else Trace.new_error (bad_project_name pname)

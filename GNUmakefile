@@ -22,7 +22,7 @@ clean::
 .PHONY: clean
 
 sandbox::
-	opam switch create . --deps-only --repos dldc=https://dldc.lib.uchicago.edu/opam,default --yes
+	opam switch create . --deps-only --with-test --repos dldc=https://dldc.lib.uchicago.edu/opam,default --yes
 PHONY: sandbox
 
 deps::

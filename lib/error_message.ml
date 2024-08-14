@@ -194,6 +194,7 @@ module Parsers = struct
       <|> crunched_config_path_parser
       <|> file_read_error_parser
       <|> already_exists_parser
+      <|> bad_project_name_parser
       <|> tint_syntax_record_parser
       <|> tint_syntax_error_parser
       <|> template_crunch_parser
@@ -257,7 +258,8 @@ let message_to_layout =
             cwd
         ]
     ]
-  | BadProjectName _ -> assert false
+  | BadProjectName _ ->
+    [ block 0 [ "insert error message here" ] ]
   | TintSyntaxRecord ({ line; filename }, tint_message) ->
     [ argv;
       block 2
