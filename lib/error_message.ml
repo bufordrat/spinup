@@ -258,8 +258,15 @@ let message_to_layout =
             cwd
         ]
     ]
-  | BadProjectName _ ->
-    [ block 0 [ "insert error message here" ] ]
+  | BadProjectName (_, pname) ->
+    [ argv;
+      block 2
+        [ sprintf "Bad project name: %s" pname;
+          "Name must be non-empty and composed only of the \
+           following characters:";
+          "'A'..'Z', 'a'..'z', '_' or '0'..'9'."
+        ]
+    ]
   | TintSyntaxRecord ({ line; filename }, tint_message) ->
     [ argv;
       block 2
