@@ -4,6 +4,11 @@
 module E = Filesystem_error
 module Trace = Global_error.T
 
+module Prereqs = struct
+  open Prelude.Prereqs
+     
+end
+
 let dir_or_file path =
   match Sys.is_directory path with
   | exception Sys_error _ -> None
