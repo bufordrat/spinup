@@ -1,4 +1,3 @@
-(* TODO: check for dependencies *)
 (* TODO: check for missing templates *)
 
 module E = Filesystem_error
