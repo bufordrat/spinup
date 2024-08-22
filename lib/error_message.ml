@@ -13,6 +13,7 @@ module Message = struct
         * Filesystem_error.dir_or_file
         * string
     | BadProjectName of application_layer * string
+    | MissingPrereqs of application_layer * string list
     | TintSyntaxRecord of Lineinfo.t * string
     | TintSyntaxError of
         Datasource.t
@@ -157,6 +158,16 @@ module Parsers = struct
     in
     BadProjectName (layer, pname)
 
+  let missing_prereqs_parser =
+    let open Parser in
+    let open Message in
+    let open Global_error.Smart in
+    let+ layer = filesystem_parser
+    and+ (`MissingPrereqs binaries) =
+      satisfy is_missing_prereqs
+    in
+    MissingPrereqs (layer, binaries)
+
   let tint_syntax_record_parser =
     let open Parser in
     let open Message in
@@ -195,6 +206,7 @@ module Parsers = struct
       <|> file_read_error_parser
       <|> already_exists_parser
       <|> bad_project_name_parser
+      <|> missing_prereqs_parser
       <|> tint_syntax_record_parser
       <|> tint_syntax_error_parser
       <|> template_crunch_parser
@@ -267,6 +279,11 @@ let message_to_layout =
           "'A'..'Z', 'a'..'z', '_' or '0'..'9'."
         ]
     ]
+  | MissingPrereqs (_, binaries) ->
+     [ block 0 [ "spinup requires the following utilities to be \
+                  installed:" ] ;
+       block 2 binaries
+     ]
   | TintSyntaxRecord ({ line; filename }, tint_message) ->
     [ argv;
       block 2

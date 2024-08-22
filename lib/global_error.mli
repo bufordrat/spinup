@@ -24,6 +24,8 @@ module Smart : sig
   val is_already_exists : error -> bool
   val bad_project_name : string -> error
   val is_bad_project_name : error -> bool
+  val missing_prereqs : string list -> error
+  val is_missing_prereqs : error -> bool
   val bad_syntax_record : Lineinfo.t -> string -> error
   val is_bad_syntax_record : error -> bool
 
