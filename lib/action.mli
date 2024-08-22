@@ -1,3 +1,8 @@
+module Command : sig
+  type t = { args : string list; cmessage : string }
+  val run : t -> unit
+end
+
 type dir =
   { dir : string; actions : t list; config : Config.t }
 

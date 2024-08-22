@@ -1,5 +1,4 @@
 module Action = Action
-module Command = Command
 module Cli = Cli
 module Config = Config
 module Config_error = Config_error
