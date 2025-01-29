@@ -1,4 +1,4 @@
-(lang dune 3.12)
+(lang dune 3.17)
 (name spinup)
 (generate_opam_files true)
  (package
@@ -23,4 +23,3 @@
     qcheck
     merlin)
   (source (github bufordrat/spinup)))
-

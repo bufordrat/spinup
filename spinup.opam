@@ -8,7 +8,7 @@ homepage: "https://your.website.here"
 bug-reports: "https://your.website.here"
 depends: [
   "ocaml" {>= "4.14.0"}
-  "dune" {>= "3.12"}
+  "dune" {>= "3.17"}
   "camlp-streams"
   "prelude"
   "etude"
