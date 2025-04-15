@@ -9,7 +9,7 @@
   (source_tree templates))
  (action
   (with-stdout-to
-   crunched_templates.ml
+    crunched_templates.ml
    (run ocaml-crunch -m plain templates))))
 
 (rule
@@ -17,7 +17,7 @@
   (source_tree config))
  (action
   (with-stdout-to
-   crunched_config.ml
+    crunched_config.ml
    (run ocaml-crunch -m plain config))))
 
 (env
