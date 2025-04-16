@@ -39,6 +39,15 @@ home-install:
 	install -m 555 $(OPAM_SWITCH_PREFIX)/bin/spinup ~/bin
 .PHONY: home-install
 
+dune-install: build
+	eval $$(opam env)
+	$(call DUNE, install)
+.PHONY: install
+
+dev-install: dune-install
+	install -m 555 $(OPAM_SWITCH_PREFIX)/bin/spinup ~/bin
+.PHONY: home-install
+
 publish: build
 	scp spinup.opam $${OPAMFILE_HOSTNAME}:$(REMOTE_OPAMFILE_PATH)/opam
 	ssh $(OPAMFILE_HOSTNAME) env MAKEFLAGS=$(MAKEFLAGS) gmake -C $(DLDCREPO) update NAME=spinup OPAM=$(REMOTE_OPAMFILE_PATH)/opam
