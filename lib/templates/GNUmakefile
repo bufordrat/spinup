@@ -8,10 +8,6 @@ build all:
 	$(call DUNE, build @@default)
 .PHONY: build all
 
-install: build
-	$(call DUNE, install)
-.PHONY: install
-
 doc:
 	$(call DUNE, build @doc)
 .PHONY: doc
@@ -29,12 +25,14 @@ deps:
 	opam install . --deps-only --yes
 .PHONY: deps
 
-dev-install:
+dune-install: build
 	eval $$(opam env)
 	$(call DUNE, install)
+.PHONY: install
+
+dev-install: dune-install
 	install -m 555 $(OPAM_SWITCH_PREFIX)/bin/##[cl,pname] ~/bin
 .PHONY: home-install
-
 
 # Local Variables:
 # mode: makefile-gmake
