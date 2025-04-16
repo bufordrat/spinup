@@ -29,6 +29,13 @@ deps:
 	opam install . --deps-only --yes
 .PHONY: deps
 
+dev-install:
+	eval $$(opam env)
+	$(call DUNE, install)
+	install -m 555 $(OPAM_SWITCH_PREFIX)/bin/##[cl,pname] ~/bin
+.PHONY: home-install
+
+
 # Local Variables:
 # mode: makefile-gmake
 # End:
