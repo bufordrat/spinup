@@ -34,7 +34,7 @@ dev-install: dune-install
 	install -m 555 $(OPAM_SWITCH_PREFIX)/bin/##[cl,pname] ~/bin
 .PHONY: home-install
 
-dev-uninstall: dune-install
+dev-uninstall: 
 	rm -rf ~/bin/##[cl,pname] || true
 .PHONY: home-install
 
