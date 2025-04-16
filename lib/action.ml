@@ -191,11 +191,11 @@ module Main = struct
     let open R in
     let open E.Smart in
     let open Trace in
-    let already_exists = Filesystem.already_exists pname in
     let pname_ok = Filesystem.validate_project_name pname in
+    let already_exists = Filesystem.already_exists pname in
     let prereqs_ok = Filesystem.(check_prereqs prereqs) in
-    let* () = with_error filesystem_err already_exists in
     let* () = with_error filesystem_err pname_ok in
+    let* () = with_error filesystem_err already_exists in
     let* () = with_error filesystem_err prereqs_ok in
     let* config =
       with_error config_err
