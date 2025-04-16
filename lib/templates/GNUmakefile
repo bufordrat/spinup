@@ -35,7 +35,7 @@ dev-install: dune-install
 .PHONY: home-install
 
 dev-uninstall: dune-install
-	rm ~/bin/##[cl,pname]
+	rm -rf ~/bin/##[cl,pname] || true
 .PHONY: home-install
 
 # Local Variables:
