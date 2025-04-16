@@ -4,7 +4,7 @@
 DISPLAY = short
 DUNE = opam exec -- dune $1 --display $(DISPLAY)
 
-build all::
+build all:
 	$(call DUNE, build @@default)
 .PHONY: build all
 
@@ -12,22 +12,22 @@ install: build
 	$(call DUNE, install)
 .PHONY: install
 
-doc::
+doc:
 	$(call DUNE, build @doc)
 .PHONY: doc
 
-clean::
+clean:
 	$(call DUNE, clean)
 .PHONY: clean
 
-sandbox::
+sandbox:
 	opam switch create . --deps-only --repos dldc=https://dldc.lib.uchicago.edu/opam,default --yes
 PHONY: sandbox
 
-deps::
+deps:
 	opam repository add dldc https://dldc.lib.uchicago.edu/opam
 	opam install . --deps-only --yes
-PHONY: deps
+.PHONY: deps
 
 # Local Variables:
 # mode: makefile-gmake

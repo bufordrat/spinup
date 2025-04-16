@@ -5,7 +5,7 @@ DISPLAY = short
 DLDCREPO = /data/web/dldc/opam
 DUNE = opam exec -- dune $1 --display $(DISPLAY)
 
-build all::
+build all:
 	$(call DUNE, build @@default)
 .PHONY: build all
 
@@ -13,27 +13,37 @@ install: build
 	$(call DUNE, install)
 .PHONY: install
 
-doc::
+doc:
 	$(call DUNE, build @doc)
 .PHONY: doc
 
-clean::
+clean:
 	$(call DUNE, clean)
 .PHONY: clean
 
-sandbox::
+sandbox:
 	opam switch create . --deps-only --with-test --repos dldc=https://dldc.lib.uchicago.edu/opam,default --yes
-PHONY: sandbox
+.PHONY: sandbox
 
-deps::
+deps:
 	opam repository add dldc https://dldc.lib.uchicago.edu/opam
 	opam install . --deps-only --yes
-PHONY: deps
+.PHONY: deps
+
+home-install:
+	eval $$(opam env)
+	opam repository add dldc https://dldc.lib.uchicago.edu/opam
+	opam update --yes
+	opam upgrade --yes
+	opam install spinup
+	install -m 555 $(OPAM_SWITCH_PREFIX)/bin/spinup ~/bin
+.PHONY: home-install
 
 publish: build
 	scp spinup.opam $${OPAMFILE_HOSTNAME}:$(REMOTE_OPAMFILE_PATH)/opam
 	ssh $(OPAMFILE_HOSTNAME) env MAKEFLAGS=$(MAKEFLAGS) gmake -C $(DLDCREPO) update NAME=spinup OPAM=$(REMOTE_OPAMFILE_PATH)/opam
 	ssh $(OPAMFILE_HOSTNAME) rm opam
+.PHONY: publish
 
 # Local Variables:
 # mode: makefile-gmake
