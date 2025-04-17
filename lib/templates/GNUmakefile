@@ -44,7 +44,7 @@ mounts:
 
 publish: build mounts
 	echo 'url { src:' $$(cat ##[cl,pname].opam | grep dev-repo | awk '{ print $$2 }') '}' >> ##[cl,pname].opam
-	make -C /data/web/dldc/opam add NAME=terrybozzio OPAM=$$PWD/terrybozzio.opam
+	make -C /data/web/dldc/opam add NAME=##[cl,pname] OPAM=$$PWD/##[cl,pname].opam
 .PHONY: publish
 
 # Local Variables:
