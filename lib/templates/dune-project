@@ -1,4 +1,5 @@
 (lang dune ##[cl,dune_version])
+(name ##[cl,pname])
 (generate_opam_files true)
 (package
  (name ##[cl,pname])
