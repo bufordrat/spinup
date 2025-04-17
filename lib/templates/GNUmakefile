@@ -38,6 +38,15 @@ dev-uninstall:
 	$(RM) ~/bin/##[cl,pname]
 .PHONY: home-install
 
+mounts:
+	if mountpoint /data/web 2> /dev/null; then : ; else sudo mkdir -p /data/web && sudo mount voldemort:/export/www-legacy /data/web ; fi
+.PHONY: mounts
+
+publish: build mounts
+	echo 'url { src:' $(cat ##[cl,pname].opam | grep dev-repo | awk '{ print $2 }') '}' >> ##[cl,pname].opam
+	make -C /data/web/dldc/opam add NAME=terrybozzio OPAM=$$PWD/terrybozzio.opam
+.PHONY: publish
+
 # Local Variables:
 # mode: makefile-gmake
 # End:
