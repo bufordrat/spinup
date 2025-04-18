@@ -52,11 +52,15 @@ dev-uninstall: dune-install
 	rm ~/bin/spinup || true
 .PHONY: home-install
 
-publish: build
-	scp spinup.opam $${OPAMFILE_HOSTNAME}:$(REMOTE_OPAMFILE_PATH)/opam
-	ssh $(OPAMFILE_HOSTNAME) env MAKEFLAGS=$(MAKEFLAGS) gmake -C $(DLDCREPO) update NAME=spinup OPAM=$(REMOTE_OPAMFILE_PATH)/opam
-	ssh $(OPAMFILE_HOSTNAME) rm opam
-.PHONY: publish
+# mounts:
+# 	if mountpoint /data/web 2> /dev/null; then echo hi; else echo bye; fi
+# .PHONY: mounts
+
+# publish: build
+# 	scp spinup.opam $${OPAMFILE_HOSTNAME}:$(REMOTE_OPAMFILE_PATH)/opam
+# 	ssh $(OPAMFILE_HOSTNAME) env MAKEFLAGS=$(MAKEFLAGS) gmake -C $(DLDCREPO) update NAME=spinup OPAM=$(REMOTE_OPAMFILE_PATH)/opam
+# 	ssh $(OPAMFILE_HOSTNAME) rm opam
+# .PHONY: publish
 
 # Local Variables:
 # mode: makefile-gmake
