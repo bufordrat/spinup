@@ -11,12 +11,12 @@ module Command = struct
     match args with
     | [] -> print cmessage
     | _ ->
-       print cmessage ;
-       runfull
-         ~err:Prelude.(ignore << read)
-         ~reader:Prelude.(ignore << read)
-         args
-       |> ignore
+      print cmessage ;
+      runfull
+        ~err:Prelude.(ignore << read)
+        ~reader:Prelude.(ignore << read)
+        args
+      |> ignore
 end
 
 type dir =

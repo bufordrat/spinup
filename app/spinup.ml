@@ -6,11 +6,11 @@ let handle_result handler =
     print e ;
     exit 1
 
-let main pc_arg dr_arg pname_arg =
+let spinup_exe pc dr pname =
   let open Lib.Action.Main in
   let open Lib.Action.PrintConfig in
   let doit handler action = handle_result handler action in
-  match (pc_arg, dr_arg, pname_arg) with
+  match (pc, dr, pname) with
   | true, _, _ -> doit run print_config
   | _, true, Some pname -> doit dry_run (action pname)
   | _, _, Some pname -> doit run (action pname)
@@ -22,6 +22,5 @@ let main pc_arg dr_arg pname_arg =
        Try 'spinup --help' for more information."
 
 let () =
-  let open Lib.Cli.Arguments in
-  let open Lib.Cli.Command in
-  to_exe main print_config dry_run project_name
+  let open Lib.Cli in
+  run_cli ~spinup_exe

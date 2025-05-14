@@ -280,10 +280,12 @@ let message_to_layout =
         ]
     ]
   | MissingPrereqs (_, binaries) ->
-     [ block 0 [ "spinup requires the following utilities to be \
-                  installed:" ] ;
-       block 2 binaries
-     ]
+    [ block 0
+        [ "spinup requires the following utilities to be \
+           installed:"
+        ];
+      block 2 binaries
+    ]
   | TintSyntaxRecord ({ line; filename }, tint_message) ->
     [ argv;
       block 2

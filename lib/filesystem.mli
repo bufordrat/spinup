@@ -5,4 +5,5 @@ val validate_project_name :
 
 val prereqs : string list
 
-val check_prereqs : string list -> (unit, Global_error.t) result
+val check_prereqs :
+  string list -> (unit, Global_error.t) result

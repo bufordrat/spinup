@@ -19,8 +19,7 @@ module Smart = struct
     | `BadProjectName _ -> true
     | _ -> false
 
-  let missing_prereqs binaries =
-    `MissingPrereqs binaries
+  let missing_prereqs binaries = `MissingPrereqs binaries
 
   let is_missing_prereqs = function
     | `MissingPrereqs _ -> true

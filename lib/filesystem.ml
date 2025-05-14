@@ -31,11 +31,11 @@ let validate_project_name pname =
 
 module Prereqs = struct
   open Prelude.Prereq
+
   let exists x = Exists x
+
   let check_prereqs prereqs =
-    let pprereqs = 
-      check (List.map exists prereqs)
-    in
+    let pprereqs = check (List.map exists prereqs) in
     if succeeds pprereqs
     then Ok ()
     else
@@ -46,5 +46,5 @@ module Prereqs = struct
       new_error (missing_prereqs binaries)
 end
 
-let prereqs = [ "dune" ; "opam" ]
+let prereqs = [ "dune"; "opam" ]
 let check_prereqs = Prereqs.check_prereqs
