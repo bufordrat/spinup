@@ -1,4 +1,4 @@
-let message = "GOODBYE CRUEL WORLD (is underrated)"
+let message = "Your wish is granted.  Long live Jambi."
 
 (* Local Variables: *)
 (* mode: tuareg *)

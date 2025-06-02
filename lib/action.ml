@@ -214,5 +214,3 @@ module PrintConfig = struct
     in
     Print config_string
 end
-
-let delete_this = "delete_this"
