@@ -3,7 +3,7 @@
  (libraries prelude etude))
 
 (toplevel
- (name standard)
+ (name repl)
  (libraries prelude etude lib))
 
 (env
