@@ -19,7 +19,7 @@
     ocp-index
     crunch
     tint
-    (alcotest :with-test)
+    alcotest
     qcheck
     merlin)
   (source (github bufordrat/spinup)))
