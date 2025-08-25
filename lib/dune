@@ -4,6 +4,10 @@
 
 (data_only_dirs config templates)
 
+(toplevel
+ (name repl)
+ (libraries prelude etude lib))
+
 (rule
  (deps
   (source_tree templates))
