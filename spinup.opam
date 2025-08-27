@@ -16,7 +16,7 @@ depends: [
   "ocp-index"
   "crunch"
   "tint"
-  "alcotest" {with-test}
+  "alcotest"
   "qcheck"
   "merlin"
   "odoc" {with-doc}
