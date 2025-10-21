@@ -31,4 +31,4 @@ RUN opam exec -- dune build && \
 
 WORKDIR /app
 
-CMD [ "app/fill-this-in.exe" ]
+CMD ##[left] "app/##[cl,pname].exe" ##[right]

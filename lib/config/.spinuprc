@@ -1,3 +1,5 @@
+%left [
+%right ]
 %dune_version 3.13
 %description "Insert project description here."
 %synopsis "Insert project synopsis, which is supposedly different, here."
