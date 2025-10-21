@@ -73,5 +73,6 @@ projects:
 - =alcotest= as a unit-testing framework
 - cram tests powered by =dune=
 - [[https://www2.lib.uchicago.edu/keith/software/tint/lib/top/][TINT]] as a template engine
+- =Dockerfile= for reproducible builds
 - code formatting using =ocamlformat=, run automatically in a git
   pre-commit hook
