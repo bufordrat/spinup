@@ -27,7 +27,7 @@ module Command = struct
       let open Cmdliner.Arg in
       let doc =
         "Print description of what would happen if \
-         $(tname) were run in normal mode."
+         $(cmd.name) were run in normal mode."
       in
       let docv = "D" in
       let inf = info [ "d"; "dry-run" ] ~doc ~docv in
@@ -66,7 +66,7 @@ module Command = struct
     in
     let manpage_info =
       let description =
-        "$(tname) creates a skeleton for a \
+        "$(cmd.name) creates a skeleton for a \
          library-executable OCaml project that assumes the \
          UChicago Library's opam repository and standard \
          libraries."
