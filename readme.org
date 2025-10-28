@@ -58,6 +58,11 @@ Once =opam= is installed, install =spinup=:
   $ dune build
   $ dune utop
   $ dune install
+#+end_example
+
+** Enjoy on someone else's machine
+
+#+begin_example
   $ docker image build -t your/project .
   $ docker container run -it your/project
   $ docker container run -it your/project opam exec -- dune build
