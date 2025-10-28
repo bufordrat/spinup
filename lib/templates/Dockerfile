@@ -6,6 +6,10 @@ RUN apk update && \
     apk upgrade && \
     apk add build-base opam git
 
+RUN addgroup ocamldev && adduser -G ocamldev -D ocamldev
+
+USER ocamldev
+
 RUN opam init --bare -a -y --disable-sandboxing \
     && opam update
 

@@ -52,13 +52,16 @@ Once =opam= is installed, install =spinup=:
 ** Enjoy
 
 #+begin_example
+  $ eval $(opam env)
   $ cd name_of_your_project
-  $ opam exec -- dune exec name_of_your_project
-  $ opam exec -- dune build
-  $ opam exec -- dune utop
-  $ opam exec -- dune install
-  $ docker build --tag=your/project .
-  $ docker run your/project
+  $ dune exec name_of_your_project
+  $ dune build
+  $ dune utop
+  $ dune install
+  $ docker image build -t your/project .
+  $ docker container run -it teichman/decoque
+  $ docker container run -it teichman/decoque opam exec -- dune exec lib/repl.exe
+  $ : todo -- get unit tests to run in the docker image
 #+end_example
 
 * Assumptions
