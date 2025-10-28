@@ -57,6 +57,8 @@ Once =opam= is installed, install =spinup=:
   $ dune exec your_project
   $ dune build
   $ dune utop
+  $ dune exec lib/repl.exe
+  $ dune runtest
   $ dune install
 #+end_example
 
