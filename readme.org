@@ -68,10 +68,11 @@ Once =opam= is installed, install =spinup=:
   $ cd /path/to/your_project
   $ docker image build -t your/project .
   $ docker container run -it your/project
-  $ docker container run -it your/project opam exec -- dune build
-  $ docker container run -it your/project opam exec -- dune utop
-  $ docker container run -it your/project opam exec -- dune exec lib/repl.exe
-  $ : todo -- get unit tests to run in the docker image
+  $ docker container run -it your/project opam exec dune build
+  $ docker container run -it your/project opam exec dune utop
+  $ docker container run -it your/project opam exec dune exec lib/repl.exe
+  $ docker container run -it your/project opam exec dune runtest
+
 #+end_example
 
 * Assumptions

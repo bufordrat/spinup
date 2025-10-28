@@ -25,6 +25,8 @@ COPY app/* ./app
 
 COPY lib/* ./lib
 
+COPY test/* ./test
+
 RUN opam repository add dldc https://dldc.lib.uchicago.edu/opam && \
     opam update && \
     eval $(opam env) && \
