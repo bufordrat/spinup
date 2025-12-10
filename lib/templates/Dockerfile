@@ -4,7 +4,7 @@ FROM base AS builder
 
 RUN apk update && \
     apk upgrade && \
-    apk add build-base opam git
+    apk add build-base --no-cache opam git
 
 RUN addgroup ocamldev && adduser -G ocamldev -D ocamldev
 
