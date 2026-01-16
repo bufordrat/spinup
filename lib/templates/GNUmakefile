@@ -1,7 +1,9 @@
 # ##[cl,pname]            -*- makefile-gmake -*-
 # GNUmakefile
 
+PNAME = ##[cl,pname]
 DISPLAY = short
+DLDCREPO = /data/web/dldc/opam
 DUNE = opam exec -- dune $1 --display $(DISPLAY)
 
 build all:
@@ -31,20 +33,27 @@ dune-install: build
 .PHONY: install
 
 dev-install: dune-install
-	install -m 555 $(OPAM_SWITCH_PREFIX)/bin/##[cl,pname] ~/bin
+	install -m 555 $(OPAM_SWITCH_PREFIX)/bin/$(PNAME) ~/bin
 .PHONY: home-install
 
 dev-uninstall: 
-	$(RM) ~/bin/##[cl,pname]
+	$(RM) ~/bin/$(PNAME)
 .PHONY: home-install
 
 mounts:
 	if mountpoint /data/web 2> /dev/null; then : ; else sudo mkdir -p /data/web && sudo mount voldemort:/export/www-legacy /data/web ; fi
 .PHONY: mounts
 
+cgi:
+	$(call DUNE, build)
+	install -m 555 $(PWD)/_build/default/app/$(PNAME).exe $(PWD)/cgi-bin/$(PNAME)
+.PHONY: cgi
+
+publish: TEMP_FILE := $(shell mktemp)
 publish: build mounts
-	echo 'url { src:' $$(cat ##[cl,pname].opam | grep dev-repo | awk '{ print $$2 }') '}' >> ##[cl,pname].opam
-	make -C /data/web/dldc/opam add NAME=##[cl,pname] OPAM=$$PWD/##[cl,pname].opam
+	cat $(PNAME).opam | grep dev-repo | awk '{ print $$2 }' > $(TEMP_FILE)
+	echo 'url { src:' `cat $(TEMP_FILE)` '}' >> $(PNAME).opam
+	make -C $(DLDCREPO) add NAME=$(PNAME) OPAM=$$PWD/$(PNAME).opam
 .PHONY: publish
 
 # Local Variables:

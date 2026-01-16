@@ -58,7 +58,7 @@ mounts:
 
 publish: build mounts
 	echo 'url { src:' $$(cat spinup.opam | grep dev-repo | awk '{ print $$2 }') '}' >> spinup.opam
-	make -C /data/web/dldc/opam add NAME=spinup OPAM=$$PWD/spinup.opam
+	make -C $(DLDCREPO) add NAME=spinup OPAM=$$PWD/spinup.opam
 .PHONY: publish
 
 # Local Variables:
