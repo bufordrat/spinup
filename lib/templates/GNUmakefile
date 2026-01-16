@@ -44,17 +44,21 @@ mounts:
 	if mountpoint /data/web 2> /dev/null; then : ; else sudo mkdir -p /data/web && sudo mount voldemort:/export/www-legacy /data/web ; fi
 .PHONY: mounts
 
-cgi:
-	$(call DUNE, build)
-	install -m 555 $(PWD)/_build/default/app/$(PNAME).exe $(PWD)/cgi-bin/$(PNAME)
-.PHONY: cgi
-
 publish: TEMP_FILE := $(shell mktemp)
 publish: build mounts
 	cat $(PNAME).opam | grep dev-repo | awk '{ print $$2 }' > $(TEMP_FILE)
 	echo 'url { src:' `cat $(TEMP_FILE)` '}' >> $(PNAME).opam
 	make -C $(DLDCREPO) add NAME=$(PNAME) OPAM=$$PWD/$(PNAME).opam
 .PHONY: publish
+
+cgi:
+	$(call DUNE, build)
+	install -m 555 $(PWD)/_build/default/app/$(PNAME).exe $(PWD)/cgi-bin/$(PNAME)
+.PHONY: cgi
+
+serve:
+	althttpd -root $(PWD)/cgi-bin -port 3000
+.PHONY: serve
 
 # Local Variables:
 # mode: makefile-gmake
