@@ -60,6 +60,20 @@ serve:
 	althttpd -root $(PWD)/cgi-bin -port 3000
 .PHONY: serve
 
+musl-build:
+	docker build --progress=plain -t $(PNAME) .
+.PHONY: musl-build
+
+musl-run:
+	docker run $(PNAME)
+.PHONY: musl-run
+
+musl: musl-build
+	docker create --name $(PNAME)-extract $(PNAME)
+	docker cp $(PNAME)-extract:/usr/local/bin/$(PNAME) ./musl/$(PNAME)
+	docker rm $(PNAME)-extract
+.PHONY: musl
+
 # Local Variables:
 # mode: makefile-gmake
 # End:
