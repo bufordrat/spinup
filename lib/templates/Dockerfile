@@ -13,7 +13,7 @@ USER ocamldev
 RUN opam init --bare -a -y --disable-sandboxing \
     && opam update
 
-RUN opam switch create default ocaml-base-compiler.5.2.0
+RUN opam switch create static-5.2.0 ocaml-variants.5.2.0+options ocaml-option-static
 
 WORKDIR /app
 
@@ -33,8 +33,10 @@ RUN opam repository add dldc https://dldc.lib.uchicago.edu/opam && \
     opam install . --deps-only --yes
 
 RUN opam exec -- dune build && \
-    cp app/##[cl,pname].exe /app
+    cp app/##[cl,pname].exe /app/##[cl,pname]
 
-WORKDIR /app
+FROM base as runtime
 
-CMD ##[left] "app/##[cl,pname].exe" ##[right]
+COPY --from=builder /app/##[cl,pname] /usr/local/bin/##[cl,pname]
+
+CMD ##[left] "app/##[cl,pname]" ##[right]
