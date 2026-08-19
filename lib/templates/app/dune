@@ -6,7 +6,10 @@
 
 (env
  (dev
-  (flags (:standard -warn-error -A))))
+  (flags (:standard -warn-error -A)))
+ (release
+  (ocamlopt_flags (:standard))
+  (link_flags (:standard -cclib -static))))
 
 ; Local Variables:
 ; mode: dune
