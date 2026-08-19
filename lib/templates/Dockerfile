@@ -32,7 +32,7 @@ RUN opam repository add dldc https://dldc.lib.uchicago.edu/opam && \
     eval $(opam env) && \
     opam install . --deps-only --yes
 
-RUN opam exec -- dune build && \
+RUN opam exec -- dune build --release && \
     cp app/##[cl,pname].exe /app/##[cl,pname]
 
 FROM base as runtime
