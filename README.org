@@ -17,6 +17,11 @@ an OCaml project.  It is:
 - all default configuration packed directly into the binary using
   =ocaml-crunch=
 - customizable templates which use [[https://www2.lib.uchicago.edu/keith/software/tint/lib/top/][TINT]] as a template engine
+- includes configuration to serve a CGI binary locally with =althttpd=
+- uses Docker/Alpine Linux to build a fully statically-linked =musl=
+  binary out of the box, runnable on anything with a Linux kernel
+- unit tests and cram tests run inside the Docker environment, to
+  ensure reproducibility
 
 * Quickstart
 
@@ -62,17 +67,31 @@ Once =opam= is installed, install =spinup=:
   $ dune install
 #+end_example
 
-** Enjoy on someone else's machine
+** Enjoy running a web application
+
+#+begin_example
+$ cd /path/to/your/project
+$ make cgi
+$ make serve
+#+end_example
+
+** Enjoy static linking
 
 #+begin_example
   $ cd /path/to/your_project
-  $ docker image build -t your/project .
-  $ docker container run your/project
-  $ docker container run your/project opam exec dune exec your_project
-  $ docker container run your/project opam exec dune build
-  $ docker container run -it your/project opam exec dune utop
-  $ docker container run -it your/project opam exec dune exec lib/repl.exe
-  $ docker container run your/project opam exec dune runtest
+  $ make musl
+  $ ldd musl/your_project
+  $ musl/your_project
+  $ make clean
+#+end_example
+
+** Enjoy reliable cram tests
+
+#+begin_example
+  $ cd /path/to/your/project
+  $ make musl
+  $ make test
+  $ make clean
 #+end_example
 
 * Assumptions

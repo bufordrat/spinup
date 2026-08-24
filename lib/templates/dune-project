@@ -14,7 +14,6 @@
    dune
    prelude
    etude
-   utop
    ocp-index
    merlin)
  (source (github ##[cl,source])))
