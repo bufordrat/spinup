@@ -14,7 +14,7 @@ doc:
 	$(call DUNE, build @doc)
 .PHONY: doc
 
-clean:
+clean: musl-clean
 	$(call DUNE, clean)
 .PHONY: clean
 
@@ -77,6 +77,10 @@ musl-run:
 musl-run-fresh: musl-build musl-run
 
 .PHONY: musl-unit-tests-build
+
+musl-clean:
+	docker rmi -f $(PNAME) $(PNAME)-test 2> /dev/null || true
+.PHONY: musl-clean
 
 musl: musl-build
 	docker create --name $(PNAME)-extract $(PNAME)
