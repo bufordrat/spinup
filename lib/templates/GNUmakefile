@@ -61,7 +61,7 @@ serve:
 .PHONY: serve
 
 musl-build-test:
-	docker build --target test -t $(PNAME)-test .
+	docker build --progress=plain --target test -t $(PNAME)-test .
 .PHONY: musl-build-test
 
 musl-build-exe:
