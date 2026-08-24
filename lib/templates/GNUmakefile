@@ -78,7 +78,7 @@ musl-run-fresh: musl-build musl-run
 
 .PHONY: musl-unit-tests-build
 
-musl: musl-build-exe
+musl: musl-build
 	docker create --name $(PNAME)-extract $(PNAME)
 	docker cp $(PNAME)-extract:/usr/local/bin/$(PNAME) ./musl/$(PNAME)
 	docker rm $(PNAME)-extract
