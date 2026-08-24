@@ -60,19 +60,38 @@ serve:
 	althttpd -root $(PWD)/cgi-bin -port 3000
 .PHONY: serve
 
-musl-build:
-	docker build --progress=plain -t $(PNAME) .
-.PHONY: musl-build
+musl-build-test:
+	docker build --target test -t $(PNAME)-test .
+.PHONY: musl-build-test
 
-musl-run:
-	docker run $(PNAME)
+musl-build-exe:
+	docker build --progress=plain -t $(PNAME) .
+.PHONY: musl-build-exe
+
+musl-build: musl-build-exe musl-build-test
+
+musl-run: 
+	docker run --rm $(PNAME)
 .PHONY: musl-run
 
-musl: musl-build
+musl-run-fresh: musl-build musl-run
+
+.PHONY: musl-unit-tests-build
+
+musl: musl-build-exe
 	docker create --name $(PNAME)-extract $(PNAME)
 	docker cp $(PNAME)-extract:/usr/local/bin/$(PNAME) ./musl/$(PNAME)
 	docker rm $(PNAME)-extract
 .PHONY: musl
+
+test: 
+	docker run --rm $(PNAME)-test
+.PHONY: test
+
+test-fresh: musl-build-test test
+
+# todo: rule to build in docker environment
+# todo: rule to run cram tests in docker environment
 
 # Local Variables:
 # mode: makefile-gmake

@@ -35,8 +35,12 @@ RUN opam repository add dldc https://dldc.lib.uchicago.edu/opam && \
 RUN opam exec -- dune build --release && \
     cp app/##[cl,pname].exe /app/##[cl,pname]
 
-FROM base as runtime
+FROM builder AS test
+
+CMD ["opam", "exec", "--", "dune", "runtest", "--release"]
+
+FROM base AS runtime
 
 COPY --from=builder /app/##[cl,pname] /usr/local/bin/##[cl,pname]
 
-CMD ##[left] "app/##[cl,pname]" ##[right]
+CMD [ "/usr/local/bin/##[cl,pname]" ]
