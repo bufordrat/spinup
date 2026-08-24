@@ -90,9 +90,6 @@ test:
 
 test-fresh: musl-build-test test
 
-# todo: rule to build in docker environment
-# todo: rule to run cram tests in docker environment
-
 # Local Variables:
 # mode: makefile-gmake
 # End:
