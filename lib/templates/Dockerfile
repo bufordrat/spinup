@@ -37,10 +37,10 @@ RUN opam exec -- dune build --release && \
 
 FROM builder AS test
 
-CMD ["opam", "exec", "--", "dune", "runtest", "--release"]
+CMD ##[left] "opam", "exec", "--", "dune", "runtest", "--release" ##[right]
 
 FROM base AS runtime
 
 COPY --from=builder /app/##[cl,pname] /usr/local/bin/##[cl,pname]
 
-CMD [ "/usr/local/bin/##[cl,pname]" ]
+CMD ##[left] "/usr/local/bin/##[cl,pname]" ##[right]
