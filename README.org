@@ -13,15 +13,10 @@ an OCaml project.  It is:
 * Features
 
 - simple syntax
-- config file in GNU Refer format
+- config file in [[https://www2.lib.uchicago.edu/keith/talks/command-line/refertool.pdf][Extended Refer]] format
 - all default configuration packed directly into the binary using
   =ocaml-crunch=
 - customizable templates which use [[https://www2.lib.uchicago.edu/keith/software/tint/lib/top/][TINT]] as a template engine
-- includes configuration to serve a CGI binary locally with =althttpd=
-- uses Docker/Alpine Linux to build a fully statically-linked =musl=
-  binary out of the box, runnable on anything with a Linux kernel
-- unit tests and cram tests run inside the Docker environment, to
-  ensure reproducibility
 
 * Quickstart
 
@@ -104,6 +99,8 @@ projects:
 - =alcotest= as a unit-testing framework
 - cram tests powered by =dune=
 - [[https://www2.lib.uchicago.edu/keith/software/tint/lib/top/][TINT]] as a template engine
-- =Dockerfile= for reproducible builds
 - code formatting using =ocamlformat=, run automatically in a git
   pre-commit hook
+- =althttpd= for serving CGI binaries
+- the ability to build a statically-linked =musl= binary
+- the ability to run unit tests in a reproducible Docker environment
