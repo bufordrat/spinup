@@ -70,7 +70,7 @@ Once =opam= is installed, install =spinup=:
   $ dune exec your_project
 #+end_example
 
-*** Open a project-aware REPL:
+*** Open a project-aware REPL
 
 #+begin_example
   $ dune exec lib/repl.exe
