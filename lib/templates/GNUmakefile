@@ -14,7 +14,7 @@ doc:
 	$(call DUNE, build @doc)
 .PHONY: doc
 
-clean: musl-clean
+clean: musl-clean cgi-clean
 	$(call DUNE, clean)
 .PHONY: clean
 
@@ -56,6 +56,10 @@ cgi:
 	install -m 555 $(PWD)/_build/default/app/$(PNAME).exe $(PWD)/cgi-bin/$(PNAME)
 .PHONY: cgi
 
+cgi-clean:
+	rm cgi/$(PNAME) || true
+.PHONY: cgi-clean
+
 serve:
 	althttpd -root $(PWD)/cgi-bin -port 3000
 .PHONY: serve
@@ -80,6 +84,7 @@ musl-run-fresh: musl-build musl-run
 
 musl-clean:
 	docker rmi -f $(PNAME) $(PNAME)-test 2> /dev/null || true
+	rm musl/$(PNAME) || true
 .PHONY: musl-clean
 
 musl: musl-build
