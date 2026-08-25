@@ -82,7 +82,7 @@ Once =opam= is installed, install =spinup=:
   $ dune runtest
 #+end_example
 
-*** Run =your_project= as a CGI binary
+*** Run =your_project= as a CGI binary (requires =althttpd=)
 
 #+begin_example
   $ make cgi
