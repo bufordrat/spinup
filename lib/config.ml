@@ -30,9 +30,11 @@ let mk_config
   { pname; context; datasource }
 
 let refer_parse datasource str =
-  let module ReferErr = struct
-    type t = int * string
-  end in
+  let module ReferErr =
+    struct
+      type t = int * string
+    end
+  in
   let open Etude.Result.Make (ReferErr) in
   let str_to_lst str =
     let open Prelude in

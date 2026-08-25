@@ -84,12 +84,11 @@ $ make serve
   $ make clean
 #+end_example
 
-** Enjoy reliable cram tests
+** Enjoy reproducible unit tests
 
 #+begin_example
   $ cd /path/to/your/project
-  $ make musl
-  $ make test
+  $ make test-fresh
   $ make clean
 #+end_example
 
