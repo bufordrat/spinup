@@ -43,44 +43,46 @@ Once =opam= is installed, install =spinup=:
   $ opam install spinup
 #+end_example
 
-** Create a hello-world project called =your_project=
+** Use
+
+*** Create a hello-world project called =your_project=
 
 #+begin_example
   $ spinup your_project
 #+end_example
 
-** Get into =your_project='s directory
+*** Get into =your_project='s directory
 
 #+begin_example
     $ eval $(opam env)
     $ cd /path/to/your_project
 #+end_example
 
-** Build =your_project=
+*** Build =your_project=
 
 #+begin_example
   $ dune build
 #+end_example
 
-** Run =your_project=
+*** Run =your_project=
 
 #+begin_example
   $ dune exec your_project
 #+end_example
 
-** Open a project-aware REPL:
+*** Open a project-aware REPL:
 
 #+begin_example
   $ dune exec lib/repl.exe
 #+end_example
 
-** Run unit tests on your own machine
+*** Run unit tests on your own machine
 
 #+begin_example
   $ dune runtest
 #+end_example
 
-** Run =your_project= as a CGI binary
+*** Run =your_project= as a CGI binary
 
 #+begin_example
   $ make cgi
@@ -88,28 +90,28 @@ Once =opam= is installed, install =spinup=:
   $ curl "http://localhost:3000/your_project"
 #+end_example
 
-** Build a fully statically-linked executable
+*** Build a fully statically-linked executable
 
 #+begin_example
   $ make musl
   $ musl/your_project
 #+end_example
 
-** Confirm that it is statically linked
+*** Confirm that it is statically linked
 
 #+begin_example
   $ ldd musl/your_project
   	not a dynamic executable
 #+end_example
 
-** Run unit tests in a reproducible Docker environment
+*** Run unit tests in a reproducible Docker environment
 
 #+begin_example
   $ make test-fresh
   $ make clean
 #+end_example
 
-** Clean up residual artefacts
+*** Clean up residual artefacts
 
 #+begin_example
   $ make clean
