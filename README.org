@@ -82,6 +82,12 @@ Run unit tests on your own machine:
   $ dune runtest
 #+end_example
 
+Install autoformatting pre-commit hook:
+
+#+begin_example
+  $ make githooks
+#+end_example
+
 Run =your_project= as a CGI binary (requires =althttpd=):
 
 #+begin_example

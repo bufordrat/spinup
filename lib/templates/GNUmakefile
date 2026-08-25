@@ -99,6 +99,11 @@ test:
 
 test-fresh: musl-build-test test
 
+githooks:
+	chmod +x ./githooks/pre-commit
+	git config core.hooksPath ./githooks
+.PHONY: githooks
+
 # Local Variables:
 # mode: makefile-gmake
 # End:
