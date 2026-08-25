@@ -116,7 +116,7 @@ Run unit tests in a reproducible Docker environment:
   $ make test-fresh
 #+end_example
 
-Clean up residual artefacts:
+Clean up residual artifacts:
 
 #+begin_example
   $ make clean
