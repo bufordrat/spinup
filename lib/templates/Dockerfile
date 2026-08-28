@@ -1,6 +1,4 @@
-FROM alpine:3.20 AS base
-
-FROM base AS builder
+FROM alpine:3.20 AS builder
 
 RUN apk update && \
     apk upgrade && \
@@ -13,7 +11,7 @@ USER ocamldev
 RUN opam init --bare -a -y --disable-sandboxing \
     && opam update
 
-RUN opam switch create static-5.2.0 ocaml-variants.5.2.0+options ocaml-option-static
+RUN opam switch create docker-switch 5.2.0
 
 WORKDIR /app
 
@@ -39,7 +37,7 @@ FROM builder AS test
 
 CMD ##[left] "opam", "exec", "--", "dune", "runtest", "--release" ##[right]
 
-FROM base AS runtime
+FROM alpine:3.20 AS runtime
 
 COPY --from=builder /app/##[cl,pname] /usr/local/bin/##[cl,pname]
 
